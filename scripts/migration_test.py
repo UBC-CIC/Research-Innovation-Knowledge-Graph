@@ -2,25 +2,25 @@ import psycopg2;
 
 from config import config;
 
-def test_query():
+def main():
     params = config()
-
-    print(params)
-
     connection = psycopg2.connect(**params)
 
-    cursor = connection.cursor()
-    cursor.execute('SELECT * FROM publication_data LIMIT 1;')
+    publications = fetch_publication_data(connection, 5)
+
+    for pub in publications:
+        print(pub)
+
+
+def fetch_publication_data(db_connection, num_rows):
+    cursor = db_connection.cursor()
+    cursor.execute(f'SELECT author_ids FROM publication_data LIMIT {num_rows};')
     results = cursor.fetchall()
 
-    print(results)
-
-test_query()
+    return results
 
 
-# fetch first n rows from publications_data
-def fetch_publication_data(num_rows):
-    pass
+main()
 
 
 # for each row
