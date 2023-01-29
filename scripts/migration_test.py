@@ -47,9 +47,6 @@ def main():
 
     print(nodes)
     print(json.dumps(adjacency_list, sort_keys=True, indent=4))
-
-
-main()
         
 
 
@@ -98,6 +95,7 @@ def fetch_researchers_from_faculty(db_connection, fields, faculty, limit_rows):
 
 
 
+main()
 # for each row
     # for each author_id pair (a, b)
         # if either not seen before, add to known authors
