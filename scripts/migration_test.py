@@ -15,6 +15,8 @@ def main():
 
     apsc_scopus_ids = fetch_researchers_from_faculty(
                         connection, 'scopus_id', 'Faculty of Applied Science', 10)
+
+    print(apsc_scopus_ids)
     
     for row in apsc_scopus_ids:
         scopus_id = row[0]
