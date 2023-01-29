@@ -22,33 +22,33 @@ def main():
         # get all publications of this researcher
         author_ids = fetch_publications_of_researcher_with_id(connection, 'author_ids', scopus_id)
 
-        for row in author_ids:
-            author_id = row[0]
+        if author_ids is not None:
+            for row in author_ids:
+                author_id = row[0]
 
-            if author_id not in nodes:
-                # fetch from researcher_data, create new node
-                results = fetch_researcher_with_scopus_id(connection, researcher_columns_no_keywords, author_id)
-                author_data = results[0]
-                new_node = Researcher(author_data)
-                nodes[new_node.scopus_id] = new_node
-        
-        for i in range(len(author_ids) - 1):
-            for j in range(i + 1, len(author_ids)):
-                author_a_id = author_ids[i][0]
-                author_b_id = author_ids[j][0]
-                
-                if author_a_id > author_b_id:
-                    # swap
-                    temp = author_a_id
-                    author_a_id = author_b_id
-                    author_b_id = temp
-                
-                add_a_to_b_edge(adjacency_list, author_a_id, author_b_id)
+                if author_id not in nodes:
+                    # fetch from researcher_data, create new node
+                    results = fetch_researcher_with_scopus_id(connection, researcher_columns_no_keywords, author_id)
+                    author_data = results[0]
+                    new_node = Researcher(author_data)
+                    nodes[new_node.scopus_id] = new_node
+            
+            for i in range(len(author_ids) - 1):
+                for j in range(i + 1, len(author_ids)):
+                    author_a_id = author_ids[i][0]
+                    author_b_id = author_ids[j][0]
+                    
+                    if author_a_id > author_b_id:
+                        # swap
+                        temp = author_a_id
+                        author_a_id = author_b_id
+                        author_b_id = temp
+                    
+                    add_a_to_b_edge(adjacency_list, author_a_id, author_b_id)
 
     print(nodes)
     print(json.dumps(adjacency_list, sort_keys=True, indent=4))
         
-
 
     # fetch first 100 researchers from a faculty
     # for each one, get all their publications
