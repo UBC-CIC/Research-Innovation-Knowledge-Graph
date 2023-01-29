@@ -3,6 +3,7 @@ import json
 
 from config import config;
 from researcher import Researcher
+from util import SetEncoder
 
 researcher_columns_no_keywords = 'first_name, last_name, email, rank, prime_department, prime_faculty, scopus_id'
 
@@ -11,7 +12,7 @@ def main():
     connection = psycopg2.connect(**params)
     
     nodes = {} # dict: scopus_id -> Researcher
-    adjacency_list = {} # dict: scopus_id -> dict: scopus_id -> count
+    adjacency_list = {} # dict: scopus_id -> dict: scopus_id -> set: publication_ids
 
     apsc_scopus_ids = fetch_researchers_from_faculty(
                         connection, 'scopus_id', 'Faculty of Applied Science', 10)
@@ -22,34 +23,57 @@ def main():
         scopus_id = row[0]
 
         # get all publications of this researcher
-        author_ids = fetch_publications_of_researcher_with_id(connection, 'author_ids', scopus_id)
+        author_ids_rows = fetch_publications_of_researcher_with_id(connection, 'id, author_ids', scopus_id)
 
-        if author_ids is not None:
-            for row in author_ids:
-                author_id = row[0]
+        valid_ids = []
+        if author_ids_rows is not None:
+            for row in author_ids_rows:
+                publication_id = row[0]
+                author_ids_list = row[1]
+                for id in author_ids_list:
+                    if id not in nodes:
+                        # fetch from researcher_data, create new node
+                        results = fetch_researcher_with_scopus_id(connection, researcher_columns_no_keywords, id)
+                        if len(results) == 0:
+                            continue
 
-                if author_id not in nodes:
-                    # fetch from researcher_data, create new node
-                    results = fetch_researcher_with_scopus_id(connection, researcher_columns_no_keywords, author_id)
-                    author_data = results[0]
-                    new_node = Researcher(author_data)
-                    nodes[new_node.scopus_id] = new_node
+                        author_data = results[0]
+                        
+                        new_author_id = author_data[6]
+                        nodes[new_author_id] = author_data
+
+                        # new_node = Researcher(author_data)
+                        # nodes[new_node.scopus_id] = new_node
+                        
+                        valid_ids.append(new_author_id)
+                    else:
+                        valid_ids.append(id)
             
-            for i in range(len(author_ids) - 1):
-                for j in range(i + 1, len(author_ids)):
-                    author_a_id = author_ids[i][0]
-                    author_b_id = author_ids[j][0]
-                    
-                    if author_a_id > author_b_id:
+            for i in range(len(valid_ids) - 1):
+                for j in range(i + 1, len(valid_ids)):
+                    author_a_id = valid_ids[i]
+                    author_b_id = valid_ids[j]
+
+                    if author_a_id == author_b_id:
+                        continue
+                    elif author_a_id > author_b_id:
                         # swap
                         temp = author_a_id
                         author_a_id = author_b_id
                         author_b_id = temp
                     
-                    add_a_to_b_edge(adjacency_list, author_a_id, author_b_id)
+                    add_a_to_b_edge(adjacency_list, author_a_id, author_b_id, publication_id)
 
-    print(nodes)
-    print(json.dumps(adjacency_list, sort_keys=True, indent=4))
+    # print(json.dumps(nodes))
+    # print(json.dumps(adjacency_list, sort_keys=True, indent=4, cls=SetEncoder))
+
+    print(f'Nodes length: {len(nodes)}')
+    print(f'AdjList length: {len(adjacency_list)}')
+
+    nodes_json = json.dumps(nodes)
+    adjacency_json = json.dumps(adjacency_list, sort_keys=True, indent=4, cls=SetEncoder)
+    write_to_json_file(nodes_json, "nodes.json")
+    write_to_json_file(adjacency_json, "adjacency.json")
         
 
     # fetch first 100 researchers from a faculty
@@ -61,15 +85,14 @@ def main():
             # sort based on author_id, create edge
             # adjacency list using a map of 
 
-def add_a_to_b_edge(adj_list, a_id, b_id):
+def add_a_to_b_edge(adj_list, a_id, b_id, publication_id):
     if a_id not in adj_list:
         adj_list[a_id] = {}
     
     a_adj_dict = adj_list[a_id]
-    if b_id in a_adj_dict:
-        a_adj_dict[b_id] += 1
-    else:
-        a_adj_dict[b_id] = 1
+    if b_id not in a_adj_dict:
+        a_adj_dict[b_id] = set()
+    a_adj_dict[b_id].add(publication_id)
     
 
 def perform_query(db_connection, query):
@@ -96,7 +119,9 @@ def fetch_researchers_from_faculty(db_connection, fields, faculty, limit_rows):
                 WHERE prime_faculty = \'{faculty}\' LIMIT {limit_rows};'''
     return perform_query(db_connection, query)
 
-
+def write_to_json_file(json_object, path):
+    with open(path, 'w') as outfile:
+        outfile.write(json_object)
 
 main()
 # for each row

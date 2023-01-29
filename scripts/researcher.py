@@ -1,4 +1,5 @@
 
+# obsolete
 class Researcher:
     def __init__(self, init_data):
         self.first_name = init_data[0]
