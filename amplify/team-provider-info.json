@@ -1,0 +1,20 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-amplify1c35ef5ab67f4-staging-232330-authRole",
+      "UnauthRoleArn": "arn:aws:iam::031690584885:role/amplify-amplify1c35ef5ab67f4-staging-232330-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::031690584885:role/amplify-amplify1c35ef5ab67f4-staging-232330-authRole",
+      "Region": "ca-central-1",
+      "DeploymentBucketName": "amplify-amplify1c35ef5ab67f4-staging-232330-deployment",
+      "UnauthRoleName": "amplify-amplify1c35ef5ab67f4-staging-232330-unauthRole",
+      "StackName": "amplify-amplify1c35ef5ab67f4-staging-232330",
+      "StackId": "arn:aws:cloudformation:ca-central-1:031690584885:stack/amplify-amplify1c35ef5ab67f4-staging-232330/c6d45910-9f62-11ed-ad5b-0e290f3cd052",
+      "AmplifyAppId": "d23i2h4dwrn4cc"
+    },
+    "categories": {
+      "auth": {
+        "researchinnovationknde1446e2": {}
+      }
+    }
+  }
+}
