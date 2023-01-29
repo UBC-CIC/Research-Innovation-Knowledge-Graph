@@ -82,7 +82,7 @@ def fetch_publications_of_researcher_with_id(db_connection, fields, scopus_id):
     query = f'''SELECT {fields} 
                 FROM publication_data
                 WHERE \'{scopus_id}\' = ANY(author_ids);'''
-    return perform_query(query)
+    return perform_query(db_connection, query)
 
 def fetch_researcher_with_scopus_id(db_connection, fields, scopus_id):
     query = f'''SELECT {fields} 
