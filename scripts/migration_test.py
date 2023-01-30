@@ -13,9 +13,10 @@ def main():
     
     nodes = {} # dict: scopus_id -> Researcher
     adjacency_list = {} # dict: scopus_id -> dict: scopus_id -> set: publication_ids
+    edge_counts = {} # dict: scopus_id -> int
 
     apsc_scopus_ids = fetch_researchers_from_faculty(
-                        connection, 'scopus_id', 'Faculty of Applied Science', 10)
+                        connection, 'scopus_id', 'Faculty of Applied Science', 25)
 
     print(apsc_scopus_ids)
     
@@ -62,7 +63,7 @@ def main():
                         author_a_id = author_b_id
                         author_b_id = temp
                     
-                    add_a_to_b_edge(adjacency_list, author_a_id, author_b_id, publication_id)
+                    add_a_to_b_edge(adjacency_list, edge_counts, author_a_id, author_b_id, publication_id)
 
     # print(json.dumps(nodes))
     # print(json.dumps(adjacency_list, sort_keys=True, indent=4, cls=SetEncoder))
@@ -72,8 +73,13 @@ def main():
 
     nodes_json = json.dumps(nodes)
     adjacency_json = json.dumps(adjacency_list, sort_keys=True, indent=4, cls=SetEncoder)
+    edge_counts_json = json.dumps(edge_counts)
+
+    # print(edge_counts_json)
+
     write_to_json_file(nodes_json, "nodes.json")
     write_to_json_file(adjacency_json, "adjacency.json")
+    write_to_json_file(edge_counts_json, "edge_counts.json")
         
 
     # fetch first 100 researchers from a faculty
@@ -85,15 +91,23 @@ def main():
             # sort based on author_id, create edge
             # adjacency list using a map of 
 
-def add_a_to_b_edge(adj_list, a_id, b_id, publication_id):
+def add_a_to_b_edge(adj_list, edge_counts, a_id, b_id, publication_id):
     if a_id not in adj_list:
         adj_list[a_id] = {}
     
     a_adj_dict = adj_list[a_id]
     if b_id not in a_adj_dict:
         a_adj_dict[b_id] = set()
-    a_adj_dict[b_id].add(publication_id)
     
+    if publication_id not in a_adj_dict[b_id]:
+        a_adj_dict[b_id].add(publication_id)
+        increment_edge_count_for_researcher(edge_counts, a_id)
+        increment_edge_count_for_researcher(edge_counts, b_id)
+    
+def increment_edge_count_for_researcher(edge_counts, scopus_id):
+    if scopus_id not in edge_counts:
+        edge_counts[scopus_id] = 0
+    edge_counts[scopus_id] += 1
 
 def perform_query(db_connection, query):
     cursor = db_connection.cursor()
