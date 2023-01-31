@@ -20,10 +20,10 @@ const ResearcherGraph = () => {
   return (
     <div className="Researcher-Graph"> 
     <Container maxWidth="md"> {/* sets the width of the graph -scales to the size of the page */}
-      <Card>
+      <Card id="researcher-graph-card">
         <SigmaContainer
           graph={graph}
-          style={{ height: "500px" }}
+          style={{ height: "82vh", width: "100vh"}}
           settings={{
             labelRenderedSizeThreshold:10,//the size at which the the nodes label show up
           }}>
