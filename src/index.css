@@ -11,3 +11,26 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+#search-bar-main{
+  border-bottom: 1px;
+  border-top: 0px;
+  border-left: 0px;
+  border-right: 0px;
+  border-color: black;
+  border-style: solid;
+  padding-bottom: 16px;
+  z-index: 1;
+}
+
+#search-bar-sub{
+  background: transparent;
+  z-index: 1;
+}
+
+#dropdown-menu{
+  background: transparent;
+  z-index: 1;
+  margin-left: 20px;
+  padding-top: 0px;
+}
