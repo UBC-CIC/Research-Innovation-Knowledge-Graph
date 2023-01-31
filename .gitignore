@@ -42,3 +42,8 @@ amplifytools.xcconfig
 .secret-*
 **.sample
 #amplify-do-not-edit-end
+
+
+# wren
+database.ini
+__pycache__
