@@ -62,7 +62,7 @@ export default function DropdownMenu(props) {
   };
 
   return (
-    <div class="dropdown">
+    <div className="dropdown">
       <Button
         id="dropdown-button"
         aria-controls={open ? 'demo-customized-menu' : undefined}
