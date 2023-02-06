@@ -4,29 +4,14 @@ import { useSigma, useRegisterEvents } from "@react-sigma/core";
 const NODE_FADE_COLOR = "#bbb";
 const EDGE_FADE_COLOR = "#eee";
 
-const GraphEvents = () => {
+const GraphEvents = ({firstClickedNode,setFirstClickedNode, selectedEdge, setSelectedEdge}) => {
   const sigma = useSigma();
   const graph = sigma.getGraph();
   const registerEvents = useRegisterEvents();
   const [hoveredNode, setHoveredNode] = useState(null);
-  const [firstClickedNode, setFirstClickedNode] = useState(null);
   const [secondClickedNode, setSecondClickedNode] = useState(null);
   const [edgeSelectionMode, setEdgeSelectionMode] = useState(false);
   const [clickedNode, setClickedNode] = useState(null);
-  // const [selectNode, setSelectNode] = useState(null);
-
-  // useEffect(() => {
-  //   if(selectNode){
-  //     if(firstClickedNode!=selectNode){
-  //       highlightAdjacentNodes(selectNode);
-  //       setFirstClickedNode(selectNode);
-  //     }
-  //   //setClickedNode(selectNode)
-    
-  //   //setEdgeSelectionMode(true)
-  //   }
-    
-  // }, [selectNode]);
  
   // use effect used to register the events
   useEffect(() => {
@@ -39,9 +24,6 @@ const GraphEvents = () => {
     if(firstClickedNode){
       setEdgeSelectionMode(true);
       setSecondClickedNode(null);
-      // if(selectNode!=firstClickedNode){
-      //   setSelectNode(firstClickedNode);
-      // }
       if(hoveredNode!=firstClickedNode){ 
         //if the firstClickNode arrives through parameter we need to highlight.
         //if we clicked it though the canvas it is already highlighted 
@@ -50,8 +32,8 @@ const GraphEvents = () => {
     }else{
       setEdgeSelectionMode(null);
       setSecondClickedNode(null);
+      setSelectedEdge(null)
       removeHighlight();
-      //setSelectNode(null);
     }
     setClickedNode(null)
   }, [firstClickedNode]);
@@ -119,6 +101,8 @@ const GraphEvents = () => {
   //for edge highlighting when an edge is selected
   useEffect(() => {
    if(secondClickedNode){
+    const highlightEdge = graph.edge(firstClickedNode, secondClickedNode)
+    setSelectedEdge(highlightEdge);
     const hoveredColor = sigma.getNodeDisplayData(firstClickedNode).color; //gets the color of the current hovered node
 
         //set all the nodes to NODE_FADE_COLOR except clicked Nodes
@@ -131,7 +115,7 @@ const GraphEvents = () => {
       sigma.setSetting(
         "edgeReducer",
         (edge, data) =>
-          graph.edge(firstClickedNode, secondClickedNode)===edge
+          highlightEdge===edge
             ? { ...data, size: data.size * 2 } //// to add hovering color: color: hoveredColor
             : { ...data, color: EDGE_FADE_COLOR } // add "hidden: true" to hide edges
       );
