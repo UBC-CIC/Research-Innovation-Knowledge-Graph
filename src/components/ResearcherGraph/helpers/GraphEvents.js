@@ -13,6 +13,20 @@ const GraphEvents = () => {
   const [secondClickedNode, setSecondClickedNode] = useState(null);
   const [edgeSelectionMode, setEdgeSelectionMode] = useState(false);
   const [clickedNode, setClickedNode] = useState(null);
+  // const [selectNode, setSelectNode] = useState(null);
+
+  // useEffect(() => {
+  //   if(selectNode){
+  //     if(firstClickedNode!=selectNode){
+  //       highlightAdjacentNodes(selectNode);
+  //       setFirstClickedNode(selectNode);
+  //     }
+  //   //setClickedNode(selectNode)
+    
+  //   //setEdgeSelectionMode(true)
+  //   }
+    
+  // }, [selectNode]);
  
   // use effect used to register the events
   useEffect(() => {
@@ -20,41 +34,73 @@ const GraphEvents = () => {
     registerEvents(getGraphEvents());
   }, [registerEvents]);
 
+  //when firstClickNode changes it starts or cancels edgeSelectionMode
+  useEffect(() => {
+    if(firstClickedNode){
+      setEdgeSelectionMode(true);
+      setSecondClickedNode(null);
+      // if(selectNode!=firstClickedNode){
+      //   setSelectNode(firstClickedNode);
+      // }
+      if(hoveredNode!=firstClickedNode){ 
+        //if the firstClickNode arrives through parameter we need to highlight.
+        //if we clicked it though the canvas it is already highlighted 
+        highlightAdjacentNodes(firstClickedNode);
+      }
+    }else{
+      setEdgeSelectionMode(null);
+      setSecondClickedNode(null);
+      removeHighlight();
+      //setSelectNode(null);
+    }
+    setClickedNode(null)
+  }, [firstClickedNode]);
+
+
+  const highlightAdjacentNodes= (coreNode) => {
+    const hoveredColor = sigma.getNodeDisplayData(coreNode).color; //gets the color of the current hovered node
+
+    //non-neighboring edges change to NODE_FADE_COLOR
+    sigma.setSetting("nodeReducer", (node, data) => {
+      return node === coreNode || graph.areNeighbors(node, coreNode)
+        ? { ...data }
+        : { ...data, label: "", color: NODE_FADE_COLOR };
+    });
+
+    //sets the neighboring edges to hovered color and thickens them and sets non-neighboring edges to EDGE_FADE_COLOR
+    sigma.setSetting(
+      "edgeReducer",
+      (edge, data) =>
+        graph.hasExtremity(edge, coreNode)
+          ? { ...data, size: data.size * 2 } // to add hovering color: color: hoveredColor
+          : { ...data, color: EDGE_FADE_COLOR } // add "hidden: true" to hide edges
+    );
+  
+  }
+
+  //removes any highlighting (nodes or edges) on the canvas
+  const removeHighlight = () =>{
+    sigma.setSetting("nodeReducer", null);
+    sigma.setSetting("edgeReducer", null);
+  }
+
   // when node is hovers it highlights its neighboring nodes and edges
   useEffect(() => {
     if(!edgeSelectionMode){ // if edgeSelectionMode is on ignore highlighting
-    if (hoveredNode) {
-      //node is hovered
-      const hoveredColor = sigma.getNodeDisplayData(hoveredNode).color; //gets the color of the current hovered node
-
-      //non-neighboring edges change to NODE_FADE_COLOR
-      sigma.setSetting("nodeReducer", (node, data) => {
-        return node === hoveredNode || graph.areNeighbors(node, hoveredNode)
-          ? { ...data }
-          : { ...data, label: "", color: NODE_FADE_COLOR };
-      });
-
-      //sets the neighboring edges to hovered color and thickens them and sets non-neighboring edges to EDGE_FADE_COLOR
-      sigma.setSetting(
-        "edgeReducer",
-        (edge, data) =>
-          graph.hasExtremity(edge, hoveredNode)
-            ? { ...data, size: data.size * 2 } // to add hovering color: color: hoveredColor
-            : { ...data, color: EDGE_FADE_COLOR } // add "hidden: true" to hide edges
-      );
-    
-    } else {//node is un-hovered (value is null)
-        sigma.setSetting("nodeReducer", null);
-        sigma.setSetting("edgeReducer", null);
-    }
+      if (hoveredNode) { //node is hovered
+        highlightAdjacentNodes(hoveredNode);
+      
+      } else {//node is un-hovered (value is null)
+        removeHighlight();
+      }
   }
   }, [hoveredNode]); //runs when hoveredNode value changes
 
-  //for clicking on nodes or on canvas
+  
+  //used to figure out if the clickedNode is the first node or second node
   useEffect(() => {
-    if(clickedNode){  
+    if(clickedNode){
       if(!edgeSelectionMode){ // we need to set first node 
-        setEdgeSelectionMode(true);
         setFirstClickedNode(clickedNode);
       }
       else {
@@ -62,20 +108,11 @@ const GraphEvents = () => {
           setSecondClickedNode(clickedNode);
       
         } else { //cancel selection mode (clicked on node that is not a adjacent node)
-          setEdgeSelectionMode(false);
           setFirstClickedNode(null);
-          setSecondClickedNode(null);
-          sigma.setSetting("nodeReducer", null);
-          sigma.setSetting("edgeReducer", null);
+
         }
       }
-    } else{ //cancel selection mode (clicked on canvas)
-      setEdgeSelectionMode(false);
-      setFirstClickedNode(null);
-      setSecondClickedNode(null);
-      sigma.setSetting("nodeReducer", null);
-      sigma.setSetting("edgeReducer", null);
-    }
+    } 
 
   }, [clickedNode]);
 
@@ -98,6 +135,7 @@ const GraphEvents = () => {
             ? { ...data, size: data.size * 2 } //// to add hovering color: color: hoveredColor
             : { ...data, color: EDGE_FADE_COLOR } // add "hidden: true" to hide edges
       );
+    setClickedNode(null)
    }
   }, [secondClickedNode]);
 
@@ -116,7 +154,7 @@ const GraphEvents = () => {
           setClickedNode(node)
       },
       clickStage: () =>{ //clicking anywhere on the canvas
-        setClickedNode(null);
+        setFirstClickedNode(null);
       }
     };
     return events;
