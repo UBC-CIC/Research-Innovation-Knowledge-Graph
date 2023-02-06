@@ -1,8 +1,7 @@
-import psycopg2;
+import psycopg2
 import json
 
-from config import config;
-from researcher import Researcher
+from config import config
 from util import SetEncoder
 
 researcher_columns_no_keywords = 'first_name, last_name, email, rank, prime_department, prime_faculty, scopus_id'
@@ -137,7 +136,7 @@ def write_to_json_file(json_object, path):
     with open(path, 'w') as outfile:
         outfile.write(json_object)
 
-main()
+# main()
 # for each row
     # for each author_id pair (a, b)
         # if either not seen before, add to known authors
