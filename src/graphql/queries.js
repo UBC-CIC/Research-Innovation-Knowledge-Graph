@@ -4,13 +4,14 @@
 export const getResearchers = /* GraphQL */ `
   query GetResearchers {
     getResearchers {
-      id
-      firstName
-      lastName
-      rank
-      email
-      department
-      faculty
+      key
+      attributes {
+        label
+        rank
+        email
+        department
+        faculty
+      }
     }
   }
 `;
@@ -20,8 +21,12 @@ export const getEdges = /* GraphQL */ `
       key
       source
       target
-      sharedPublications
-      size
+      undirected
+      attributes {
+        size
+        color
+        sharedPublications
+      }
     }
   }
 `;
@@ -42,12 +47,13 @@ export const getResearcherData = /* GraphQL */ `
         email
         department
         faculty
+        keywords
       }
     }
   }
 `;
 export const getResearcher = /* GraphQL */ `
-  query GetResearcher($id: Int) {
+  query GetResearcher($id: String!) {
     getResearcher(id: $id) {
       id
       firstName
@@ -56,6 +62,7 @@ export const getResearcher = /* GraphQL */ `
       email
       department
       faculty
+      keywords
     }
   }
 `;

@@ -26,64 +26,20 @@ export default function TheApp(props) {
   const [autoCompleteOptions, setAutoCompleteOptions] = useState([]);
 
   useEffect(() => {
-    getResearcherNodes();
-    getResearcherEdges();
+    getGraph();
   }, [])
 
-  const getResearcherNodes = async () => {
-    const researchers = await API.graphql({
-      query: getResearchers,
-    });
+  const getGraph = async () => {
+  const researchers = await API.graphql({
+    query: getResearchers,
+  });
+    setResearcherNodes(researchers.data.getResearchers);
 
-    let researcherList = researchers.data.getResearchers;
-
-    console.log(researcherList);
-
-    let ResearcherNodes = [];
-    let toStopDups = [];
-    
-    for(let i = 0; i<researcherList.length; i++) {
-
-      //Create all the researcher nodes
-      let fullName = researcherList[i].firstName + ' ' + researcherList[i].lastName
-      let key = researcherList[i].id
-      //Key should probably be an ID
-      if(!toStopDups.includes(researcherList[i].id)) {
-        ResearcherNodes.push({key: researcherList[i].id, attributes: {label: fullName, size:10}})
-        toStopDups.push(researcherList[i].id)
-      }
-    }
-    setResearcherNodes(ResearcherNodes);
+  const edgesResult = await API.graphql({
+    query: getEdges,
+  });
+    setGraphEdges(edgesResult.data.getEdges)
   }
-
-  const getResearcherEdges = async () => {
-    const edgesResult = await API.graphql({
-      query: getEdges,
-    });
-
-    let edges = edgesResult.data.getEdges;
-
-    let researcherEdges = [];
-    
-    for(let i = 0; i<edges.length; i++) {
-      researcherEdges.push({key:edges[i].key, source: edges[i].source, target: edges[i].target, 
-        undirected:true, attributes:{size: 1, color:"red"}})//attributes:{size:edges[i].size, color:"red"}})
-    }
-
-
-    console.log(researcherEdges)
-    setGraphEdges(researcherEdges)
-  }
-
-  useEffect(() => {
-    let autoCompleteResearcherOptions = []
-    for(let i = 0; i<researcherNodes.length; i++){
-      autoCompleteResearcherOptions.push({"label": researcherNodes[i].attributes.label, "id": researcherNodes[i].key})
-    }
-    setAutoCompleteOptions(autoCompleteResearcherOptions);
-    console.log(autoCompleteResearcherOptions)
-  }, [researcherNodes])
-  
 
   return (
     <Grid container spacing={2}>
