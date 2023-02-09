@@ -14,34 +14,18 @@ import Graph from "graphology";
 import {random } from 'graphology-layout';
 import forceAtlas2 from 'graphology-layout-forceatlas2';
 
-import Amplify from "@aws-amplify/core";
-import { Auth } from "@aws-amplify/auth";
-import awsmobile from "../../aws-exports";
-import { API } from "aws-amplify";
-
-import {
-  getResearchers,
-  getEdges,
-} from "../../graphql/queries";
-
-Amplify.configure(awsmobile);
-Auth.configure(awsmobile);
-
-const ResearcherGraph = () => {
+const ResearcherGraph = (props) => {
   const [graph, setGraph] = useState(null);
   const [selectedNode, setSelectedNode] = useState(null);
   const [selectedEdge, setSelectedEdge] = useState(null);
-
-  const [researcherNodes, setResearcherNodes] = useState([]);
-  const [graphEdges, setGraphEdges] = useState([]);
 
   //can use setSelectNode to set the node selected during search
 
   useEffect(() => {
     const jsonGraph = {
       attributes:{},
-      nodes: researcherNodes,
-      edges: graphEdges,
+      nodes: props.researcherNodes,
+      edges: props.graphEdges,
     }
 
     const graph = Graph.from(jsonGraph)
@@ -49,54 +33,7 @@ const ResearcherGraph = () => {
     forceAtlas2.assign(graph, {iterations: 100}); //assigns nodes x,y values with force directed
     setGraph(graph)
 
-  }, [researcherNodes, graphEdges])
-
-  useEffect(() => {
-    getResearcherNodes();
-    getResearcherEdges();
-  }, [])
-
-  const getResearcherNodes = async () => {
-    const researchers = await API.graphql({
-      query: getResearchers,
-    });
-
-    let researcherList = researchers.data.getResearchers;
-
-    let ResearcherNodes = [];
-    let toStopDups = [];
-
-    for(let i = 0; i<researcherList.length; i++) {
-      let fullName = researcherList[i].firstName + ' ' + researcherList[i].lastName
-      let key = researcherList[i].id
-      //Key should probably be an ID
-      if(!toStopDups.includes(researcherList[i].id)) {
-        ResearcherNodes.push({key: researcherList[i].id, attributes: {label: fullName, size:10}})
-        toStopDups.push(researcherList[i].id)
-      }
-    }
-
-    setResearcherNodes(ResearcherNodes);
-  }
-
-  const getResearcherEdges = async () => {
-    const edgesResult = await API.graphql({
-      query: getEdges,
-    });
-
-    let edges = edgesResult.data.getEdges;
-
-    let researcherEdges = [];
-    
-    for(let i = 0; i<edges.length; i++) {
-      researcherEdges.push({key:edges[i].key, source: edges[i].source, target: edges[i].target, 
-        undirected:true, attributes:{size: 1, color:"red"}})//attributes:{size:edges[i].size, color:"red"}})
-    }
-
-
-    console.log(researcherEdges)
-    setGraphEdges(researcherEdges)
-  }
+  }, [props.researcherNodes, props.graphEdges])
 
   return (
     <div className="Researcher-Graph">
