@@ -14,10 +14,24 @@ import Graph from "graphology";
 import {random } from 'graphology-layout';
 import forceAtlas2 from 'graphology-layout-forceatlas2';
 
+import Amplify from "@aws-amplify/core";
+import { Auth } from "@aws-amplify/auth";
+import awsmobile from "../../aws-exports";
+import { API } from "aws-amplify";
+
+import {
+  getResearcher
+} from "../../graphql/queries";
+
+Amplify.configure(awsmobile);
+Auth.configure(awsmobile);
+
 const ResearcherGraph = (props) => {
   const [graph, setGraph] = useState(null);
   const [selectedNode, setSelectedNode] = useState(null);
   const [selectedEdge, setSelectedEdge] = useState(null);
+
+  const [selectedResearcher, setSelectedResearcher] = useState({})
 
   //can use setSelectNode to set the node selected during search
 
@@ -35,6 +49,25 @@ const ResearcherGraph = (props) => {
 
   }, [props.researcherNodes, props.graphEdges])
 
+  //On change of the selected node get information on the researcher
+  useEffect(() => {
+    console.log("triggered")
+    if(selectedNode) {
+      console.log("here")
+      getResearcherFunction();
+    }
+  }, [selectedNode])
+
+  const getResearcherFunction = async () => {
+    const result = await API.graphql({
+      query: getResearcher,
+      variables: {"id": selectedNode}
+    });
+    let researcher = result.data.getResearcher;
+    console.log(researcher)
+    setSelectedResearcher(researcher);
+  }
+
   return (
     <div className="Researcher-Graph">
       <Grid container spacing={0} alignItems="stretch" direction="row">
@@ -45,10 +78,22 @@ const ResearcherGraph = (props) => {
               {selectedNode && !selectedEdge && (
                 <>
                   <Typography gutterBottom variant="h5" component="div">
-                    {selectedNode}
+                    {selectedResearcher.firstName + " " + selectedResearcher.lastName}
                   </Typography>
                   <Typography variant="body1" color="text.secondary">
-                    Add more information about selected researcher
+                    {selectedResearcher.faculty}
+                  </Typography>
+                  <Typography variant="body1" color="text.secondary">
+                    {"Department: " + selectedResearcher.department}
+                  </Typography>
+                  <Typography variant="body1" color="text.secondary">
+                    {"Email: " + selectedResearcher.email}
+                  </Typography>
+                  <Typography variant="body1" color="text.secondary">
+                    {"Rank: " + selectedResearcher.rank}
+                  </Typography>
+                  <Typography variant="body1" color="text.secondary">
+                    {"Scopus Id: " + selectedResearcher.id}
                   </Typography>
                   <Typography variant="caption" color="text.secondary">
                     Click on connected node to see information about how they
