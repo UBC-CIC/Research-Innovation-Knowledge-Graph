@@ -4,7 +4,9 @@ import { SigmaContainer, ControlsContainer, ZoomControl,FullScreenControl} from 
 import { Container,Card } from '@mui/material';
 import "./ResearcherGraph.css"
 import GraphDefinition from "./helpers/GraphDefinition";
-import GraphEvents from "./helpers/GraphEvents";
+import {GraphEvents, GetSigma} from "./helpers/GraphEvents";
+import "../Searchbar/searchbar.css"
+
 const ResearcherGraph = () => {
 
 const graph = GraphDefinition();

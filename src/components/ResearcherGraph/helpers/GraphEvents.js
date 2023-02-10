@@ -3,9 +3,10 @@ import { useSigma, useRegisterEvents } from "@react-sigma/core";
 
 const NODE_FADE_COLOR = "#bbb";
 const EDGE_FADE_COLOR = "#eee";
+var sigma;
 
 const GraphEvents = () => {
-  const sigma = useSigma();
+  sigma = useSigma();
   const graph = sigma.getGraph();
   const registerEvents = useRegisterEvents();
   const [hoveredNode, setHoveredNode] = useState(null);
@@ -45,8 +46,19 @@ const GraphEvents = () => {
 
   const getGraphEvents = () => {
     const events = {
+      /*
       doubleClickNode: ({ node }) => {
         window.open(`http://localhost:3000/${node}`); //when a node is double clicked it opens a /new window based on the node they clicked
+      },
+      */
+      clickNode: ({ node }) => {
+        let camera = sigma.getCamera();
+        let zoom_ratio = 0.5;
+        let zoom_factor = camera.ratio/zoom_ratio
+        camera.animate(sigma.getNodeDisplayData(node), {duration: 500})
+        //camera.animatedZoom({duration: 50, factor: zoom_factor});
+        //camera.x = sigma.getNodeDisplayData(node).x;
+        //camera.y = sigma.getNodeDisplayData(node).y;
       },
       enterNode: ({ node }) => {
         setHoveredNode(node);
@@ -61,4 +73,8 @@ const GraphEvents = () => {
   return null;
 };
 
-export default GraphEvents;
+const GetSigma = () => {
+  return sigma;
+}
+
+export {GraphEvents, GetSigma};
