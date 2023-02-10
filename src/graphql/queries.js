@@ -2,8 +2,8 @@
 // this is an auto generated file. This will be overwritten
 
 export const getResearchers = /* GraphQL */ `
-  query GetResearchers {
-    getResearchers {
+  query GetResearchers($facultiesToFilterOn: [String]) {
+    getResearchers(facultiesToFilterOn: $facultiesToFilterOn) {
       key
       attributes {
         label
@@ -16,8 +16,8 @@ export const getResearchers = /* GraphQL */ `
   }
 `;
 export const getEdges = /* GraphQL */ `
-  query GetEdges {
-    getEdges {
+  query GetEdges($facultiesToFilterOn: [String]) {
+    getEdges(facultiesToFilterOn: $facultiesToFilterOn) {
       key
       source
       target

@@ -32,11 +32,13 @@ export default function TheApp(props) {
   const getGraph = async () => {
   const researchers = await API.graphql({
     query: getResearchers,
+    variables: {"facultiesToFilterOn": ["Faculty of Arts", "Faculty of Applied Science"]},
   });
     setResearcherNodes(researchers.data.getResearchers);
 
   const edgesResult = await API.graphql({
     query: getEdges,
+    variables: {"facultiesToFilterOn": ["Faculty of Arts", "Faculty of Applied Science"]},
   });
     setGraphEdges(edgesResult.data.getEdges)
   }
