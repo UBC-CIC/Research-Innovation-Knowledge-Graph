@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
@@ -7,7 +7,6 @@ import ResearcherGraph from './components/ResearcherGraph/ResearcherGraph';
 import Navbar from "./components/Navbar/navbar";
 import SearchBar from "./components/Searchbar/searchbar"
 import DropdownMenu from "./components/Dropdown/dropdown";
-
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -28,10 +27,8 @@ root.render(
         <ResearcherGraph />
       </React.StrictMode>
       </Grid>
-      <Grid id="search-bar-sub" item xs={12} display="flex" justifyContent="center" flexWrap="nowrap">
-        <SearchBar text="Search Graph" size="50vh"></SearchBar>
-      </Grid>
     </Grid>
+    
 );
 
 // If you want to start measuring performance in your app, pass a function
