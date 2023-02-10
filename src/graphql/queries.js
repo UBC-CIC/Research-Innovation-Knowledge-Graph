@@ -66,3 +66,14 @@ export const getResearcher = /* GraphQL */ `
     }
   }
 `;
+export const getSharedPublications = /* GraphQL */ `
+  query GetSharedPublications($id1: String!, $id2: String!) {
+    getSharedPublications(id1: $id1, id2: $id2) {
+      title
+      journal
+      yearPublished
+      authors
+      link
+    }
+  }
+`;

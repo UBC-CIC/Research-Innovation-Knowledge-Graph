@@ -19,8 +19,13 @@ import { Auth } from "@aws-amplify/auth";
 import awsmobile from "../../aws-exports";
 import { API } from "aws-amplify";
 
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import 'katex/dist/katex.min.css'
+import Latex from 'react-latex-next'
+
 import {
-  getResearcher
+  getResearcher,
+  getSharedPublications
 } from "../../graphql/queries";
 
 Amplify.configure(awsmobile);
@@ -33,6 +38,9 @@ const ResearcherGraph = (props) => {
 
   const [selectedResearcher, setSelectedResearcher] = useState({})
 
+  const [edgeResearcherOne, setEdgeResearcherOne] = useState({})
+  const [edgeResearcherTwo, setEdgeResearcherTwo] = useState({})
+  const [sharedPublications, setSharedPublications] = useState([])
   //can use setSelectNode to set the node selected during search
 
   useEffect(() => {
@@ -54,9 +62,15 @@ const ResearcherGraph = (props) => {
     console.log("triggered")
     if(selectedNode) {
       console.log("here")
-      getResearcherFunction();
+      getResearcherFunction(selectedResearcher);
     }
   }, [selectedNode])
+
+  useEffect(() => {
+    if(selectedEdge) {
+      getEdgeInformation();
+    }
+  }, [selectedEdge])
 
   const getResearcherFunction = async () => {
     const result = await API.graphql({
@@ -64,9 +78,48 @@ const ResearcherGraph = (props) => {
       variables: {"id": selectedNode}
     });
     let researcher = result.data.getResearcher;
-    console.log(researcher)
     setSelectedResearcher(researcher);
   }
+
+  const getEdgeInformation = async () => {
+    let researchersIds = selectedEdge.split("&&");
+    let researcherOneId = researchersIds[0];
+    let researcherTwoId = researchersIds[1];
+
+    console.log(researcherOneId)
+    console.log(researcherTwoId)
+
+    //Get the researcher information
+
+    let result = await API.graphql({
+      query: getResearcher,
+      variables: {"id": researcherOneId}
+    });
+    let researcher = result.data.getResearcher;
+    setEdgeResearcherOne(researcher);
+
+    result = await API.graphql({
+      query: getResearcher,
+      variables: {"id": researcherTwoId}
+    });
+    researcher = result.data.getResearcher;
+    setEdgeResearcherTwo(researcher);
+
+    result = await API.graphql({
+      query: getSharedPublications,
+      variables: {"id1": researcherOneId, "id2": researcherTwoId}
+    });
+    let publications = result.data.getSharedPublications;
+    console.log(publications);
+    setSharedPublications(publications);
+  }
+
+  /*	title, journal, yearPublished, authors, link are the fields of a publication you can show */
+  const publications = sharedPublications.map((publicationData) =>
+    <div key={publicationData.link}>
+      <a href={publicationData.link} target="_blank" rel="noopener noreferrer">   <Latex>{publicationData.title}</Latex> <OpenInNewIcon fontSize="small" /></a>
+    </div>
+  );
 
   return (
     <div className="Researcher-Graph">
@@ -104,10 +157,10 @@ const ResearcherGraph = (props) => {
               {selectedEdge && (
                 <>
                   <Typography gutterBottom variant="h5" component="div">
-                    {selectedEdge}
+                    {"Shared Publications of "+ edgeResearcherOne.firstName + " " + edgeResearcherOne.lastName + "and " + edgeResearcherTwo.firstName + " " + edgeResearcherTwo.lastName}
                   </Typography>
                   <Typography variant="body1" color="text.secondary">
-                    Add more information about selected edge
+                    {publications}
                   </Typography>
                 </>
               )}
