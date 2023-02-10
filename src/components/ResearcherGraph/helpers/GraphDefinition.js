@@ -1,8 +1,9 @@
 import Graph from "graphology";
 import {random } from 'graphology-layout';
 import forceAtlas2 from 'graphology-layout-forceatlas2';
+
 // used graphology: https://graphology.github.io/
-const GraphDefinition= () =>{
+const GraphDefinition =() =>{
    
     const graph = Graph.from(getGraphFromNeptune());
   
@@ -23,10 +24,10 @@ const getGraphFromNeptune= ()=>{
       {key:'D', attributes:{label: "D",size:15,color:"purple"}},
     ],
     edges:[
-      {key:'AB',source:'A',target:'B',undirected:true,attributes:{ size:2, color: "black"}},
-      {key:'CD',source:'C',target:'D',undirected:true, attributes:{ size:3, color: "black"}},
-      {key:'BD',source:'B',target:'D',undirected:true,attributes:{ size:2, color: "black"}},
-      {key:'AD',source:'A',target:'D',undirected:true,attributes:{ size:5, color: "black"}}
+      // {key:'AB',source:'A',target:'B',undirected:true,attributes:{ size:2, color: "black"}},
+      // {key:'CD',source:'C',target:'D',undirected:true, attributes:{ size:3, color: "black"}},
+      // {key:'BD',source:'B',target:'D',undirected:true,attributes:{ size:2, color: "black"}},
+      // {key:'AD',source:'A',target:'D',undirected:true,attributes:{ size:5, color: "black"}}
     ]
   }
   return jsonGraph;

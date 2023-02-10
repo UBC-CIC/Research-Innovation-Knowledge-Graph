@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
 import reportWebVitals from './reportWebVitals';
+import TheApp from './components/TheApp';
 import Grid from '@mui/material/Grid';
 import ResearcherGraph from './components/ResearcherGraph/ResearcherGraph';
 import Navbar from "./components/Navbar/navbar";
@@ -28,7 +28,6 @@ root.render(
       </React.StrictMode>
       </Grid>
     </Grid>
-    
 );
 
 // If you want to start measuring performance in your app, pass a function
