@@ -121,6 +121,8 @@ const ResearcherGraph = (props) => {
     </div>
   );
 
+const ResearcherGraph = () => {
+
   return (
     <div className="Researcher-Graph">
       <Grid container spacing={0} alignItems="stretch" direction="row">
