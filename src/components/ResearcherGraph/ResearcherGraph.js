@@ -9,7 +9,7 @@ import {
 import { Container, Card, Grid, CardContent, Typography, Box, FormGroup, FormControlLabel, Checkbox, Button } from "@mui/material";
 import "./ResearcherGraph.css";
 import GraphDefinition from "./helpers/GraphDefinition";
-import GraphEvents from "./helpers/GraphEvents";
+import {GraphEvents} from "./helpers/GraphEvents";
 import Graph from "graphology";
 import {random } from 'graphology-layout';
 import forceAtlas2 from 'graphology-layout-forceatlas2';
