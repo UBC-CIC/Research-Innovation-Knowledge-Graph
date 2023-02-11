@@ -50,6 +50,7 @@ export default function TheApp(props) {
       variables: {"facultiesToFilterOn": chosenFaculties},
     });
     setGraphEdges(edgesResult.data.getEdges)
+    setAutoCompleteOptions(researchers.data.getResearchers);
   }
 
   const getTheFaculties = async () => {
@@ -83,9 +84,6 @@ export default function TheApp(props) {
         graphEdges={graphEdges} facultyOptions={allFaculties}
         selectedFaculties={chosenFaculties} setSelectedFaculties={setChosenFaculties}
         changeGraph={changeGraph}/>
-      </Grid>
-      <Grid id="search-bar-sub" item xs={12} display="flex" justifyContent="center" flexWrap="nowrap">
-        <SearchBar text="Search Graph" size="50vh"></SearchBar>
       </Grid>
     </Grid>
   )
