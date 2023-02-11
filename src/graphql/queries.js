@@ -77,3 +77,8 @@ export const getSharedPublications = /* GraphQL */ `
     }
   }
 `;
+export const getAllFaculties = /* GraphQL */ `
+  query GetAllFaculties {
+    getAllFaculties
+  }
+`;

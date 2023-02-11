@@ -14,6 +14,7 @@ import { API } from "aws-amplify";
 import {
   getResearchers,
   getEdges,
+  getAllFaculties,
 } from "../graphql/queries";
 
 Amplify.configure(awsmobile);
@@ -24,23 +25,38 @@ export default function TheApp(props) {
   const [researcherNodes, setResearcherNodes] = useState([]);
   const [graphEdges, setGraphEdges] = useState([]);
   const [autoCompleteOptions, setAutoCompleteOptions] = useState([]);
+  const [allFaculties, setAllFaculties] = useState([]);
+  const [chosenFaculties, setChosenFaculties] = useState([]);
 
+  //Everytime the filters for faculty changes get the graphs nodes and edges
   useEffect(() => {
     getGraph();
+  }, [chosenFaculties])
+
+  //On page load get the faculties
+  useEffect(() => {
+    getTheFaculties();
   }, [])
 
   const getGraph = async () => {
-  const researchers = await API.graphql({
-    query: getResearchers,
-    variables: {"facultiesToFilterOn": ["Faculty of Arts", "Faculty of Applied Science"]},
-  });
+    const researchers = await API.graphql({
+      query: getResearchers,
+      variables: {"facultiesToFilterOn": chosenFaculties},
+    });
     setResearcherNodes(researchers.data.getResearchers);
 
-  const edgesResult = await API.graphql({
-    query: getEdges,
-    variables: {"facultiesToFilterOn": ["Faculty of Arts", "Faculty of Applied Science"]},
-  });
+    const edgesResult = await API.graphql({
+      query: getEdges,
+      variables: {"facultiesToFilterOn": chosenFaculties},
+    });
     setGraphEdges(edgesResult.data.getEdges)
+  }
+
+  const getTheFaculties = async () => {
+    const getFaculties = await API.graphql({
+      query: getAllFaculties,
+    });
+    setAllFaculties(getFaculties.data.getAllFaculties)
   }
 
   return (
