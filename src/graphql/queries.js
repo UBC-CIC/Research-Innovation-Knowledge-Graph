@@ -11,6 +11,7 @@ export const getResearchers = /* GraphQL */ `
         email
         department
         faculty
+        color
       }
     }
   }
@@ -75,5 +76,10 @@ export const getSharedPublications = /* GraphQL */ `
       authors
       link
     }
+  }
+`;
+export const getAllFaculties = /* GraphQL */ `
+  query GetAllFaculties {
+    getAllFaculties
   }
 `;

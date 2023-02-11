@@ -6,14 +6,14 @@ import {
   ZoomControl,
   FullScreenControl,
 } from "@react-sigma/core";
-import { Container, Card, Grid, CardContent, Typography } from "@mui/material";
+import { Container, Card, Grid, CardContent, Typography, Box, FormGroup, FormControlLabel, Checkbox, Button } from "@mui/material";
 import "./ResearcherGraph.css";
 import GraphDefinition from "./helpers/GraphDefinition";
 import {GraphEvents} from "./helpers/GraphEvents";
 import Graph from "graphology";
 import {random } from 'graphology-layout';
 import forceAtlas2 from 'graphology-layout-forceatlas2';
-
+import CircularProgress from '@mui/material/CircularProgress';
 import Amplify from "@aws-amplify/core";
 import { Auth } from "@aws-amplify/auth";
 import awsmobile from "../../aws-exports";
@@ -22,6 +22,7 @@ import { API } from "aws-amplify";
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import 'katex/dist/katex.min.css'
 import Latex from 'react-latex-next'
+import FacultyFiltersDialog from "../FacultyFiltersDialog";
 
 import {
   getResearcher,
@@ -36,11 +37,12 @@ const ResearcherGraph = (props) => {
   const [selectedNode, setSelectedNode] = useState(null);
   const [selectedEdge, setSelectedEdge] = useState(null);
 
-  const [selectedResearcher, setSelectedResearcher] = useState({})
+  const [selectedResearcher, setSelectedResearcher] = useState(null);
 
-  const [edgeResearcherOne, setEdgeResearcherOne] = useState({})
-  const [edgeResearcherTwo, setEdgeResearcherTwo] = useState({})
-  const [sharedPublications, setSharedPublications] = useState([])
+  const [edgeResearcherOne, setEdgeResearcherOne] = useState(null);
+  const [edgeResearcherTwo, setEdgeResearcherTwo] = useState(null);
+  const [sharedPublications, setSharedPublications] = useState([]);
+  const [openFacultyFiltersDialog, setOpenFacultyFiltersDialog] = useState(false);
   //can use setSelectNode to set the node selected during search
 
   useEffect(() => {
@@ -63,12 +65,18 @@ const ResearcherGraph = (props) => {
     if(selectedNode) {
       console.log("here")
       getResearcherFunction(selectedResearcher);
+    } else{
+      setSelectedResearcher(null);
     }
   }, [selectedNode])
 
   useEffect(() => {
     if(selectedEdge) {
       getEdgeInformation();
+    }else{
+      setEdgeResearcherOne(null);
+      setEdgeResearcherTwo(null);
+      setSharedPublications([]);
     }
   }, [selectedEdge])
 
@@ -116,53 +124,122 @@ const ResearcherGraph = (props) => {
 
   /*	title, journal, yearPublished, authors, link are the fields of a publication you can show */
   const publications = sharedPublications.map((publicationData) =>
-    <div key={publicationData.link}>
-      <a href={publicationData.link} target="_blank" rel="noopener noreferrer">   <Latex>{publicationData.title}</Latex> <OpenInNewIcon fontSize="small" /></a>
+    <div key={publicationData.toString()} className="paper-link">
+      <div>
+        <a href={publicationData.link} target="_blank" rel="noopener noreferrer">   
+          <Latex>{publicationData.title}</Latex> 
+          <OpenInNewIcon fontSize="inherit" />
+        </a>
+      </div>
     </div>
   );
+
+  const handleCheckFaculty = (e, faculty) => {
+    if (e.target.checked) {
+      props.setSelectedFaculties((prev) => [...prev, faculty]);
+    } else {
+      props.setSelectedFaculties(
+        props.selectedFaculties.filter(
+          (selectedFaculty) => selectedFaculty !== faculty
+        )
+      );
+    }
+  };
+
+  const renderFacultyOptions = () => {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <FormGroup>
+          {props.facultyOptions &&
+            props.facultyOptions
+              .slice(0, 5)
+              .map((faculty, index) => (
+                <FormControlLabel
+                  key={index}
+                  control={<Checkbox />}
+                  checked={props.selectedFaculties.includes(faculty)}
+                  label={<Typography variant="body2">{faculty}</Typography>}
+                  onChange={(e) => handleCheckFaculty(e, faculty)}
+                />
+              ))}
+        </FormGroup>
+        <Button
+          onClick={() => setOpenFacultyFiltersDialog(true)}
+          sx={{ color: "#0055B7", justifyContent: "flex-start" }}
+        >
+          Show All
+        </Button>
+      </Box>
+    );
+  };
+
+  const handleClose = () => {
+    setOpenFacultyFiltersDialog(false);
+  };
 
   return (
     <div className="Researcher-Graph">
       <Grid container spacing={0} alignItems="stretch" direction="row">
-        <Grid item xs={2}>
+        <Grid item xs={4}>
           {/** Shows information on selected node and edge*/}
           <Card>
             <CardContent>
               {selectedNode && !selectedEdge && (
+                selectedResearcher ? (
                 <>
-                  <Typography gutterBottom variant="h5" component="div">
-                    {selectedResearcher.firstName + " " + selectedResearcher.lastName}
+                  <Typography gutterBottom variant="h5" color="#002145" margin="0px" component="div">
+                    <b>{selectedResearcher.firstName + " " + selectedResearcher.lastName}</b>
                   </Typography>
-                  <Typography variant="body1" color="text.secondary">
+                  <Typography variant="subtitle1" color="#002145">
+                    <b>{selectedResearcher.rank}</b>
+                  </Typography>
+                  <Typography variant="body2" color="#404040">
                     {selectedResearcher.faculty}
                   </Typography>
-                  <Typography variant="body1" color="text.secondary">
-                    {"Department: " + selectedResearcher.department}
+                  <br/>
+                  <Typography variant="body2" color="#404040">
+                  <b>Department: </b>
+                    {selectedResearcher.department}
                   </Typography>
-                  <Typography variant="body1" color="text.secondary">
-                    {"Email: " + selectedResearcher.email}
+                  <Typography variant="body2" color="#404040">
+                  <b>Email: </b>
+                    {selectedResearcher.email}
                   </Typography>
-                  <Typography variant="body1" color="text.secondary">
-                    {"Rank: " + selectedResearcher.rank}
+                  <Typography variant="body2" color="#404040">
+                    <b>{"Scopus Id: "}</b>
+                    {selectedResearcher.id}
                   </Typography>
-                  <Typography variant="body1" color="text.secondary">
-                    {"Scopus Id: " + selectedResearcher.id}
-                  </Typography>
+                  <br/>
                   <Typography variant="caption" color="text.secondary">
                     Click on connected node to see information about how they
                     are connected
                   </Typography>
                 </>
+                ) : (<center><CircularProgress color="inherit" /></center>)
               )}
               {selectedEdge && (
+                edgeResearcherOne && edgeResearcherTwo && sharedPublications.length!=0 ? (
                 <>
-                  <Typography gutterBottom variant="h5" component="div">
-                    {"Shared Publications of "+ edgeResearcherOne.firstName + " " + edgeResearcherOne.lastName + "and " + edgeResearcherTwo.firstName + " " + edgeResearcherTwo.lastName}
+                <Typography gutterBottom variant="h5" color="#002145" margin="0px" component="div">
+                    <b>{edgeResearcherOne.firstName + " " + edgeResearcherOne.lastName + " &" }</b> 
                   </Typography>
-                  <Typography variant="body1" color="text.secondary">
+                  <Typography gutterBottom variant="h5" color="#002145" margin="0px" component="div">
+                    <b> {edgeResearcherTwo.firstName + " " + edgeResearcherTwo.lastName}</b>
+                  </Typography>
+                  <br/>
+                  <Typography variant="subtitle1" margin="0px" color="#002145">
+                    <b>Shared Publications</b>
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
                     {publications}
                   </Typography>
                 </>
+                ) : (<center><CircularProgress color="inherit" /></center>)
               )}
               {!selectedNode && (
                 <Typography variant="body2" color="text.secondary">
@@ -171,8 +248,18 @@ const ResearcherGraph = (props) => {
               )}
             </CardContent>
           </Card>
+          <Typography variant="h6">Filters for the Graph:</Typography>
+          {renderFacultyOptions()}
+          <FacultyFiltersDialog
+            open={openFacultyFiltersDialog}
+            handleClose={handleClose}
+            allFaculties={props.facultyOptions}
+            selectedFaculties={props.selectedFaculties}
+            handleCheckFaculty={handleCheckFaculty}
+          />
+          <Button onClick={() => {console.log("changing graph!"); props.changeGraph();}}>Click to change the graph</Button>
         </Grid>
-        <Grid item xs={10}>
+        <Grid item xs={8}>
           <Container maxWidth={false}>
             {" "}
             {/* sets the width of the graph -scales to the size of the page */}

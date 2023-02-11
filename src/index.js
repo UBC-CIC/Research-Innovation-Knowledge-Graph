@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
 import TheApp from './components/TheApp';
+import Amplify from "@aws-amplify/core";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
