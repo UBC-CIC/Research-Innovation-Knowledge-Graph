@@ -28,8 +28,6 @@ export default function TheApp(props) {
   const [allFaculties, setAllFaculties] = useState([]);
   const [chosenFaculties, setChosenFaculties] = useState([]);
 
-  console.log(researcherNodes);
-
   //Everytime the filters for faculty changes get the graphs nodes and edges
   useEffect(() => {
     changeGraph();
