@@ -41,7 +41,9 @@ export default function TheApp(props) {
     variables: {"facultiesToFilterOn": ["Faculty of Arts", "Faculty of Applied Science"]},
   });
     setGraphEdges(edgesResult.data.getEdges)
+    setAutoCompleteOptions(researchers.data.getResearchers);
   }
+
 
   return (
     <Grid container spacing={2}>
@@ -58,9 +60,6 @@ export default function TheApp(props) {
       </Grid>
       <Grid item xs={12}>
         <ResearcherGraph researcherNodes={researcherNodes}  graphEdges={graphEdges}/>
-      </Grid>
-      <Grid id="search-bar-sub" item xs={12} display="flex" justifyContent="center" flexWrap="nowrap">
-        <SearchBar text="Search Graph" size="50vh"></SearchBar>
       </Grid>
     </Grid>
   )

@@ -6,7 +6,7 @@ const EDGE_FADE_COLOR = "#eee";
 var sigma;
 
 const GraphEvents = ({firstClickedNode,setFirstClickedNode, selectedEdge, setSelectedEdge}) => {
-  const sigma = useSigma();
+  sigma = useSigma();
   const graph = sigma.getGraph();
   const registerEvents = useRegisterEvents();
   const [hoveredNode, setHoveredNode] = useState(null);

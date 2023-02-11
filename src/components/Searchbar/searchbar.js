@@ -6,7 +6,6 @@ import Box from "@material-ui/core/Box";
 import Stack from "@mui/material/Stack";
 import {GraphEvents, GetSigma} from "../ResearcherGraph/helpers/GraphEvents";
 import "./searchbar.css"
-import "../ResearcherGraph/helpers/GraphEvents.js"
 
 export default function Search_Bar(props) {
   const [searchQuery, setSearchQuery] = useState("");
@@ -34,7 +33,9 @@ export default function Search_Bar(props) {
   }
   
   const SearchForNode = () => {
-    console.log(searchQuery)
+    let nodes = sigma.graph._nodes;
+    let suggestions = new Map([...nodes].filter(([k, v]) => v.attributes.label.includes(searchQuery))); // Generates a new map of nodes where each node label contains the searchQuesry
+    console.log(suggestions)
     let node = sigma.getNodeDisplayData(searchQuery);
     console.log(node)
     if (node) {
