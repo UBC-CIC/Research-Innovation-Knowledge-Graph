@@ -5,7 +5,6 @@ import TheApp from './components/TheApp';
 import Amplify from "@aws-amplify/core";
 import awsExports from "./aws-exports";
 
-
 Amplify.configure(awsExports);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
