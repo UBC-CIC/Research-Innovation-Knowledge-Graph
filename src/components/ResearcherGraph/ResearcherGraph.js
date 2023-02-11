@@ -257,7 +257,7 @@ const ResearcherGraph = (props) => {
             selectedFaculties={props.selectedFaculties}
             handleCheckFaculty={handleCheckFaculty}
           />
-          <Button onClick={() => {console.log("changing graph!"); props.changeGraph();}}>Click to change the graph</Button>
+          <Button variant="contained" onClick={() => {console.log("changing graph!"); props.changeGraph();}}>Click to change the graph</Button>
         </Grid>
         <Grid item xs={8}>
           <Container maxWidth={false}>
