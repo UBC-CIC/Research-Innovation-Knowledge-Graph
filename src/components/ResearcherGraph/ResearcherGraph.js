@@ -9,7 +9,7 @@ import {
 import { Container, Card, Grid, CardContent, Typography } from "@mui/material";
 import "./ResearcherGraph.css";
 import GraphDefinition from "./helpers/GraphDefinition";
-import GraphEvents from "./helpers/GraphEvents";
+import {GraphEvents} from "./helpers/GraphEvents";
 import Graph from "graphology";
 import {random } from 'graphology-layout';
 import forceAtlas2 from 'graphology-layout-forceatlas2';
@@ -120,8 +120,6 @@ const ResearcherGraph = (props) => {
       <a href={publicationData.link} target="_blank" rel="noopener noreferrer">   <Latex>{publicationData.title}</Latex> <OpenInNewIcon fontSize="small" /></a>
     </div>
   );
-
-const ResearcherGraph = () => {
 
   return (
     <div className="Researcher-Graph">
