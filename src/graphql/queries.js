@@ -11,6 +11,7 @@ export const getResearchers = /* GraphQL */ `
         email
         department
         faculty
+        color
       }
     }
   }
