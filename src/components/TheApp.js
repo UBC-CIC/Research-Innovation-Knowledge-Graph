@@ -28,10 +28,12 @@ export default function TheApp(props) {
   const [allFaculties, setAllFaculties] = useState([]);
   const [chosenFaculties, setChosenFaculties] = useState([]);
 
+  console.log(researcherNodes);
+
   //Everytime the filters for faculty changes get the graphs nodes and edges
   useEffect(() => {
-    getGraph();
-  }, [chosenFaculties])
+    changeGraph();
+  }, [])
 
   //On page load get the faculties
   useEffect(() => {
@@ -59,6 +61,12 @@ export default function TheApp(props) {
     setAllFaculties(getFaculties.data.getAllFaculties)
   }
 
+  const changeGraph = () => {
+    setGraphEdges([])
+    setResearcherNodes([])
+    getGraph();
+  }
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
@@ -73,7 +81,10 @@ export default function TheApp(props) {
         <DropdownMenu text="Bookmarks"></DropdownMenu>
       </Grid>
       <Grid item xs={12}>
-        <ResearcherGraph researcherNodes={researcherNodes}  graphEdges={graphEdges}/>
+        <ResearcherGraph researcherNodes={researcherNodes}  
+        graphEdges={graphEdges} facultyOptions={allFaculties}
+        selectedFaculties={chosenFaculties} setSelectedFaculties={setChosenFaculties}
+        changeGraph={changeGraph}/>
       </Grid>
       <Grid id="search-bar-sub" item xs={12} display="flex" justifyContent="center" flexWrap="nowrap">
         <SearchBar text="Search Graph" size="50vh"></SearchBar>
