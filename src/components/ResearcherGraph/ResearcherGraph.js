@@ -268,7 +268,8 @@ const ResearcherGraph = (props) => {
                 graph={graph}
                 style={{ height: "75vh" }}
                 settings={{
-                  labelRenderedSizeThreshold: 10, //the size at which the the nodes label show up
+                  zIndex: true,
+                  labelRenderedSizeThreshold: 7, //the size at which the the nodes label show up
                 }}
               >
                 <GraphEvents

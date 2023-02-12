@@ -3,6 +3,7 @@ import { useSigma, useRegisterEvents } from "@react-sigma/core";
 
 const NODE_FADE_COLOR = "#bbb";
 const EDGE_FADE_COLOR = "#eee";
+const EDGE_HIGHLIGHT_COLOR="#585858"
 var sigma;
 var setNode;
 
@@ -26,11 +27,11 @@ const GraphEvents = ({firstClickedNode,setFirstClickedNode, selectedEdge, setSel
     if(firstClickedNode){
       setEdgeSelectionMode(true);
       setSecondClickedNode(null);
-      if(hoveredNode!=firstClickedNode){ 
+      //if(hoveredNode!=firstClickedNode){ 
         //if the firstClickNode arrives through parameter we need to highlight.
         //if we clicked it though the canvas it is already highlighted 
-        highlightAdjacentNodes(firstClickedNode);
-      }
+        highlightAdjacentNodes(firstClickedNode,"click");
+      //}
     }else{
       setEdgeSelectionMode(null);
       setSecondClickedNode(null);
@@ -42,14 +43,17 @@ const GraphEvents = ({firstClickedNode,setFirstClickedNode, selectedEdge, setSel
 
   setNode = (node) => {setFirstClickedNode(node);}
 
-  const highlightAdjacentNodes= (coreNode) => {
+  const highlightAdjacentNodes= (coreNode,mode) => {
     const hoveredColor = sigma.getNodeDisplayData(coreNode).color; //gets the color of the current hovered node
-
+    let hidden=false;
+    if (mode=="click"){ 
+      hidden=true
+    }
     //non-neighboring edges change to NODE_FADE_COLOR
     sigma.setSetting("nodeReducer", (node, data) => {
       return node === coreNode || graph.areNeighbors(node, coreNode)
-        ? { ...data }
-        : { ...data, label: "", color: NODE_FADE_COLOR };
+        ? { ...data,zIndex:1 }
+        : { ...data, label: "", color: NODE_FADE_COLOR,zIndex: 0,hidden };
     });
 
     //sets the neighboring edges to hovered color and thickens them and sets non-neighboring edges to EDGE_FADE_COLOR
@@ -57,8 +61,8 @@ const GraphEvents = ({firstClickedNode,setFirstClickedNode, selectedEdge, setSel
       "edgeReducer",
       (edge, data) =>
         graph.hasExtremity(edge, coreNode)
-          ? { ...data, size: data.size * 2 } // to add hovering color: color: hoveredColor
-          : { ...data, color: EDGE_FADE_COLOR } // add "hidden: true" to hide edges
+          ? { ...data, size: data.size * 2, color: EDGE_HIGHLIGHT_COLOR} // to add hovering color: color: hoveredColor
+          : { ...data, color: EDGE_FADE_COLOR,hidden: true } 
     );
   
   }
@@ -73,7 +77,7 @@ const GraphEvents = ({firstClickedNode,setFirstClickedNode, selectedEdge, setSel
   useEffect(() => {
     if(!edgeSelectionMode){ // if edgeSelectionMode is on ignore highlighting
       if (hoveredNode) { //node is hovered
-        highlightAdjacentNodes(hoveredNode);
+        highlightAdjacentNodes(hoveredNode,"hover");
       
       } else {//node is un-hovered (value is null)
         removeHighlight();
@@ -112,15 +116,15 @@ const GraphEvents = ({firstClickedNode,setFirstClickedNode, selectedEdge, setSel
         sigma.setSetting("nodeReducer", (node, data) => {
           return node === firstClickedNode || node === secondClickedNode
             ? { ...data }
-            : { ...data, label: "", color: NODE_FADE_COLOR };
+            : { ...data, label: "", color: NODE_FADE_COLOR,hidden: true };
         });
       //sets all edges to EDGE_FADE_COLOR except selected edge
       sigma.setSetting(
         "edgeReducer",
         (edge, data) =>
           highlightEdge===edge
-            ? { ...data, size: data.size * 2 } //// to add hovering color: color: hoveredColor
-            : { ...data, color: EDGE_FADE_COLOR } // add "hidden: true" to hide edges
+            ? { ...data, size: data.size * 2,  color: EDGE_HIGHLIGHT_COLOR} //// to add hovering color: color: hoveredColor
+            : { ...data, color: EDGE_FADE_COLOR,hidden:true } 
       );
     setClickedNode(null)
    }
