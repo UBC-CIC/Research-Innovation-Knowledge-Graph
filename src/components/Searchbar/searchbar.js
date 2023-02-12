@@ -4,42 +4,76 @@ import SearchIcon from "@mui/icons-material/Search";
 import TextField from "@mui/material/TextField";
 import Box from "@material-ui/core/Box";
 import Stack from "@mui/material/Stack";
+import Autocomplete from '@mui/material/Autocomplete';
+import {GraphEvents, GetSigma, setNode} from "../ResearcherGraph/helpers/GraphEvents";
 import "./searchbar.css"
 
-const filterData = (query, data) => {
-  if (!query) {
-    return data;
-  } else {
-    return data.filter((d) => d.toLowerCase().includes(query));
-  }
-};
-
-const data = [
-  "Hello"
-];
-
-export default function Search_Bar(props) {
+export default function SearchBar(props) {
   const [searchQuery, setSearchQuery] = useState("");
-  const dataFiltered = filterData(searchQuery, data);
+  const sigma = GetSigma();
+
+  const ZoomOnNode = (node) => {
+    setNode(node.id);
+    let camera = sigma.getCamera();
+    let zoom_ratio = 0.15;
+    let zoom_factor = camera.ratio/zoom_ratio
+    camera.x = node.x;
+    camera.y = node.y;
+    if (zoom_factor <= 1.5) {
+      camera.ratio = 1.5
+      zoom_factor = camera.ratio/zoom_ratio
+    }
+    camera.animatedZoom({duration: 200 * zoom_factor, factor: zoom_factor});
+  }
+  const ZoomToNode = (node) => {
+    console.log("Moving Camera")
+    let camera = sigma.getCamera();
+    camera.animate(node, {duration: 500});
+  }
+  
+  const SearchForNode = () => {
+    let node = sigma.getNodeDisplayData(searchQuery.id);
+    if (node) {
+      ZoomOnNode(node);
+    }
+    else {
+      console.log("Could not find node")
+    }
+  }
 
   return (
     <Box className="search-bar-box" component={Stack} direction="row">
-      <TextField
+      <Autocomplete
+        autoComplete
+        clearOnBlur={true}
+        value={null}
+        options={props.autoCompleteOptions}
         id="search-bar"
         className="text"
-        onInput={(e) => {
-          setSearchQuery(e.target.value);
+        
+        renderInput={(params) => <TextField id="search-bar-text" {...params} label={props.text} />}
+        
+        onChange={(e,newInputValue) => {
+          setSearchQuery(newInputValue);
         }}
-        label={props.text}
-        variant="outlined"
-        placeholder="Search..."
+        onKeyPress={(event) => { 
+          if (event.key == "Enter") {SearchForNode()}
+        }}
         size="small"
         sx={{ width: props.size }}
       />
-      <IconButton type="submit" aria-label="search">
+      <IconButton type="submit" aria-label="search" onClick={SearchForNode}>
         <SearchIcon style={{ fill: "grey" }} />
       </IconButton>
   </Box>
   );
 }
 
+// Non Funtional
+const clearSearchBar = () => {
+  let searchBar = document.getElementById("search-bar");
+  searchBar.value = null
+  let searchBarText = document.getElementById("search-bar-text");
+}
+
+export {SearchBar};
