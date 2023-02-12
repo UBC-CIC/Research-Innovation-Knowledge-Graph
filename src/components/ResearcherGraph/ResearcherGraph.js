@@ -9,7 +9,7 @@ import {
 import { Container, Card, Grid, CardContent, Typography, Box, FormGroup, FormControlLabel, Checkbox, Button } from "@mui/material";
 import "./ResearcherGraph.css";
 import GraphDefinition from "./helpers/GraphDefinition";
-import GraphEvents from "./helpers/GraphEvents";
+import {GraphEvents} from "./helpers/GraphEvents";
 import Graph from "graphology";
 import {random } from 'graphology-layout';
 import forceAtlas2 from 'graphology-layout-forceatlas2';
@@ -187,7 +187,7 @@ const ResearcherGraph = (props) => {
       <Grid container spacing={0} alignItems="stretch" direction="row">
         <Grid item xs={4}>
           {/** Shows information on selected node and edge*/}
-          <Card>
+          <Card id="researcher-info-card">
             <CardContent>
               {selectedNode && !selectedEdge && (
                 selectedResearcher ? (

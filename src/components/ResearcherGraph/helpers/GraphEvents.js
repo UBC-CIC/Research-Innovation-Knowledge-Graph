@@ -3,16 +3,18 @@ import { useSigma, useRegisterEvents } from "@react-sigma/core";
 
 const NODE_FADE_COLOR = "#bbb";
 const EDGE_FADE_COLOR = "#eee";
+var sigma;
+var setNode;
 
 const GraphEvents = ({firstClickedNode,setFirstClickedNode, selectedEdge, setSelectedEdge}) => {
-  const sigma = useSigma();
+  sigma = useSigma();
   const graph = sigma.getGraph();
   const registerEvents = useRegisterEvents();
   const [hoveredNode, setHoveredNode] = useState(null);
   const [secondClickedNode, setSecondClickedNode] = useState(null);
   const [edgeSelectionMode, setEdgeSelectionMode] = useState(false);
   const [clickedNode, setClickedNode] = useState(null);
- 
+
   // use effect used to register the events
   useEffect(() => {
     console.log("event mounts")
@@ -38,6 +40,7 @@ const GraphEvents = ({firstClickedNode,setFirstClickedNode, selectedEdge, setSel
     setClickedNode(null)
   }, [firstClickedNode]);
 
+  setNode = (node) => {setFirstClickedNode(node);}
 
   const highlightAdjacentNodes= (coreNode) => {
     const hoveredColor = sigma.getNodeDisplayData(coreNode).color; //gets the color of the current hovered node
@@ -126,7 +129,8 @@ const GraphEvents = ({firstClickedNode,setFirstClickedNode, selectedEdge, setSel
   const getGraphEvents = () => {
     const events = {
       doubleClickNode: ({ node }) => {
-        window.open(`http://localhost:3000/${node}`); //when a node is double clicked it opens a /new window based on the node they clicked
+        let camera = sigma.getCamera();
+        camera.animate(sigma.getNodeDisplayData(node), {duration: 500})
       },
       enterNode: ({ node }) => {
           setHoveredNode(node);
@@ -147,4 +151,8 @@ const GraphEvents = ({firstClickedNode,setFirstClickedNode, selectedEdge, setSel
   return null;
 };
 
-export default GraphEvents;
+const GetSigma = () => {
+  return sigma;
+}
+
+export {GraphEvents, GetSigma, setNode};

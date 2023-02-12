@@ -3,7 +3,7 @@ import '../index.css';
 import Grid from '@mui/material/Grid';
 import ResearcherGraph from './ResearcherGraph/ResearcherGraph';
 import Navbar from "./Navbar/navbar";
-import SearchBar from "./Searchbar/searchbar"
+import {SearchBar} from "./Searchbar/searchbar"
 import DropdownMenu from "./Dropdown/dropdown";
 
 import Amplify from "@aws-amplify/core";
@@ -50,6 +50,13 @@ export default function TheApp(props) {
       variables: {"facultiesToFilterOn": chosenFaculties},
     });
     setGraphEdges(edgesResult.data.getEdges)
+    setAutoCompleteOptions(Object.values(researchers.data.getResearchers).map(formatOptions));
+  }
+
+  const formatOptions = (entry) => {
+    let retval = entry.attributes
+    retval.id = entry.key
+    return retval
   }
 
   const getTheFaculties = async () => {
@@ -71,21 +78,13 @@ export default function TheApp(props) {
         <Navbar></Navbar>
       </Grid>
       <Grid id="search-bar-main" item xs={12} justifyContent="center" display="flex">
-        <SearchBar text="Search Researcher Graphs" size="100vh" autoCompleteOptions={autoCompleteOptions}></SearchBar>
-      </Grid>
-      <Grid id="dropdown-menu" item xs={12} display="flex" justifyContent="right" flexWrap="nowrap">
-        <DropdownMenu text="View Style"></DropdownMenu>
-        <DropdownMenu text="View Options"></DropdownMenu>
-        <DropdownMenu text="Bookmarks"></DropdownMenu>
+        <SearchBar text="Search Graph" size="100vh" autoCompleteOptions={autoCompleteOptions}></SearchBar>
       </Grid>
       <Grid item xs={12}>
         <ResearcherGraph researcherNodes={researcherNodes}  
         graphEdges={graphEdges} facultyOptions={allFaculties}
         selectedFaculties={chosenFaculties} setSelectedFaculties={setChosenFaculties}
         changeGraph={changeGraph}/>
-      </Grid>
-      <Grid id="search-bar-sub" item xs={12} display="flex" justifyContent="center" flexWrap="nowrap">
-        <SearchBar text="Search Graph" size="50vh"></SearchBar>
       </Grid>
     </Grid>
   )
