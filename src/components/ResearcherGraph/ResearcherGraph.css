@@ -1,6 +1,5 @@
 .Researcher-Graph {
-  margin-top: -50px;
-  margin-bottom: -65px;
+  margin-left: 24px;
 }
 
 .Researcher-Graph {
@@ -8,6 +7,10 @@
 }
 
 #researcher-graph-card {
+  box-shadow: none;
+}
+
+#researcher-info-card {
   box-shadow: none;
 }
 

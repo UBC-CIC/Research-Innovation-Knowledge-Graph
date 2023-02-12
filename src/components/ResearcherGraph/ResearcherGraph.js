@@ -187,7 +187,7 @@ const ResearcherGraph = (props) => {
       <Grid container spacing={0} alignItems="stretch" direction="row">
         <Grid item xs={4}>
           {/** Shows information on selected node and edge*/}
-          <Card>
+          <Card id="researcher-info-card">
             <CardContent>
               {selectedNode && !selectedEdge && (
                 selectedResearcher ? (

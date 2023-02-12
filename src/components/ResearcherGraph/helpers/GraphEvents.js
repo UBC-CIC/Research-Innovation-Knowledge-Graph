@@ -4,6 +4,7 @@ import { useSigma, useRegisterEvents } from "@react-sigma/core";
 const NODE_FADE_COLOR = "#bbb";
 const EDGE_FADE_COLOR = "#eee";
 var sigma;
+var setNode;
 
 const GraphEvents = ({firstClickedNode,setFirstClickedNode, selectedEdge, setSelectedEdge}) => {
   sigma = useSigma();
@@ -13,7 +14,7 @@ const GraphEvents = ({firstClickedNode,setFirstClickedNode, selectedEdge, setSel
   const [secondClickedNode, setSecondClickedNode] = useState(null);
   const [edgeSelectionMode, setEdgeSelectionMode] = useState(false);
   const [clickedNode, setClickedNode] = useState(null);
- 
+
   // use effect used to register the events
   useEffect(() => {
     console.log("event mounts")
@@ -39,6 +40,7 @@ const GraphEvents = ({firstClickedNode,setFirstClickedNode, selectedEdge, setSel
     setClickedNode(null)
   }, [firstClickedNode]);
 
+  setNode = (node) => {setFirstClickedNode(node);}
 
   const highlightAdjacentNodes= (coreNode) => {
     const hoveredColor = sigma.getNodeDisplayData(coreNode).color; //gets the color of the current hovered node
@@ -126,19 +128,9 @@ const GraphEvents = ({firstClickedNode,setFirstClickedNode, selectedEdge, setSel
 
   const getGraphEvents = () => {
     const events = {
-      /*
       doubleClickNode: ({ node }) => {
-        window.open(`http://localhost:3000/${node}`); //when a node is double clicked it opens a /new window based on the node they clicked
-      },
-      */
-      clickNode: ({ node }) => {
         let camera = sigma.getCamera();
-        let zoom_ratio = 0.5;
-        let zoom_factor = camera.ratio/zoom_ratio
         camera.animate(sigma.getNodeDisplayData(node), {duration: 500})
-        //camera.animatedZoom({duration: 50, factor: zoom_factor});
-        //camera.x = sigma.getNodeDisplayData(node).x;
-        //camera.y = sigma.getNodeDisplayData(node).y;
       },
       enterNode: ({ node }) => {
           setHoveredNode(node);
@@ -163,4 +155,4 @@ const GetSigma = () => {
   return sigma;
 }
 
-export {GraphEvents, GetSigma};
+export {GraphEvents, GetSigma, setNode};
