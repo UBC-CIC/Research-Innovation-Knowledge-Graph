@@ -155,8 +155,8 @@ const ResearcherGraph = (props) => {
 
   return (
     <div className="Researcher-Graph">
-      <Grid container spacing={0} alignItems="stretch" direction="row">
-        <Grid item xs={4}>
+      <Grid container spacing={0} direction="row">
+        <Grid item xs={4} className="side-panel">
           {/** Shows information on selected node and edge*/}
           <Card id="researcher-info-card">
             <CardContent>
