@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import TextField from "@mui/material/TextField";
 import Box from "@material-ui/core/Box";
 import Stack from "@mui/material/Stack";
+import { Button } from "@mui/material";
 import Autocomplete from '@mui/material/Autocomplete';
 import {GraphEvents, GetSigma, setNode} from "../ResearcherGraph/helpers/GraphEvents";
 import "./searchbar.css"
@@ -32,14 +33,20 @@ export default function SearchBar(props) {
   }
   
   const SearchForNode = () => {
-    let node = sigma.getNodeDisplayData(searchQuery.id);
-    if (node) {
-      ZoomOnNode(node);
-    }
-    else {
-      console.log("Could not find node")
+    if(searchQuery) {
+      let node = sigma.getNodeDisplayData(searchQuery.id);
+      if (node) {
+        ZoomOnNode(node);
+      }
+      else {
+        console.log("Could not find node")
+      }
     }
   }
+
+  useEffect(() => {
+    SearchForNode();
+  }, [searchQuery])
 
   return (
     <Box className="search-bar-box" component={Stack} direction="row">
@@ -62,9 +69,10 @@ export default function SearchBar(props) {
         size="small"
         sx={{ width: props.size }}
       />
-      <IconButton type="submit" aria-label="search" onClick={SearchForNode}>
+      {/* <IconButton type="submit" aria-label="search" onClick={SearchForNode}>
         <SearchIcon style={{ fill: "grey" }} />
-      </IconButton>
+      </IconButton> */}
+      <Button onClick={() => props.setOpenFacultyFiltersDialog(true)} variant="contained" >Filter the Graph</Button>
   </Box>
   );
 }

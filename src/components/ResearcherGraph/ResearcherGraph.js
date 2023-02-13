@@ -42,7 +42,6 @@ const ResearcherGraph = (props) => {
   const [edgeResearcherOne, setEdgeResearcherOne] = useState(null);
   const [edgeResearcherTwo, setEdgeResearcherTwo] = useState(null);
   const [sharedPublications, setSharedPublications] = useState([]);
-  const [openFacultyFiltersDialog, setOpenFacultyFiltersDialog] = useState(false);
   //can use setSelectNode to set the node selected during search
 
   useEffect(() => {
@@ -145,41 +144,13 @@ const ResearcherGraph = (props) => {
       );
     }
   };
-
-  const renderFacultyOptions = () => {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <FormGroup>
-          {props.facultyOptions &&
-            props.facultyOptions
-              .slice(0, 5)
-              .map((faculty, index) => (
-                <FormControlLabel
-                  key={index}
-                  control={<Checkbox />}
-                  checked={props.selectedFaculties.includes(faculty)}
-                  label={<Typography variant="body2">{faculty}</Typography>}
-                  onChange={(e) => handleCheckFaculty(e, faculty)}
-                />
-              ))}
-        </FormGroup>
-        <Button
-          onClick={() => setOpenFacultyFiltersDialog(true)}
-          sx={{ color: "#0055B7", justifyContent: "flex-start" }}
-        >
-          Show All
-        </Button>
-      </Box>
-    );
-  };
+  
+  const applyFilters = () => {
+    props.changeGraph();
+  }
 
   const handleClose = () => {
-    setOpenFacultyFiltersDialog(false);
+    props.setOpenFacultyFiltersDialog(false);
   };
 
   return (
@@ -248,16 +219,14 @@ const ResearcherGraph = (props) => {
               )}
             </CardContent>
           </Card>
-          <Typography variant="h6">Filters for the Graph:</Typography>
-          {renderFacultyOptions()}
           <FacultyFiltersDialog
-            open={openFacultyFiltersDialog}
+            open={props.openFacultyFiltersDialog}
             handleClose={handleClose}
             allFaculties={props.facultyOptions}
             selectedFaculties={props.selectedFaculties}
             handleCheckFaculty={handleCheckFaculty}
+            applyFilters={applyFilters}
           />
-          <Button variant="contained" onClick={() => {console.log("changing graph!"); props.changeGraph();}}>Click to change the graph</Button>
         </Grid>
         <Grid item xs={8}>
           <Container maxWidth={false}>

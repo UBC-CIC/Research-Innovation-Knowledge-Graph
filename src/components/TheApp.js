@@ -27,6 +27,7 @@ export default function TheApp(props) {
   const [autoCompleteOptions, setAutoCompleteOptions] = useState([]);
   const [allFaculties, setAllFaculties] = useState([]);
   const [chosenFaculties, setChosenFaculties] = useState([]);
+  const [openFacultyFiltersDialog, setOpenFacultyFiltersDialog] = useState(false);
 
   //Everytime the filters for faculty changes get the graphs nodes and edges
   useEffect(() => {
@@ -77,14 +78,14 @@ export default function TheApp(props) {
       <Grid item xs={12}>
         <Navbar></Navbar>
       </Grid>
-      <Grid id="search-bar-main" item xs={12} justifyContent="center" display="flex">
-        <SearchBar text="Search Graph" size="100vh" autoCompleteOptions={autoCompleteOptions}></SearchBar>
+      <Grid id="search-bar-main" item xs={12}>
+        <SearchBar text="Search Graph" size="100vh" setOpenFacultyFiltersDialog={setOpenFacultyFiltersDialog} autoCompleteOptions={autoCompleteOptions}></SearchBar>
       </Grid>
       <Grid item xs={12}>
         <ResearcherGraph researcherNodes={researcherNodes}  
         graphEdges={graphEdges} facultyOptions={allFaculties}
         selectedFaculties={chosenFaculties} setSelectedFaculties={setChosenFaculties}
-        changeGraph={changeGraph}/>
+        changeGraph={changeGraph} openFacultyFiltersDialog={openFacultyFiltersDialog} setOpenFacultyFiltersDialog={setOpenFacultyFiltersDialog}/>
       </Grid>
     </Grid>
   )
