@@ -17,3 +17,9 @@
 .paper-link {
 margin-top: 1.0em;
 }
+
+.side-panel {
+  border-right-style: solid;
+  border-right-width: 1px;
+  border-color: #002145;
+}
