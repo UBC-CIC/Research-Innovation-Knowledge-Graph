@@ -6,7 +6,7 @@ import {
   ZoomControl,
   FullScreenControl,
 } from "@react-sigma/core";
-import { Container, Card, Grid, CardContent, Typography, Box, FormGroup, FormControlLabel, Checkbox, Button } from "@mui/material";
+import { Container, Card, Grid, CardContent,ToggleButton,ToggleButtonGroup, Typography, Box, FormGroup, FormControlLabel, Checkbox, Button } from "@mui/material";
 import "./ResearcherGraph.css";
 import GraphDefinition from "./helpers/GraphDefinition";
 import {GraphEvents} from "./helpers/GraphEvents";
@@ -18,6 +18,7 @@ import Amplify from "@aws-amplify/core";
 import { Auth } from "@aws-amplify/auth";
 import awsmobile from "../../aws-exports";
 import { API } from "aws-amplify";
+import { GetSigma } from "./helpers/GraphEvents";
 
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import 'katex/dist/katex.min.css'
@@ -42,7 +43,8 @@ const ResearcherGraph = (props) => {
   const [edgeResearcherOne, setEdgeResearcherOne] = useState(null);
   const [edgeResearcherTwo, setEdgeResearcherTwo] = useState(null);
   const [sharedPublications, setSharedPublications] = useState([]);
-  //can use setSelectNode to set the node selected during search
+
+  const [selectedDepth, setSelectedDepth] = useState(null);
 
   useEffect(() => {
     const jsonGraph = {
@@ -64,6 +66,7 @@ const ResearcherGraph = (props) => {
     if(selectedNode) {
       console.log("here")
       getResearcherFunction(selectedResearcher);
+      setSelectedDepth(1);
     } else{
       setSelectedResearcher(null);
     }
@@ -78,6 +81,44 @@ const ResearcherGraph = (props) => {
       setSharedPublications([]);
     }
   }, [selectedEdge])
+
+  useEffect(() => {
+    if(selectedDepth) {
+      const nodeIDs = getNeighborhood(selectedNode,selectedDepth);
+      const sigma = GetSigma();
+      sigma.setSetting("nodeReducer", (node, data) => {
+        return nodeIDs.has(node)
+          ? { ...data,zIndex:1 }
+          : { ...data, label: "",zIndex: 0, hidden:true };
+      });
+      sigma.setSetting("edgeReducer", (edge, data) => {
+        return nodeIDs.has(graph.target(edge)) && nodeIDs.has(graph.source(edge))
+        ? { ...data, size: data.size * 2, color: "#585858"}
+        : { ...data, hidden: true } 
+      });
+    }
+  }, [selectedDepth])
+
+  const getNeighborhood = (centerNode, depth) => {
+    let neighborhoodNodes = new Set([centerNode])
+    graph.forEachNeighbor(centerNode,(firstNeighbor,attributes)=>{
+      neighborhoodNodes.add(firstNeighbor)
+      if(depth==1){
+        return neighborhoodNodes;
+      }
+      graph.forEachNeighbor(firstNeighbor,(secondNeighbor,attributes)=>{
+        neighborhoodNodes.add(secondNeighbor)
+        if(depth==2){
+          return neighborhoodNodes;
+        }
+        graph.forEachNeighbor(secondNeighbor,(thirdNeighbor,attributes)=>{
+          neighborhoodNodes.add(thirdNeighbor)
+            return neighborhoodNodes;
+        })
+      })
+    })
+    return neighborhoodNodes;
+  }
 
   const getResearcherFunction = async () => {
     const result = await API.graphql({
@@ -153,6 +194,12 @@ const ResearcherGraph = (props) => {
     props.setOpenFacultyFiltersDialog(false);
   };
 
+  const handleSelectedDepth = (event, newValue) =>{
+    if (newValue !== null) {
+      setSelectedDepth(newValue);
+    }
+  }
+
   return (
     <div className="Researcher-Graph">
       <Grid container spacing={0} direction="row">
@@ -185,6 +232,27 @@ const ResearcherGraph = (props) => {
                     <b>{"Scopus Id: "}</b>
                     {selectedResearcher.id}
                   </Typography>
+                  <br/>
+                  <Typography variant="subtitle2" color="#002145">
+                    <b>Change Levels of Connection</b>
+                  </Typography>
+                  <ToggleButtonGroup 
+                      value={selectedDepth}
+                      exclusive
+                      onChange={handleSelectedDepth}
+                      size="small"
+                  >
+                    <ToggleButton value={1}>
+                      1<sup>st</sup>
+                    </ToggleButton>
+                    <ToggleButton value={2}>
+                      2<sup>nd</sup>
+                    </ToggleButton>
+                    <ToggleButton value={3}>
+                      3<sup>rd</sup>
+                    </ToggleButton>
+                  </ToggleButtonGroup>
+                  <br/>
                   <br/>
                   <Typography variant="caption" color="text.secondary">
                     Click on connected node to see information about how they
