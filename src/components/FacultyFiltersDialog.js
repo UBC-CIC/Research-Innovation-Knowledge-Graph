@@ -57,15 +57,13 @@ const FacultyFiltersDialog = ({
         >
           <FormGroup sx={{ display: "flex", flexDirection: "row" }}>
             {allFaculties.map((faculty, index) => (
-              <div>
               <FormControlLabel
                 key={index}
                 control={<Checkbox />}
-                label={<Typography variant="body2"><IconButton><FiberManualRecordIcon style={{ color: colorObject[faculty] }} /></IconButton>{faculty}</Typography>}
+                label={<Typography variant="body2"><IconButton disabled><FiberManualRecordIcon style={{ color: colorObject[faculty] }} /></IconButton>{faculty}</Typography>}
                 checked={selectedFaculties.includes(faculty)}
                 onChange={(e) => handleCheckFaculty(e, faculty)}
               />
-              </div>
             ))}
           </FormGroup>
         </Box>
