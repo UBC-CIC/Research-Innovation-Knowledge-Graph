@@ -187,11 +187,13 @@ const ResearcherGraph = (props) => {
   };
   
   const applyFilters = () => {
-    props.changeGraph();
+    props.setCurrentlyAppliedFaculties(props.selectedFaculties);
+    props.setOpenFacultyFiltersDialog(false);
   }
 
   const handleClose = () => {
     props.setOpenFacultyFiltersDialog(false);
+    props.setSelectedFaculties(props.currentlyAppliedFaculties);
   };
 
   const handleSelectedDepth = (event, newValue) =>{

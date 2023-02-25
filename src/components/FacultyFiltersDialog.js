@@ -76,6 +76,7 @@ const FacultyFiltersDialog = ({
       open={open}
       aria-labelledby="faculty-filter-options"
       PaperProps={{ sx: { minWidth: "70%", maxHeight: "70%" } }}
+      onClose={() => {handleClose();}}
     >
       <IconButton sx={{ alignSelf: "flex-end" }} onClick={handleClose}>
         <CloseIcon />
@@ -86,7 +87,7 @@ const FacultyFiltersDialog = ({
         <Button
           variant="outlined"
           sx={{ color: "#0055b7" }}
-          onClick={() => {handleClose(); applyFilters();}}
+          onClick={() => {applyFilters();}}
         >
           Apply Filters
         </Button>

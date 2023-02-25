@@ -26,6 +26,7 @@ export default function TheApp(props) {
   const [graphEdges, setGraphEdges] = useState([]);
   const [autoCompleteOptions, setAutoCompleteOptions] = useState([]);
   const [allFaculties, setAllFaculties] = useState([]);
+  const [currentlyAppliedFaculties, setCurrentlyAppliedFaculties] = useState([]);
   const [chosenFaculties, setChosenFaculties] = useState([]);
   const [openFacultyFiltersDialog, setOpenFacultyFiltersDialog] = useState(false);
 
@@ -42,13 +43,13 @@ export default function TheApp(props) {
   const getGraph = async () => {
     const researchers = await API.graphql({
       query: getResearchers,
-      variables: {"facultiesToFilterOn": chosenFaculties},
+      variables: {"facultiesToFilterOn": currentlyAppliedFaculties},
     });
     setResearcherNodes(researchers.data.getResearchers);
 
     const edgesResult = await API.graphql({
       query: getEdges,
-      variables: {"facultiesToFilterOn": chosenFaculties},
+      variables: {"facultiesToFilterOn": currentlyAppliedFaculties},
     });
     setGraphEdges(edgesResult.data.getEdges)
     setAutoCompleteOptions(Object.values(researchers.data.getResearchers).map(formatOptions));
@@ -67,6 +68,10 @@ export default function TheApp(props) {
     setAllFaculties(getFaculties.data.getAllFaculties)
   }
 
+  useEffect(() => {
+    changeGraph();
+  }, [currentlyAppliedFaculties])
+
   const changeGraph = () => {
     setGraphEdges([])
     setResearcherNodes([])
@@ -84,8 +89,10 @@ export default function TheApp(props) {
       <Grid item xs={12}>
         <ResearcherGraph researcherNodes={researcherNodes}  
         graphEdges={graphEdges} facultyOptions={allFaculties}
+        currentlyAppliedFaculties={currentlyAppliedFaculties} setCurrentlyAppliedFaculties={setCurrentlyAppliedFaculties}
         selectedFaculties={chosenFaculties} setSelectedFaculties={setChosenFaculties}
-        changeGraph={changeGraph} openFacultyFiltersDialog={openFacultyFiltersDialog} setOpenFacultyFiltersDialog={setOpenFacultyFiltersDialog}/>
+        changeGraph={changeGraph} openFacultyFiltersDialog={openFacultyFiltersDialog} setOpenFacultyFiltersDialog={setOpenFacultyFiltersDialog}
+        />
       </Grid>
     </Grid>
   )
