@@ -84,7 +84,7 @@ const ResearcherGraph = (props) => {
 
   useEffect(() => {
     if(selectedDepth) {
-      const nodeIDs = getNeighborhood(selectedNode,selectedDepth);
+      const [nodeIDs,edgeIDs] = getNeighborhood(selectedNode,selectedDepth);
       const sigma = GetSigma();
       sigma.setSetting("nodeReducer", (node, data) => {
         return nodeIDs.has(node)
@@ -92,7 +92,7 @@ const ResearcherGraph = (props) => {
           : { ...data, label: "",zIndex: 0, hidden:true };
       });
       sigma.setSetting("edgeReducer", (edge, data) => {
-        return nodeIDs.has(graph.target(edge)) && nodeIDs.has(graph.source(edge))
+        return edgeIDs.has(edge)
         ? { ...data, size: data.size * 2, color: "#585858"}
         : { ...data, hidden: true } 
       });
@@ -101,23 +101,27 @@ const ResearcherGraph = (props) => {
 
   const getNeighborhood = (centerNode, depth) => {
     let neighborhoodNodes = new Set([centerNode])
+    let neighborhoodEdges = new Set([])
     graph.forEachNeighbor(centerNode,(firstNeighbor,attributes)=>{
       neighborhoodNodes.add(firstNeighbor)
+      neighborhoodEdges.add(graph.edge(centerNode,firstNeighbor))
       if(depth==1){
-        return neighborhoodNodes;
+        return [neighborhoodNodes,neighborhoodEdges];
       }
       graph.forEachNeighbor(firstNeighbor,(secondNeighbor,attributes)=>{
         neighborhoodNodes.add(secondNeighbor)
+        neighborhoodEdges.add(graph.edge(firstNeighbor,secondNeighbor))
         if(depth==2){
-          return neighborhoodNodes;
+          return [neighborhoodNodes,neighborhoodEdges];
         }
         graph.forEachNeighbor(secondNeighbor,(thirdNeighbor,attributes)=>{
           neighborhoodNodes.add(thirdNeighbor)
-            return neighborhoodNodes;
+          neighborhoodEdges.add(graph.edge(secondNeighbor,thirdNeighbor))
+            return [neighborhoodNodes,neighborhoodEdges];
         })
       })
     })
-    return neighborhoodNodes;
+    return [neighborhoodNodes,neighborhoodEdges];
   }
 
   const getResearcherFunction = async () => {
