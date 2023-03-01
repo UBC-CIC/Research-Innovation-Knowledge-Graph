@@ -84,7 +84,7 @@ const ResearcherGraph = (props) => {
 
   useEffect(() => {
     if(selectedDepth) {
-      const [nodeIDs,edgeIDs] = getNeighborhood(selectedNode,selectedDepth);
+      const [nodeIDs,firstEdgeIDs,secondEdgeIDs,thirdEdgeIDs] = getNeighborhood(selectedNode,selectedDepth);
       const sigma = GetSigma();
       sigma.setSetting("nodeReducer", (node, data) => {
         return nodeIDs.has(node)
@@ -92,36 +92,50 @@ const ResearcherGraph = (props) => {
           : { ...data, label: "",zIndex: 0, hidden:true };
       });
       sigma.setSetting("edgeReducer", (edge, data) => {
-        return edgeIDs.has(edge)
-        ? { ...data, size: data.size * 2, color: "#585858"}
-        : { ...data, hidden: true } 
+        if(firstEdgeIDs.has(edge)){
+          return { ...data, size: data.size, color: "#585858"}
+        }
+        else if(secondEdgeIDs.has(edge)){
+          return { ...data, size: data.size, color: "#8A8A8A"}
+        }
+        else if(thirdEdgeIDs.has(edge)){
+          return { ...data, size: data.size, color: "#BCBCBC"}
+        }
+        else{
+          return { ...data, hidden: true };
+        }
+        // return edgeIDs.has(edge)
+        // ? { ...data, size: data.size, color: "#585858"}
+        // : { ...data, hidden: true } 
       });
     }
   }, [selectedDepth])
 
   const getNeighborhood = (centerNode, depth) => {
     let neighborhoodNodes = new Set([centerNode])
-    let neighborhoodEdges = new Set([])
+    let firstEdges = new Set([])
+    let secondEdges = new Set([])
+    let thirdEdges = new Set([])
     graph.forEachNeighbor(centerNode,(firstNeighbor,attributes)=>{
       neighborhoodNodes.add(firstNeighbor)
-      neighborhoodEdges.add(graph.edge(centerNode,firstNeighbor))
+      firstEdges.add(graph.edge(centerNode,firstNeighbor))
       if(depth==1){
-        return [neighborhoodNodes,neighborhoodEdges];
+        return [neighborhoodNodes,firstEdges,secondEdges,thirdEdges];
       }
       graph.forEachNeighbor(firstNeighbor,(secondNeighbor,attributes)=>{
         neighborhoodNodes.add(secondNeighbor)
-        neighborhoodEdges.add(graph.edge(firstNeighbor,secondNeighbor))
+        secondEdges.add(graph.edge(firstNeighbor,secondNeighbor))
         if(depth==2){
-          return [neighborhoodNodes,neighborhoodEdges];
+          return [neighborhoodNodes,firstEdges,secondEdges,thirdEdges];
         }
         graph.forEachNeighbor(secondNeighbor,(thirdNeighbor,attributes)=>{
           neighborhoodNodes.add(thirdNeighbor)
-          neighborhoodEdges.add(graph.edge(secondNeighbor,thirdNeighbor))
-            return [neighborhoodNodes,neighborhoodEdges];
+          thirdEdges.add(graph.edge(secondNeighbor,thirdNeighbor))
+            return [neighborhoodNodes,firstEdges,secondEdges,thirdEdges];
         })
       })
     })
-    return [neighborhoodNodes,neighborhoodEdges];
+    return [neighborhoodNodes,firstEdges,secondEdges,thirdEdges];
   }
 
   const getResearcherFunction = async () => {

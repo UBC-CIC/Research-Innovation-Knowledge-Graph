@@ -44,7 +44,6 @@ const GraphEvents = ({firstClickedNode,setFirstClickedNode, selectedEdge, setSel
   setNode = (node) => {setFirstClickedNode(node);}
 
   const highlightAdjacentNodes= (coreNode,mode) => {
-    const hoveredColor = sigma.getNodeDisplayData(coreNode).color; //gets the color of the current hovered node
     let hidden=false;
     if (mode=="click"){ 
       hidden=true
@@ -61,7 +60,7 @@ const GraphEvents = ({firstClickedNode,setFirstClickedNode, selectedEdge, setSel
       "edgeReducer",
       (edge, data) =>
         graph.hasExtremity(edge, coreNode)
-          ? { ...data, size: data.size * 2, color: EDGE_HIGHLIGHT_COLOR} // to add hovering color: color: hoveredColor
+          ? { ...data, size: data.size, color: EDGE_HIGHLIGHT_COLOR} // to add hovering color: color: hoveredColor
           : { ...data, color: EDGE_FADE_COLOR,hidden: true } 
     );
   
@@ -110,7 +109,6 @@ const GraphEvents = ({firstClickedNode,setFirstClickedNode, selectedEdge, setSel
    if(secondClickedNode){
     const highlightEdge = graph.edge(firstClickedNode, secondClickedNode)
     setSelectedEdge(highlightEdge);
-    const hoveredColor = sigma.getNodeDisplayData(firstClickedNode).color; //gets the color of the current hovered node
 
         //set all the nodes to NODE_FADE_COLOR except clicked Nodes
         sigma.setSetting("nodeReducer", (node, data) => {
@@ -123,7 +121,7 @@ const GraphEvents = ({firstClickedNode,setFirstClickedNode, selectedEdge, setSel
         "edgeReducer",
         (edge, data) =>
           highlightEdge===edge
-            ? { ...data, size: data.size * 2,  color: EDGE_HIGHLIGHT_COLOR} //// to add hovering color: color: hoveredColor
+            ? { ...data, size: data.size,  color: EDGE_HIGHLIGHT_COLOR} //// to add hovering color: color: hoveredColor
             : { ...data, color: EDGE_FADE_COLOR,hidden:true } 
       );
     setClickedNode(null)
