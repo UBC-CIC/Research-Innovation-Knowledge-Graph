@@ -34,21 +34,24 @@ export const getEdges = /* GraphQL */ `
 export const getResearcherData = /* GraphQL */ `
   query GetResearcherData {
     getResearcherData {
-      links {
+      edges {
         key
         source
         target
-        numPublications
+        undirected
+        size
+        color
       }
       nodes {
-        id
-        firstName
-        lastName
-        rank
-        email
-        department
-        faculty
-        keywords
+        key
+        attributes {
+          label
+          rank
+          email
+          department
+          faculty
+          color
+        }
       }
     }
   }
@@ -81,5 +84,30 @@ export const getSharedPublications = /* GraphQL */ `
 export const getAllFaculties = /* GraphQL */ `
   query GetAllFaculties {
     getAllFaculties
+  }
+`;
+export const getMutualResearchers = /* GraphQL */ `
+  query GetMutualResearchers($id: String, $depth: Int) {
+    getMutualResearchers(id: $id, depth: $depth) {
+      edges {
+        key
+        source
+        target
+        undirected
+        size
+        color
+      }
+      nodes {
+        key
+        attributes {
+          label
+          rank
+          email
+          department
+          faculty
+          color
+        }
+      }
+    }
   }
 `;
