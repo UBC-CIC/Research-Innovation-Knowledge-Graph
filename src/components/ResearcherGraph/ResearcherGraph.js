@@ -54,6 +54,15 @@ const ResearcherGraph = (props) => {
     }
 
     const graph = Graph.from(jsonGraph)
+    graph.forEachNode((key,attributes)=>{
+      const numOfNeighbors = graph.neighbors(key).length
+      const size = 3-20/(numOfNeighbors+9)
+
+      if(size>0){
+        graph.setNodeAttribute(key,'size',size)
+      }
+    })
+
     random.assign(graph); //assigns each node a random x,y value between [0,1]
     forceAtlas2.assign(graph, {iterations: 100}); //assigns nodes x,y values with force directed
     setGraph(graph)
