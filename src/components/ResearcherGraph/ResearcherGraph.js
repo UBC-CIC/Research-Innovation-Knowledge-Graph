@@ -6,7 +6,7 @@ import {
   ZoomControl,
   FullScreenControl,
 } from "@react-sigma/core";
-import { Container, Card, Grid, CardContent,ToggleButton,ToggleButtonGroup, Typography, Box, FormGroup, FormControlLabel, Checkbox, Button } from "@mui/material";
+import { Container, Card, Grid, IconButton, Accordion,AccordionSummary,AccordionDetails, CardContent,ToggleButton,ToggleButtonGroup, Typography} from "@mui/material";
 import "./ResearcherGraph.css";
 import GraphDefinition from "./helpers/GraphDefinition";
 import {GraphEvents} from "./helpers/GraphEvents";
@@ -19,11 +19,12 @@ import { Auth } from "@aws-amplify/auth";
 import awsmobile from "../../aws-exports";
 import { API } from "aws-amplify";
 import { GetSigma } from "./helpers/GraphEvents";
-
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import 'katex/dist/katex.min.css'
 import Latex from 'react-latex-next'
-import FacultyFiltersDialog from "../FacultyFiltersDialog";
+import {FacultyFiltersDialog,COLOR_OBJECT} from "../FacultyFiltersDialog";
 
 import {
   getResearcher,
@@ -45,6 +46,8 @@ const ResearcherGraph = (props) => {
   const [sharedPublications, setSharedPublications] = useState([]);
 
   const [selectedDepth, setSelectedDepth] = useState(null);
+
+  const [detailsExpanded, setDetailsExpanded]= useState(true)
 
   useEffect(() => {
     const jsonGraph = {
@@ -113,9 +116,6 @@ const ResearcherGraph = (props) => {
         else{
           return { ...data, hidden: true };
         }
-        // return edgeIDs.has(edge)
-        // ? { ...data, size: data.size, color: "#585858"}
-        // : { ...data, hidden: true } 
       });
     }
   }, [selectedDepth])
@@ -233,101 +233,123 @@ const ResearcherGraph = (props) => {
     <div className="Researcher-Graph">
       <Grid container spacing={0} direction="row">
         <Grid item xs={4} className="side-panel">
+          <Accordion disableGutters id="accordion">
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography variant="body1">Graph Legend</Typography>
+            </AccordionSummary>
+            <AccordionDetails id="accordion-details">
+              <Card id="graph-legend">
+                {props.selectedFaculties.length==0 ?
+                  props.facultyOptions.map((faculty,index) => (
+                    <Typography key={index} variant="body2"><IconButton disabled><FiberManualRecordIcon style={{ color: COLOR_OBJECT[faculty] }} /></IconButton>{faculty}</Typography>
+                )): 
+                  props.currentlyAppliedFaculties.map((faculty,index) => (
+                    <Typography key={index} variant="body2"><IconButton disabled><FiberManualRecordIcon style={{ color: COLOR_OBJECT[faculty] }} /></IconButton>{faculty}</Typography>
+                ))}
+              </Card>
+            </AccordionDetails>
+          </Accordion>
           {/** Shows information on selected node and edge*/}
-          <Card id="researcher-info-card">
-            <CardContent>
-              {selectedNode && !selectedEdge && (
-                selectedResearcher ? (
-                <>
-                  <Typography gutterBottom variant="h5" color="#002145" margin="0px" component="div">
-                    <b>{selectedResearcher.firstName + " " + selectedResearcher.lastName}</b>
-                  </Typography>
-                  <Typography variant="subtitle1" color="#002145">
-                    <b>{selectedResearcher.rank}</b>
-                  </Typography>
-                  <Typography variant="body2" color="#404040">
-                    {selectedResearcher.faculty}
-                  </Typography>
-                  <br/>
-                  <Typography variant="body2" color="#404040">
-                  <b>Department: </b>
-                    {selectedResearcher.department}
-                  </Typography>
-                  <Typography variant="body2" color="#404040">
-                  <b>Email: </b>
-                    {selectedResearcher.email}
-                  </Typography>
-                  <Typography variant="body2" color="#404040">
-                    <b>{"Scopus Id: "}</b>
-                    {selectedResearcher.id}
-                  </Typography>
-                  <br/>
-                  <Typography variant="subtitle2" color="#002145">
-                    <b>Change Levels of Connection</b>
-                  </Typography>
-                  <ToggleButtonGroup 
-                      value={selectedDepth}
-                      exclusive
-                      onChange={handleSelectedDepth}
-                      size="small"
-                  >
-                    <ToggleButton value={1}>
-                      1<sup>st</sup>
-                    </ToggleButton>
-                    <ToggleButton value={2}>
-                      2<sup>nd</sup>
-                    </ToggleButton>
-                    <ToggleButton value={3}>
-                      3<sup>rd</sup>
-                    </ToggleButton>
-                  </ToggleButtonGroup>
-                  <br/>
-                  <br/>
-                  <Typography variant="caption" color="text.secondary">
-                    Click on connected node to see information about how they
-                    are connected
-                  </Typography>
-                </>
-                ) : (<center><CircularProgress color="inherit" /></center>)
-              )}
-              {selectedEdge && (
-                edgeResearcherOne && edgeResearcherTwo && sharedPublications.length!=0 ? (
-                <>
-                <Typography gutterBottom variant="h5" color="#002145" margin="0px" component="div">
-                    <b>{edgeResearcherOne.firstName + " " + edgeResearcherOne.lastName + " &" }</b> 
-                  </Typography>
-                  <Typography gutterBottom variant="h5" color="#002145" margin="0px" component="div">
-                    <b> {edgeResearcherTwo.firstName + " " + edgeResearcherTwo.lastName}</b>
-                  </Typography>
-                  <br/>
-                  <Typography variant="subtitle1" margin="0px" color="#002145">
-                    <b>Shared Publications</b>
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {publications}
-                  </Typography>
-                </>
-                ) : (<center><CircularProgress color="inherit" /></center>)
-              )}
-              {!selectedNode && (
-                <Typography variant="body2" color="text.secondary">
-                  Click on a node to view more information about the researcher
-                </Typography>
-              )}
-            </CardContent>
-          </Card>
-          <FacultyFiltersDialog
-            open={props.openFacultyFiltersDialog}
-            handleClose={handleClose}
-            allFaculties={props.facultyOptions}
-            selectedFaculties={props.selectedFaculties}
-            handleCheckFaculty={handleCheckFaculty}
-            applyFilters={applyFilters}
-          />
+          <Accordion disableGutters expanded={detailsExpanded} onChange={()=>setDetailsExpanded(!detailsExpanded)} id="accordion">
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography variant="body1">Graph Details</Typography>
+            </AccordionSummary>
+            <AccordionDetails id="accordion-details">
+              <Card id="researcher-info-card">
+                <CardContent>
+                  {selectedNode && !selectedEdge && (
+                    selectedResearcher ? (
+                    <>
+                      <Typography gutterBottom variant="h5" color="#002145" margin="0px" component="div">
+                        <b>{selectedResearcher.firstName + " " + selectedResearcher.lastName}</b>
+                      </Typography>
+                      <Typography variant="subtitle1" color="#002145">
+                        <b>{selectedResearcher.rank}</b>
+                      </Typography>
+                      <Typography variant="body2" color="#404040">
+                        {selectedResearcher.faculty}
+                      </Typography>
+                      <br/>
+                      <Typography variant="body2" color="#404040">
+                      <b>Department: </b>
+                        {selectedResearcher.department}
+                      </Typography>
+                      <Typography variant="body2" color="#404040">
+                      <b>Email: </b>
+                        {selectedResearcher.email}
+                      </Typography>
+                      <Typography variant="body2" color="#404040">
+                        <b>{"Scopus Id: "}</b>
+                        {selectedResearcher.id}
+                      </Typography>
+                      <br/>
+                      <Typography variant="subtitle2" color="#002145">
+                        <b>Change Levels of Connection</b>
+                      </Typography>
+                      <ToggleButtonGroup 
+                          value={selectedDepth}
+                          exclusive
+                          onChange={handleSelectedDepth}
+                          size="small"
+                      >
+                        <ToggleButton value={1}>
+                          1<sup>st</sup>
+                        </ToggleButton>
+                        <ToggleButton value={2}>
+                          2<sup>nd</sup>
+                        </ToggleButton>
+                        <ToggleButton value={3}>
+                          3<sup>rd</sup>
+                        </ToggleButton>
+                      </ToggleButtonGroup>
+                      <br/>
+                      <br/>
+                      <Typography variant="caption" color="text.secondary">
+                        Click on connected node to see information about how they
+                        are connected
+                      </Typography>
+                    </>
+                    ) : (<center><CircularProgress color="inherit" /></center>)
+                  )}
+                  {selectedEdge && (
+                    edgeResearcherOne && edgeResearcherTwo && sharedPublications.length!=0 ? (
+                    <>
+                    <Typography gutterBottom variant="h5" color="#002145" margin="0px" component="div">
+                        <b>{edgeResearcherOne.firstName + " " + edgeResearcherOne.lastName + " &" }</b> 
+                      </Typography>
+                      <Typography gutterBottom variant="h5" color="#002145" margin="0px" component="div">
+                        <b> {edgeResearcherTwo.firstName + " " + edgeResearcherTwo.lastName}</b>
+                      </Typography>
+                      <br/>
+                      <Typography variant="subtitle1" margin="0px" color="#002145">
+                        <b>Shared Publications ({sharedPublications.length})</b> 
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {publications}
+                      </Typography>
+                    </>
+                    ) : (<center><CircularProgress color="inherit" /></center>)
+                  )}
+                  {!selectedNode && (
+                    <Typography variant="body2" color="text.secondary">
+                      Click on a node to view more information about the researcher
+                    </Typography>
+                  )}
+                </CardContent>
+              </Card>
+              <FacultyFiltersDialog
+                open={props.openFacultyFiltersDialog}
+                handleClose={handleClose}
+                allFaculties={props.facultyOptions}
+                selectedFaculties={props.selectedFaculties}
+                handleCheckFaculty={handleCheckFaculty}
+                applyFilters={applyFilters}
+              />
+            </AccordionDetails>
+          </Accordion>
         </Grid>
-        <Grid item xs={8}>
+          <Grid item xs={8}>
           <Container maxWidth={false}>
-            {" "}
             {/* sets the width of the graph -scales to the size of the page */}
             <Card id="researcher-graph-card">
               <SigmaContainer
