@@ -1,8 +1,4 @@
 .Researcher-Graph {
-  margin-left: 24px;
-}
-
-.Researcher-Graph {
   box-shadow: none;
 }
 
@@ -14,6 +10,22 @@
   box-shadow: none;
 }
 
+#accordion {
+  box-shadow: none;
+  border: 1px solid #bdbdbd;
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+}
+
+#accordion-details {
+  padding:0em;
+}
+
+#graph-legend {
+  box-shadow: none;
+  padding-left:0.25em
+}
+
 .paper-link {
 margin-top: 1.0em;
 }
@@ -22,4 +34,6 @@ margin-top: 1.0em;
   border-right-style: solid;
   border-right-width: 1px;
   border-color: #002145;
+  height: 75vh;
+  overflow-y:auto;
 }
