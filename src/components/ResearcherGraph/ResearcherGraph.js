@@ -50,6 +50,9 @@ const ResearcherGraph = (props) => {
   const [detailsExpanded, setDetailsExpanded]= useState(true)
 
   useEffect(() => {
+    console.log(props.researcherNodes);
+    console.log(props.graphEdges)
+
     const jsonGraph = {
       attributes:{},
       nodes: props.researcherNodes,
@@ -214,6 +217,7 @@ const ResearcherGraph = (props) => {
   };
   
   const applyFilters = () => {
+    props.setCurrentlyAppliedKeywordFilter(props.keywordFilter)
     props.setCurrentlyAppliedFaculties(props.selectedFaculties);
     props.setOpenFacultyFiltersDialog(false);
   }
@@ -221,6 +225,7 @@ const ResearcherGraph = (props) => {
   const handleClose = () => {
     props.setOpenFacultyFiltersDialog(false);
     props.setSelectedFaculties(props.currentlyAppliedFaculties);
+    props.setKeywordFilter(props.currentlyAppliedKeywordFilter);
   };
 
   const handleSelectedDepth = (event, newValue) =>{
@@ -344,6 +349,8 @@ const ResearcherGraph = (props) => {
                 selectedFaculties={props.selectedFaculties}
                 handleCheckFaculty={handleCheckFaculty}
                 applyFilters={applyFilters}
+                keywordFilter={props.keywordFilter}
+                setKeywordFilter={props.setKeywordFilter}
               />
             </AccordionDetails>
           </Accordion>

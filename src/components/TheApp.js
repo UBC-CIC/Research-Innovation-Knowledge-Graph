@@ -27,6 +27,8 @@ export default function TheApp(props) {
   const [autoCompleteOptions, setAutoCompleteOptions] = useState([]);
   const [allFaculties, setAllFaculties] = useState([]);
   const [currentlyAppliedFaculties, setCurrentlyAppliedFaculties] = useState([]);
+  const [currentlyAppliedKeywordFilter, setCurrentlyAppliedKeywordFilter] = useState("");
+  const [keywordFilter, setKeywordFilter] = useState("");
   const [chosenFaculties, setChosenFaculties] = useState([]);
   const [openFacultyFiltersDialog, setOpenFacultyFiltersDialog] = useState(false);
 
@@ -43,14 +45,16 @@ export default function TheApp(props) {
   const getGraph = async () => {
     const researchers = await API.graphql({
       query: getResearchers,
-      variables: {"facultiesToFilterOn": currentlyAppliedFaculties},
+      variables: {"facultiesToFilterOn": currentlyAppliedFaculties, "keyword": keywordFilter.toLowerCase()},
     });
     setResearcherNodes(researchers.data.getResearchers);
 
     const edgesResult = await API.graphql({
       query: getEdges,
-      variables: {"facultiesToFilterOn": currentlyAppliedFaculties},
+      variables: {"facultiesToFilterOn": currentlyAppliedFaculties, "keyword": keywordFilter.toLowerCase()},
     });
+
+    console.log(edgesResult)
     setGraphEdges(edgesResult.data.getEdges)
     setAutoCompleteOptions(Object.values(researchers.data.getResearchers).map(formatOptions));
   }
@@ -70,7 +74,7 @@ export default function TheApp(props) {
 
   useEffect(() => {
     changeGraph();
-  }, [currentlyAppliedFaculties])
+  }, [currentlyAppliedFaculties, currentlyAppliedKeywordFilter])
 
   const changeGraph = () => {
     setGraphEdges([])
@@ -92,6 +96,8 @@ export default function TheApp(props) {
         currentlyAppliedFaculties={currentlyAppliedFaculties} setCurrentlyAppliedFaculties={setCurrentlyAppliedFaculties}
         selectedFaculties={chosenFaculties} setSelectedFaculties={setChosenFaculties}
         changeGraph={changeGraph} openFacultyFiltersDialog={openFacultyFiltersDialog} setOpenFacultyFiltersDialog={setOpenFacultyFiltersDialog}
+        keywordFilter={keywordFilter} setKeywordFilter={setKeywordFilter}
+        currentlyAppliedKeywordFilter={currentlyAppliedKeywordFilter} setCurrentlyAppliedKeywordFilter={setCurrentlyAppliedKeywordFilter}
         />
       </Grid>
     </Grid>

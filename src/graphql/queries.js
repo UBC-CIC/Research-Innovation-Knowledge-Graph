@@ -2,8 +2,11 @@
 // this is an auto generated file. This will be overwritten
 
 export const getResearchers = /* GraphQL */ `
-  query GetResearchers($facultiesToFilterOn: [String]) {
-    getResearchers(facultiesToFilterOn: $facultiesToFilterOn) {
+  query GetResearchers($facultiesToFilterOn: [String], $keyword: String) {
+    getResearchers(
+      facultiesToFilterOn: $facultiesToFilterOn
+      keyword: $keyword
+    ) {
       key
       attributes {
         label
@@ -17,8 +20,8 @@ export const getResearchers = /* GraphQL */ `
   }
 `;
 export const getEdges = /* GraphQL */ `
-  query GetEdges($facultiesToFilterOn: [String]) {
-    getEdges(facultiesToFilterOn: $facultiesToFilterOn) {
+  query GetEdges($facultiesToFilterOn: [String], $keyword: String) {
+    getEdges(facultiesToFilterOn: $facultiesToFilterOn, keyword: $keyword) {
       key
       source
       target
@@ -34,24 +37,21 @@ export const getEdges = /* GraphQL */ `
 export const getResearcherData = /* GraphQL */ `
   query GetResearcherData {
     getResearcherData {
-      edges {
+      links {
         key
         source
         target
-        undirected
-        size
-        color
+        numPublications
       }
       nodes {
-        key
-        attributes {
-          label
-          rank
-          email
-          department
-          faculty
-          color
-        }
+        id
+        firstName
+        lastName
+        rank
+        email
+        department
+        faculty
+        keywords
       }
     }
   }
@@ -84,30 +84,5 @@ export const getSharedPublications = /* GraphQL */ `
 export const getAllFaculties = /* GraphQL */ `
   query GetAllFaculties {
     getAllFaculties
-  }
-`;
-export const getMutualResearchers = /* GraphQL */ `
-  query GetMutualResearchers($id: String, $depth: Int) {
-    getMutualResearchers(id: $id, depth: $depth) {
-      edges {
-        key
-        source
-        target
-        undirected
-        size
-        color
-      }
-      nodes {
-        key
-        attributes {
-          label
-          rank
-          email
-          department
-          faculty
-          color
-        }
-      }
-    }
   }
 `;

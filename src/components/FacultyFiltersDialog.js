@@ -11,6 +11,8 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import TextField from '@mui/material/TextField';
+import Grid from "@mui/material/Grid";
 
 const COLOR_OBJECT = {
   "Faculty of Applied Science": "#A84D52", // Redwood
@@ -43,6 +45,8 @@ const FacultyFiltersDialog = ({
   selectedFaculties,
   handleCheckFaculty,
   applyFilters,
+  keywordFilter,
+  setKeywordFilter,
 }) => {
   const renderAllFaculties = () => {
     return (
@@ -84,6 +88,10 @@ const FacultyFiltersDialog = ({
       <Box sx={{ p: "2em", display: "flex", flexDirection: "column" }}>
         <Typography>All Faculties</Typography>
         {renderAllFaculties()}
+        <Box sx={{mb: "2em"}}>
+          <Typography>{"Filter the graph by keyword:"}</Typography>
+          <TextField value={keywordFilter} onChange={(event) => {setKeywordFilter(event.target.value)}}/>
+        </Box>
         <Button
           variant="outlined"
           sx={{ color: "#0055b7" }}
