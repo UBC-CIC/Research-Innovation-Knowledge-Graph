@@ -18,29 +18,31 @@
     }
   },
   "auth": {
-    "researchinnovationknde1446e2": {
-      "customAuth": false,
+    "researchinnovationkn32bce4bb": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
       "dependsOn": [],
+      "customAuth": false,
       "frontendAuthConfig": {
+        "socialProviders": [],
+        "usernameAttributes": [
+          "EMAIL"
+        ],
+        "signupAttributes": [
+          "EMAIL"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyMinLength": 8,
+          "passwordPolicyCharacters": []
+        },
         "mfaConfiguration": "OFF",
         "mfaTypes": [
           "SMS"
         ],
-        "passwordProtectionSettings": {
-          "passwordPolicyCharacters": [],
-          "passwordPolicyMinLength": 8
-        },
-        "signupAttributes": [
-          "EMAIL"
-        ],
-        "socialProviders": [],
-        "usernameAttributes": [],
         "verificationMechanisms": [
           "EMAIL"
         ]
-      },
-      "providerPlugin": "awscloudformation",
-      "service": "Cognito"
+      }
     }
   }
 }
