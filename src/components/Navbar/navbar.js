@@ -10,12 +10,21 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import SettingsIcon from '@mui/icons-material/Settings';
 import "./navbar.css";
+import { Auth } from 'aws-amplify';
 
 const settings = ['Logout'];
 
 
 export default function Nav_Bar(props) {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+  async function signOut() {
+    try {
+        await Auth.signOut();
+    } catch (error) {
+        console.log('error signing out: ', error);
+    }
+  }
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -64,11 +73,14 @@ export default function Nav_Bar(props) {
                         open={Boolean(anchorElUser)}
                         onClose={handleCloseUserMenu}
                     >
-                        {settings.map((setting) => (
+                      <MenuItem key={'Logout'} onClick={handleCloseUserMenu}>
+                        <Typography onClick={() => {signOut();}} textAlign="center">{'Logout'}</Typography>
+                      </MenuItem>
+                        {/* {settings.map((setting) => (
                         <MenuItem key={setting} onClick={handleCloseUserMenu}>
                             <Typography textAlign="center">{setting}</Typography>
                         </MenuItem>
-                        ))}
+                        ))} */}
                     </Menu>
                 </Box>
             </Toolbar>

@@ -3,11 +3,12 @@ import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
 import TheApp from './components/TheApp';
 import Amplify from "@aws-amplify/core";
+import AuthLayer from './components/AuthLayer';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <TheApp></TheApp>
+    <AuthLayer />
   </React.StrictMode>
 );
 
