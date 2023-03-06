@@ -4,8 +4,10 @@
     "apiName": "researchinnovationkn",
     "serviceName": "AppSync",
     "defaultAuthType": {
-      "mode": "API_KEY",
-      "expirationTime": 7
-    }
+      "mode": "AMAZON_COGNITO_USER_POOLS",
+      "cognitoUserPoolId": "authresearchinnovationkn32bce4bb"
+    },
+    "conflictResolution": {},
+    "additionalAuthTypes": []
   }
 }

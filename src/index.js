@@ -7,9 +7,7 @@ import AuthLayer from './components/AuthLayer';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <AuthLayer />
-  </React.StrictMode>
+  <AuthLayer />
 );
 
 // If you want to start measuring performance in your app, pass a function
