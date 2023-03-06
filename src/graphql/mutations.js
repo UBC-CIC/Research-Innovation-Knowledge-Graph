@@ -3,42 +3,42 @@
 
 export const createTodo = /* GraphQL */ `
   mutation CreateTodo(
+    $condition: ModelTodoConditionInput
     $input: CreateTodoInput!
-    $condition: ModelTodoConditionInput
   ) {
-    createTodo(input: $input, condition: $condition) {
+    createTodo(condition: $condition, input: $input) {
+      createdAt
+      description
       id
       name
-      description
-      createdAt
-      updatedAt
-    }
-  }
-`;
-export const updateTodo = /* GraphQL */ `
-  mutation UpdateTodo(
-    $input: UpdateTodoInput!
-    $condition: ModelTodoConditionInput
-  ) {
-    updateTodo(input: $input, condition: $condition) {
-      id
-      name
-      description
-      createdAt
       updatedAt
     }
   }
 `;
 export const deleteTodo = /* GraphQL */ `
   mutation DeleteTodo(
-    $input: DeleteTodoInput!
     $condition: ModelTodoConditionInput
+    $input: DeleteTodoInput!
   ) {
-    deleteTodo(input: $input, condition: $condition) {
+    deleteTodo(condition: $condition, input: $input) {
+      createdAt
+      description
       id
       name
-      description
+      updatedAt
+    }
+  }
+`;
+export const updateTodo = /* GraphQL */ `
+  mutation UpdateTodo(
+    $condition: ModelTodoConditionInput
+    $input: UpdateTodoInput!
+  ) {
+    updateTodo(condition: $condition, input: $input) {
       createdAt
+      description
+      id
+      name
       updatedAt
     }
   }

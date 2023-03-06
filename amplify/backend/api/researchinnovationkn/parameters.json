@@ -1,5 +1,12 @@
 {
   "AppSyncApiName": "researchinnovationkn",
   "DynamoDBBillingMode": "PAY_PER_REQUEST",
-  "DynamoDBEnableServerSideEncryption": false
+  "DynamoDBEnableServerSideEncryption": false,
+  "AuthCognitoUserPoolId": {
+    "Fn::GetAtt": [
+      "authresearchinnovationkn32bce4bb",
+      "Outputs.UserPoolId"
+    ]
+  },
+  "AuthModeLastUpdated": "2023-03-06T10:37:35.703Z"
 }
