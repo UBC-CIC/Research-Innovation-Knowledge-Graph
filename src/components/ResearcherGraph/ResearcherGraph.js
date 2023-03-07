@@ -48,8 +48,10 @@ const ResearcherGraph = (props) => {
   const [selectedDepth, setSelectedDepth] = useState(null);
 
   const [detailsExpanded, setDetailsExpanded]= useState(true)
+  const [graphLoaded, setGraphLoaded ] = useState(false)
 
   useEffect(() => {
+    if(props.researcherNodes.length && props.graphEdges.length){
     console.log(props.researcherNodes);
     console.log(props.graphEdges)
 
@@ -72,6 +74,10 @@ const ResearcherGraph = (props) => {
     random.assign(graph); //assigns each node a random x,y value between [0,1]
     forceAtlas2.assign(graph, {iterations: 100}); //assigns nodes x,y values with force directed
     setGraph(graph)
+    setGraphLoaded(true);
+  } else{
+    setGraphLoaded(false);
+  }
 
   }, [props.researcherNodes, props.graphEdges])
 
@@ -358,6 +364,7 @@ const ResearcherGraph = (props) => {
           <Grid item xs={8}>
           <Container maxWidth={false}>
             {/* sets the width of the graph -scales to the size of the page */}
+            { graphLoaded ?
             <Card id="researcher-graph-card">
               <SigmaContainer
                 graph={graph}
@@ -379,6 +386,16 @@ const ResearcherGraph = (props) => {
                 </ControlsContainer>
               </SigmaContainer>
             </Card>
+            : ( <center>
+                  <CircularProgress color="inherit" />
+                  <Typography gutterBottom variant="h5" color="#002145" margin="0px" component="div">
+                        <b>Graph loading in progress...</b> 
+                      </Typography>
+                      <Typography gutterBottom variant="h5" color="#002145" margin="0px" component="div">
+                        <b>This might take a moment</b> 
+                      </Typography>
+                </center>
+              ) }
           </Container>
         </Grid>
       </Grid>
