@@ -31,15 +31,16 @@ export default function TheApp(props) {
   const [chosenFaculties, setChosenFaculties] = useState([]);
   const [openFacultyFiltersDialog, setOpenFacultyFiltersDialog] = useState(false);
 
-  //Everytime the filters for faculty changes get the graphs nodes and edges
-  useEffect(() => {
-    changeGraph();
-  }, [])
 
   //On page load get the faculties
   useEffect(() => {
     getTheFaculties();
   }, [])
+
+  //On page load and every time filters are changed re-make the graph
+  useEffect(() => {
+    changeGraph();
+  }, [currentlyAppliedFaculties, currentlyAppliedKeywordFilter])
 
   const getGraph = async () => {
     const researchers = await API.graphql({
@@ -70,10 +71,6 @@ export default function TheApp(props) {
     });
     setAllFaculties(getFaculties.data.getAllFaculties)
   }
-
-  useEffect(() => {
-    changeGraph();
-  }, [currentlyAppliedFaculties, currentlyAppliedKeywordFilter])
 
   const changeGraph = () => {
     setGraphEdges([])
