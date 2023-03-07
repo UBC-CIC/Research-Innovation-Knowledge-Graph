@@ -17,6 +17,7 @@ import ForgotPassword from "./ForgotPasswordComponent"
 
 import LoadingButton from '../LoadingButton';
 import backgroundImage from "../../Images/backgroundImageForLoginPage.jpg";
+import ForceChangePassword from "./ForceChangePassword"
 
 Amplify.configure(awsmobile);
 
@@ -28,13 +29,21 @@ export default function Login(props) {
     const [loginFailed, setLoginFailed] = useState(false);
     const [loginButtonState, setLoginButtonState] = useState("Ready");
     const [componentWidth, setComponentWidth] = useState("100%");
+    const [forceChangePassowrd, setForceChangePassword] = useState(false);
+    const [userState, setUserState] = useState();
 
 
     async function signIn() {
         setLoginButtonState("Loading");
         try {
             const user = await Auth.signIn(Email, Password);
+            console.log("success")
             setLoginButtonState("Success");
+            if(user.challengeName == "NEW_PASSWORD_REQUIRED") {
+                setUserState(user);
+                setContentToShow("ForceChangePassword");
+                setLoginButtonState("Ready");
+            }
         } catch (e) {
             console.log(e.message);
             switch (e.message) {
@@ -67,7 +76,7 @@ export default function Login(props) {
                     setLoginFailed(true)
                     setLoginButtonState("Ready");
                     break;
-
+                
               }
         }
     }
@@ -94,7 +103,7 @@ export default function Login(props) {
                     justifyContent="center"
                 >
                    {contentToShow == "login" && <Paper sx={{width: componentWidth, pl:"3%", pr:"3%"}}>
-                        <Typography variant='h5' sx={{pt: "16px"}} align='left'>Login To Your Account</Typography>
+                        <Typography variant='h5' sx={{pt: "16px"}} align='left'>Login To The Knowledge Graph</Typography>
                         <Typography align="left" sx={{pt: "16px"}}>Email</Typography>
                         <TextField
                             onChange={(e)=>{
@@ -118,16 +127,14 @@ export default function Login(props) {
                         />
                         <Typography align="left"><Link sx={{cursor: 'pointer'}} onClick={()=>{setContentToShow("forgotPassword")}}>Forgot Your Password?</Link></Typography>
                         <Paper elevation={0}>
-                            <LoadingButton buttonText={"Login"} state={loginButtonState}  onClickFunction={signIn} mt={"32px"} mr={"0xpx"} ml={"0xpx"} mb={"0xpx"} />
-                            {/* <Button sx={{width: "100%", mt: "32px"}} onClick={() => {signIn()}} variant="contained" disableElevation>
-                                Login
-                            </Button> */}
+                            <LoadingButton buttonText={"Login"} state={loginButtonState}  onClickFunction={signIn} mt={"32px"} mr={"0px"} ml={"0px"} mb={"16px"} />
                         </Paper>
-                        <Typography align='left' sx={{pt: "16px", pb: "16px"}}>Don't have an Account? <Link sx={{cursor: 'pointer'}} onClick={()=>{setContentToShow("register")}}>Register Here</Link></Typography>
+                        {props.createNewAccountsAllowed && <Typography align='left' sx={{pt: "16px", pb: "16px"}}>Don't have an Account? <Link sx={{cursor: 'pointer'}} onClick={()=>{setContentToShow("register")}}>Register Here</Link></Typography>}
                     </ Paper>}
                     {contentToShow == "unverifiedAccount" && <ConfirmEmail componentWidth={componentWidth} setContentToShow={setContentToShow} userEmail={Email}/>}
                     {contentToShow == "forgotPassword" && <ForgotPassword componentWidth={componentWidth} setContentToShow={setContentToShow} />}
                     {contentToShow == "register" && <Register componentWidth={componentWidth} setContentToShow={setContentToShow}/>}
+                    {contentToShow == "ForceChangePassword" && <ForceChangePassword user={userState} setContentToShow={setContentToShow}/>}
                 </Grid>
             </Grid>
         </>

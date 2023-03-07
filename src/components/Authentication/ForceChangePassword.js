@@ -8,7 +8,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { Auth } from 'aws-amplify';
 
-export default function ForgotPassword(props) {
+export default function ForceChangePassword(props) {
     const [forgotEmail, setForgotEmail] = useState("");
     const [emailError, setEmailError] = useState(false);
     const [emailErrorMessage, setEmailErrorMessage] = useState("");
@@ -25,12 +25,6 @@ export default function ForgotPassword(props) {
     const [oneSpecialIcon, setOneSpecialIcon] = useState(<CancelIcon color="error" sx={{mr: "16px"}}/>);
     const [moreThanEightIcon, setMoreThanEightIcon] = useState(<CancelIcon color="error" sx={{mr: "16px"}}/>);
     const [lessThan16Icon, setLessThan16Icon] = useState(<CancelIcon color="error" sx={{mr: "16px"}}/>);
-
-    const [confirmationCode, setConfirmationCode] = useState("");
-    const [confirmationCodeError, setConfirmationCodeError] = useState(false);
-    const [confirmationCodeErrorText, setConfirmationCodeErrorText] = useState("");
-
-    const [forgotPasswordState, setForgotPasswordState] = useState("enterEmail");
 
     function hasLowerCase(str) {
         if(/[a-z]/.test(str)){
@@ -124,95 +118,22 @@ export default function ForgotPassword(props) {
         }
     }
 
-    async function sendForgotPasswordEmail() {
-        try {
-            await Auth.forgotPassword(forgotEmail);
-            setForgotPasswordState("enterVerificationCode");
-        } catch (e) {
-            console.log(e.message);
-            switch (e.message) {
-                case 'Username cannot be empty':
-                    setEmailError(true);
-                    setEmailErrorMessage('Username cannot be empty')
-                    break;
-                case 'Username/client id combination not found.':
-                    setEmailError(true);
-                    setEmailErrorMessage('Email not found. Contact your administrator to get an account')
-                    break;
-                case 'Attempt limit exceeded, please try after some time.':
-                    setEmailError(true);
-                    setEmailErrorMessage('Attempt limit exceeded, please try after some time.')
-                    break;
-              }
-        }
-    }
-
-    async function forgotPasswordSubmit() {
+    async function changePassword() {
         if(!checkRequirements(newPassword)){
             return;
         }
 
         try {
-            await Auth.forgotPasswordSubmit(forgotEmail, confirmationCode, newPassword);
-            setForgotPasswordState("enterEmail");
-            props.setContentToShow("login");
+            Auth.completeNewPassword(props.user, newPassword);
         } catch (e) {
-            console.log(e.message);
-            switch (e.message) {
-                case 'Invalid verification code provided, please try again.':
-                    setConfirmationCodeError(true);
-                    setConfirmationCodeErrorText('Invalid verification code provided, please try again.');
-                    break;
-                case 'Confirmation code cannot be empty':
-                    setConfirmationCodeError(true);
-                    setConfirmationCodeErrorText('Confirmation code cannot be empty.');
-                    break;
-              }
         }
     }
 
     return (
         <Paper sx={{width: props.componentWidth, pl:"3%", pr:"3%"}}>
-            {forgotPasswordState == "enterEmail" && <>
-            <Typography variant='h5' sx={{mt: "16px"}} align='left'>Forgot your password?</Typography>
-            <Typography sx={{mt: "16px"}} align='left'>
-                Enter your email address and we'll send you a code to help you reset your password.
-            </Typography>
-            <Typography align="left" sx={{pt: "16px"}}>Email</Typography>
-            <TextField
-                value={forgotEmail}
-                onChange={(e)=>{
-                    setForgotEmail(e.target.value);
-                    setEmailError(false);
-                    setEmailErrorMessage('');
-                }}
-                sx={{width: "100%"}}
-                error={emailError}
-                helperText={emailErrorMessage}
-            />
-            <Paper sx={{mt: "32px"}} elevation={0}>
-                <Button sx={{width: "100%"}} onClick={() => {sendForgotPasswordEmail()}} variant="contained" disableElevation>
-                    Send Reset Code
-                </Button>
-            </Paper>
-            </>}
-            {forgotPasswordState == "enterVerificationCode" && <>
-            <Typography variant='h5' sx={{pt: "16px"}} align='left'>Change Password</Typography>
-            <Typography sx={{mt: "16px"}} align='left'>
-                Please enter the reset code sent to {forgotEmail}. It can take a few minutes to recieve the code.
-            </Typography>
-            <Typography align="left" sx={{pt: "16px"}}>Confirmation Code</Typography>
-            <TextField
-                onChange={(e)=>{
-                    setConfirmationCode(e.target.value);
-                    setConfirmationCodeError(false);
-                    setConfirmationCodeErrorText('');
-                }}
-                sx={{width: "100%"}}
-                value={confirmationCode}
-                error={confirmationCodeError}
-                helperText={confirmationCodeErrorText}
-            />
+
+            <Typography variant='h5' sx={{pt: "16px"}} align='left'>Change Inital Password to Login</Typography>
+
             <Typography align="left" sx={{pt: "16px"}}>Password</Typography>
             <TextField
                 onChange={(e)=>{setNewPassword(e.target.value)}}
@@ -251,11 +172,10 @@ export default function ForgotPassword(props) {
             />
 
             <Paper elevation={0}>
-                <Button sx={{width: "100%", mt: "32px"}} onClick={() => {forgotPasswordSubmit()}} variant="contained" disableElevation>
+                <Button sx={{width: "100%", mt: "32px"}} onClick={() => {changePassword()}} variant="contained" disableElevation>
                    Change Password
                  </Button>
             </Paper>
-            </>}
             <Typography align='left' sx={{pt: "16px", pb: "16px"}}><Link sx={{cursor: 'pointer'}} onClick={()=>{props.setContentToShow("login")}}>Go Back</Link></Typography>
         </ Paper>
     );

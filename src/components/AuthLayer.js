@@ -16,7 +16,7 @@ function AuthLayer(props) {
 
   useEffect(() => {
     setAuthListener();
-    document. title = "GGMinecraftHosting";
+    document.title = "Knowledge Graph";
   }, []);
 
   useEffect(() => {
@@ -37,6 +37,7 @@ function AuthLayer(props) {
 
   async function setAuthListener() {
     Hub.listen("auth", (data) => {
+      console.log(data.payload.event);
       switch (data.payload.event) {
         case 'signIn':
             console.log('user signed in');
@@ -70,7 +71,7 @@ function AuthLayer(props) {
 
   return (
     <Box>
-        {!loggedIn && <Login />}
+        {!loggedIn && <Login createNewAccountsAllowed={false} />}
         {loggedIn && <TheApp />}
     </Box>
   );
