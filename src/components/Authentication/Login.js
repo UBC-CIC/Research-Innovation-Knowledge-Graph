@@ -16,7 +16,6 @@ import ConfirmEmail from "./ConfirmEmail"
 import ForgotPassword from "./ForgotPasswordComponent"
 
 import LoadingButton from '../LoadingButton';
-import backgroundImage from "../../Images/backgroundImageForLoginPage.jpg";
 import ForceChangePassword from "./ForceChangePassword"
 
 Amplify.configure(awsmobile);
@@ -80,18 +79,12 @@ export default function Login(props) {
               }
         }
     }
-
-    const theme = useTheme();
-    //Is true if it is a tablet device or lower
-    const deviceIsPhone = useMediaQuery(theme.breakpoints.down('sm'));
-
   
     return (
         <>
             <Grid container
             justifyContent='center'
-            style={{backgroundColor: "#FFFFFF", height: deviceIsPhone ? "105vh" : "93.4vh", paddingLeft: "10%", paddingRight: "10%",
-            backgroundImage: `url(${backgroundImage})`,
+            style={{backgroundColor: "rgb(0,33,69)", height: "100vh", paddingLeft: "10%", paddingRight: "10%",
             backgroundSize: "contain",
             backgroundRepeat: "no",}}
             sx={{height: '200%'}}>
@@ -103,7 +96,7 @@ export default function Login(props) {
                     justifyContent="center"
                 >
                    {contentToShow == "login" && <Paper sx={{width: componentWidth, pl:"3%", pr:"3%"}}>
-                        <Typography variant='h5' sx={{pt: "16px"}} align='left'>Login To The Knowledge Graph</Typography>
+                        <Typography variant='h5' sx={{pt: "16px"}} align='left'>Login to The Knowledge Graph</Typography>
                         <Typography align="left" sx={{pt: "16px"}}>Email</Typography>
                         <TextField
                             onChange={(e)=>{

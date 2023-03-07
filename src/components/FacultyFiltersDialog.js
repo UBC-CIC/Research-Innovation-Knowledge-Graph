@@ -56,7 +56,7 @@ const FacultyFiltersDialog = ({
             display: "flex",
             flexDirection: "column",
             flexWrap: "wrap",
-            my: "2em",
+            my: "1em",
           }}
         >
           <FormGroup sx={{ display: "flex", flexDirection: "row" }}>
@@ -64,7 +64,7 @@ const FacultyFiltersDialog = ({
               <FormControlLabel
                 key={index}
                 control={<Checkbox />}
-                label={<Typography variant="body2"><IconButton disabled><FiberManualRecordIcon style={{ color: COLOR_OBJECT[faculty] }} /></IconButton>{faculty}</Typography>}
+                label={<Typography ><IconButton disabled><FiberManualRecordIcon style={{ color: COLOR_OBJECT[faculty] }} /></IconButton>{faculty}</Typography>}
                 checked={selectedFaculties.includes(faculty)}
                 onChange={(e) => handleCheckFaculty(e, faculty)}
               />
@@ -86,12 +86,18 @@ const FacultyFiltersDialog = ({
         <CloseIcon />
       </IconButton>
       <Box sx={{ p: "2em", display: "flex", flexDirection: "column" }}>
-        <Typography>All Faculties</Typography>
-        {renderAllFaculties()}
-        <Box sx={{mb: "2em"}}>
-          <Typography>{"Filter the graph by keyword:"}</Typography>
-          <TextField value={keywordFilter} onChange={(event) => {setKeywordFilter(event.target.value)}}/>
-        </Box>
+        <Grid container spacing={2}>
+          <Grid item xs={8}>
+            <Typography variant="h6">Filter by Faculty</Typography>
+            {renderAllFaculties()}
+          </Grid>
+          <Grid item xs={4}>
+            <Box sx={{mb: "2em"}}>
+              <Typography style={{paddingBottom:'1em'}} variant="h6">Filter by Keyword</Typography>
+              <TextField label="keyword" helperText="Example: genetics" size="small" value={keywordFilter} onChange={(event) => {setKeywordFilter(event.target.value)}}/>
+            </Box>
+          </Grid>
+        </Grid>
         <Button
           variant="outlined"
           sx={{ color: "#0055b7" }}
