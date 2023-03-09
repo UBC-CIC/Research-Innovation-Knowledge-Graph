@@ -21,8 +21,8 @@ Auth.configure(awsmobile);
 
 
 export default function TheApp(props) {
-  const [researcherNodes, setResearcherNodes] = useState([]);
-  const [graphEdges, setGraphEdges] = useState([]);
+  const [researcherNodes, setResearcherNodes] = useState(null);
+  const [graphEdges, setGraphEdges] = useState(null);
   const [autoCompleteOptions, setAutoCompleteOptions] = useState([]);
   const [allFaculties, setAllFaculties] = useState([]);
   const [currentlyAppliedFaculties, setCurrentlyAppliedFaculties] = useState([]);
@@ -73,8 +73,8 @@ export default function TheApp(props) {
   }
 
   const changeGraph = () => {
-    setGraphEdges([])
-    setResearcherNodes([])
+    setGraphEdges(null);
+    setResearcherNodes(null);
     getGraph();
   }
 

@@ -48,37 +48,38 @@ const ResearcherGraph = (props) => {
   const [selectedDepth, setSelectedDepth] = useState(null);
 
   const [detailsExpanded, setDetailsExpanded]= useState(true)
-  const [graphLoaded, setGraphLoaded ] = useState(false)
+  const [graphState, setGraphState ] = useState("loading")
 
   useEffect(() => {
-    if(props.researcherNodes.length && props.graphEdges.length){
-    console.log(props.researcherNodes);
-    console.log(props.graphEdges)
-
-    const jsonGraph = {
-      attributes:{},
-      nodes: props.researcherNodes,
-      edges: props.graphEdges,
+    if(props.researcherNodes ===null || props.graphEdges === null){
+      setGraphState("loading");
     }
-
-    const graph = Graph.from(jsonGraph)
-    graph.forEachNode((key,attributes)=>{
-      const numOfNeighbors = graph.neighbors(key).length
-      const size = 3-20/(numOfNeighbors+9)
-
-      if(size>0){
-        graph.setNodeAttribute(key,'size',size)
+    //if there are no nodes found, no graph is not displayed
+    else if(!props.researcherNodes.length){
+      setGraphState("empty");
+    } 
+    else{
+      const jsonGraph = {
+        attributes:{},
+        nodes: props.researcherNodes,
+        edges: props.graphEdges,
       }
-    })
 
-    random.assign(graph); //assigns each node a random x,y value between [0,1]
-    forceAtlas2.assign(graph, {iterations: 100}); //assigns nodes x,y values with force directed
-    setGraph(graph)
-    setGraphLoaded(true);
-  } else{
-    setGraphLoaded(false);
-  }
+      const graph = Graph.from(jsonGraph)
+      graph.forEachNode((key,attributes)=>{
+        const numOfNeighbors = graph.neighbors(key).length
+        const size = 3-20/(numOfNeighbors+9)
 
+        if(size>0){
+          graph.setNodeAttribute(key,'size',size)
+        }
+      })
+
+      random.assign(graph); //assigns each node a random x,y value between [0,1]
+      forceAtlas2.assign(graph, {iterations: 100}); //assigns nodes x,y values with force directed
+      setGraph(graph)
+      setGraphState("finished");
+    }
   }, [props.researcherNodes, props.graphEdges])
 
   //On change of the selected node get information on the researcher
@@ -364,7 +365,7 @@ const ResearcherGraph = (props) => {
           <Grid item xs={8}>
           <Container maxWidth={false}>
             {/* sets the width of the graph -scales to the size of the page */}
-            { graphLoaded ?
+            { graphState === "finished" ? (
             <Card id="researcher-graph-card">
               <SigmaContainer
                 graph={graph}
@@ -386,16 +387,25 @@ const ResearcherGraph = (props) => {
                 </ControlsContainer>
               </SigmaContainer>
             </Card>
-            : ( <center>
+            ) : (graphState==="loading"? ( <center>
                   <CircularProgress color="inherit" />
                   <Typography gutterBottom variant="h5" color="#002145" margin="0px" component="div">
                         <b>Graph loading in progress...</b> 
                       </Typography>
-                      <Typography gutterBottom variant="h5" color="#002145" margin="0px" component="div">
-                        <b>This might take a moment</b> 
+                      <Typography gutterBottom variant="h6" color="#002145" margin="0px" component="div">
+                        This might take a moment
                       </Typography>
                 </center>
-              ) }
+              ):
+              <center>
+                  <Typography gutterBottom variant="h5" color="#002145" margin="0px" component="div">
+                        <b>No results found</b> 
+                      </Typography>
+                  <Typography gutterBottom variant="h6" color="#002145" margin="0px" component="div">
+                    Change the graph's filters to view more data.
+                  </Typography>
+                </center>
+               )}
           </Container>
         </Grid>
       </Grid>

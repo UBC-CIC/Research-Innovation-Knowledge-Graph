@@ -94,7 +94,7 @@ const FacultyFiltersDialog = ({
           <Grid item xs={4}>
             <Box sx={{mb: "2em"}}>
               <Typography style={{paddingBottom:'1em'}} variant="h6">Filter by Keyword</Typography>
-              <TextField label="keyword" helperText="Example: genetics" size="small" value={keywordFilter} onChange={(event) => {setKeywordFilter(event.target.value)}}/>
+              <TextField label="Keyword" helperText="Example: genetics" size="small" value={keywordFilter} onChange={(event) => {setKeywordFilter(event.target.value)}}/>
             </Box>
           </Grid>
         </Grid>
