@@ -6,31 +6,31 @@
 
 ## Description
 
-1. The S3 bucket stores csv files that contain data that will be put into the RDS Postgresql database.
+<strong>1.</strong> The S3 bucket stores csv files that contain data that will be put into the RDS Postgresql database.
 
-2. The glue job interacts with the s3 bucket storing the researcher csv data and puts the data into the database.
+<strong>2.</strong> The glue job interacts with the s3 bucket storing the researcher csv data and puts the data into the database.
 
-3. When queried, Lambda connects to the RDS PostgreSQL database and gets the data requested by AppSync.
+<strong>3.</strong> When queried, Lambda connects to the RDS PostgreSQL database and gets the data requested by AppSync.
 
-4. AWS AppSync triggers the PostgreSQL Lambda and passes the correct variables needed to get the required data.
+<strong>4.</strong> AWS AppSync triggers the PostgreSQL Lambda and passes the correct variables needed to get the required data.
 
-5. When an autheticated user interacts with the website queries will be sent to AWS appsync to get data to show on the website.
+<strong>5.</strong> When an autheticated user interacts with the website queries will be sent to AWS appsync to get data to show on the website.
 
-6. This connection represents the user interacting with the knowledge graph website hosted on AWS amplify.
+<strong>6.</strong> This connection represents the user interacting with the knowledge graph website hosted on AWS amplify.
 
 ## Lambda Functions Deep Dive
 
 ![Alt text](./images/KowledgeGraphLambdaDeepDive.png?raw=true "Lambda Architecture")
 
-getAllFaculties: 
+<strong>getAllFaculties: </strong>
 
-getSharedPublications:
+<strong>getSharedPublications:</strong>
 
-getSimilarResearchers:
+<strong>getSimilarResearchers:</strong>
 
-fetchResearcherInformation:
+<strong>fetchResearcherInformation:</strong>
 
-fetchResearcherNodes:
+<strong>fetchResearcherNodes:</strong>
 
-fetchEdgesFromPostgres:
+<strong>fetchEdgesFromPostgres:</strong>
 
