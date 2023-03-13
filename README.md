@@ -78,7 +78,7 @@ N/A
 
 # Credits
 
-This application was architected and developed by Matthew Stefansson... with guidance from the UBC CIC technical and project management teams.
+This application was architected and developed by Matthew Stefansson, Lance Holland, Wren Liang, Emily Deutsch, and John Marquez with guidance from the UBC CIC technical and project management teams.
 
 # License
 
