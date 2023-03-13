@@ -22,15 +22,13 @@
 
 ![Alt text](./images/KowledgeGraphLambdaDeepDive.png?raw=true "Lambda Architecture")
 
-<strong>getAllFaculties: </strong>
+<strong>getAllFaculties: </strong> The get faculties Lambda function returns a list of all the unique faculties in the database.
 
-<strong>getSharedPublications:</strong>
+<strong>getSharedPublications:</strong> The get shared publications Lambda has two inputs the ids of the two researchers. The Lambda then returns a list of publications that they share.
 
-<strong>getSimilarResearchers:</strong>
+<strong>fetchResearcherInformation:</strong> The fetch researcher information Lambda has one input the id of the researcher. The Lambda then return the researchers information.
 
-<strong>fetchResearcherInformation:</strong>
+<strong>fetchResearcherNodes:</strong> The fetch researcher nodes Lambda takes two inputs an array of faculties to filter on and the keywords to filter on. The Lambda then returns all the researcher nodes that meet the filters given as an input.
 
-<strong>fetchResearcherNodes:</strong>
-
-<strong>fetchEdgesFromPostgres:</strong>
+<strong>fetchEdgesFromPostgres:</strong> The fetch edges from postgres Lambda takes two inputs an array of faculties to filter on and the keywords to filter on. The Lambda then returns all the edges nodes that meet the filters given as an input.
 
