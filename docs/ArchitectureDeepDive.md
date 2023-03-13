@@ -17,3 +17,20 @@
 5. When an autheticated user interacts with the website queries will be sent to AWS appsync to get data to show on the website.
 
 6. This connection represents the user interacting with the knowledge graph website hosted on AWS amplify.
+
+## Lambda Functions Deep Dive
+
+![Alt text](./images/KowledgeGraphLambdaDeepDive.png?raw=true "Lambda Architecture")
+
+getAllFaculties: 
+
+getSharedPublications:
+
+getSimilarResearchers:
+
+fetchResearcherInformation:
+
+fetchResearcherNodes:
+
+fetchEdgesFromPostgres:
+
