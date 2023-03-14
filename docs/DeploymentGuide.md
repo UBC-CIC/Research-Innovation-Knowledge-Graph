@@ -3,7 +3,7 @@
 Before installing Amplify we need to create the IAM Role that gives us the permissions needed to implement this solution. Run the following line of code:
 
 ```bash
-aws cloudformation deploy --template-file cfn-amplifyRole.yaml --stack-name amplifyconsole-vpri-backend-role --capabilities CAPABILITY_NAMED_IAM
+aws cloudformation deploy --template-file cfn-amplifyRole.yaml --stack-name amplifyconsole-knowledge-graph-backend-role --capabilities CAPABILITY_NAMED_IAM
 ```
 
 If you have multiple AWS Profiles, specify one with sufficient admin permissions by appending the following text to the end of the command, replacing the profile name with the profile you would like to use for the solution (If you do this, be sure to include the same `--profile` argument for the rest of the commands starting with `aws`. The profile you are using for this project should have administrator privliges).
@@ -12,7 +12,7 @@ If you have multiple AWS Profiles, specify one with sufficient admin permissions
 --profile [PROFILE NAME]
 ```
 
-This step creates the IAM role called **amplifyconsole-vpri-backend-role** that will be used on the next step.
+This step creates the IAM role called **amplifyconsole-knowledge-graph-backend-role** that will be used on the next step.
 
 The **Deploy to Amplify Console** button will take you to your AWS console to deploy the front-end solution.
 
