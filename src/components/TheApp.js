@@ -4,6 +4,7 @@ import Grid from '@mui/material/Grid';
 import ResearcherGraph from './ResearcherGraph/ResearcherGraph';
 import Navbar from "./Navbar/navbar";
 import {SearchBar} from "./Searchbar/searchbar"
+import Tutorial from "./Tutorial/Tutorial";
 
 import Amplify from "@aws-amplify/core";
 import { Auth } from "@aws-amplify/auth";
@@ -30,7 +31,10 @@ export default function TheApp(props) {
   const [keywordFilter, setKeywordFilter] = useState("");
   const [chosenFaculties, setChosenFaculties] = useState([]);
   const [openFacultyFiltersDialog, setOpenFacultyFiltersDialog] = useState(false);
-
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedNode, setSelectedNode] = useState(null);
+  const [selectedEdge, setSelectedEdge] = useState(null);
+  const [run, setRun] = useState(false);
 
   //On page load get the faculties
   useEffect(() => {
@@ -78,13 +82,22 @@ export default function TheApp(props) {
     getGraph();
   }
 
+  function startTutorial() {
+    setRun(true);
+  }
+
   return (
     <Grid container spacing={2}>
+      <Tutorial selectedNode={selectedNode} setSelectedNode={setSelectedNode}
+                selectedEdge={selectedEdge} setSelectedEdge={setSelectedEdge}
+                openFacultyFiltersDialog={openFacultyFiltersDialog}
+                run={run} setRun={setRun}/>
       <Grid item xs={12}>
-        <Navbar></Navbar>
+        <Navbar startTutorial={startTutorial}/>
       </Grid>
       <Grid id="search-bar-main" item xs={12}>
-        <SearchBar text="Search Graph" size="100vh" setOpenFacultyFiltersDialog={setOpenFacultyFiltersDialog} autoCompleteOptions={autoCompleteOptions}></SearchBar>
+        <SearchBar text="Search Graph" size="100vh" setOpenFacultyFiltersDialog={setOpenFacultyFiltersDialog} 
+        autoCompleteOptions={autoCompleteOptions} searchQuery={searchQuery} setSearchQuery={setSearchQuery}></SearchBar>
       </Grid>
       <Grid item xs={12}>
         <ResearcherGraph researcherNodes={researcherNodes}  
@@ -94,6 +107,8 @@ export default function TheApp(props) {
         changeGraph={changeGraph} openFacultyFiltersDialog={openFacultyFiltersDialog} setOpenFacultyFiltersDialog={setOpenFacultyFiltersDialog}
         keywordFilter={keywordFilter} setKeywordFilter={setKeywordFilter}
         currentlyAppliedKeywordFilter={currentlyAppliedKeywordFilter} setCurrentlyAppliedKeywordFilter={setCurrentlyAppliedKeywordFilter}
+        selectedNode={selectedNode} setSelectedNode={setSelectedNode}
+        selectedEdge={selectedEdge} setSelectedEdge={setSelectedEdge}
         />
       </Grid>
     </Grid>
