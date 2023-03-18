@@ -115,7 +115,7 @@ export default function Tutorial(props) {
             props.setSelectedEdge(null);
         }
 
-        if(action === "skip" || action === "close") {
+        if(action === "skip" || action === "close" || type == "tour:end") {
             setStepIndex(0);
             props.setRun(false);
         }
