@@ -34,5 +34,5 @@
 
 <strong>fetchEdgesFromPostgres: </strong> The fetch edges from postgres Lambda takes two inputs an array of faculties to filter on and the keywords to filter on. The Lambda then returns all the edges nodes that meet the filters given as an input.
 
-<strong>getSimilarResearchers: </strong>
+<strong>getSimilarResearchers: </strong> The get similar researchers Lambda takes a researcher id as an input. The Lambda then returns all the researchers with similar keywords to the inputted researcher. 
 
