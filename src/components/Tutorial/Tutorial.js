@@ -62,7 +62,12 @@ export default function Tutorial(props) {
             },
         ],
         })
-        props.setRun(true)
+        let firstTime = window.localStorage.getItem('firstTime');
+        if(firstTime != "true") {
+            props.setRun(true);
+            console.log("hi")
+            window.localStorage.setItem('firstTime', "true");            
+        }
     }, [])
 
     useEffect(() => {
