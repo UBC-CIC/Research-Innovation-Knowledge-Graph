@@ -1,0 +1,15 @@
+{
+  "lambdaLayers": [
+    {
+      "type": "ProjectLayer",
+      "resourceName": "researchinnovationkngremlin",
+      "env": "staging",
+      "version": "Always choose latest version",
+      "isLatestVersionSelected": true
+    }
+  ],
+  "secretNames": [
+    "NEPTUNE_ENDPOINT",
+    "NEPTUNE_PORT"
+  ]
+}
