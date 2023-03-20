@@ -28,7 +28,8 @@ import {FacultyFiltersDialog,COLOR_OBJECT} from "../FacultyFiltersDialog";
 
 import {
   getResearcher,
-  getSharedPublications
+  getSharedPublications,
+  getSimilarResearchers,
 } from "../../graphql/queries";
 
 Amplify.configure(awsmobile);
@@ -40,6 +41,7 @@ const ResearcherGraph = (props) => {
   // const [selectedEdge, setSelectedEdge] = useState(null);
 
   const [selectedResearcher, setSelectedResearcher] = useState(null);
+  const [similarResearchers, setSimilarResearchers] = useState([]);
 
   const [edgeResearcherOne, setEdgeResearcherOne] = useState(null);
   const [edgeResearcherTwo, setEdgeResearcherTwo] = useState(null);
@@ -158,12 +160,20 @@ const ResearcherGraph = (props) => {
   }
 
   const getResearcherFunction = async () => {
-    const result = await API.graphql({
+    let result = await API.graphql({
       query: getResearcher,
       variables: {"id": props.selectedNode}
     });
     let researcher = result.data.getResearcher;
     setSelectedResearcher(researcher);
+
+    result = await API.graphql({
+      query: getSimilarResearchers,
+      variables: {"researcher_id": researcher.id}
+    });
+    let similarResearchers = result.data.getSimilarResearchers;
+    console.log(similarResearchers);
+    setSimilarResearchers(similarResearchers);
   }
 
   const getEdgeInformation = async () => {
