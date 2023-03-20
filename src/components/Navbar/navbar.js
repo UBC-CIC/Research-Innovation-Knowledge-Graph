@@ -73,7 +73,7 @@ export default function Nav_Bar(props) {
                         open={Boolean(anchorElUser)}
                         onClose={handleCloseUserMenu}
                     >
-                      <MenuItem key={'Logout'} onClick={handleCloseUserMenu}>
+                      <MenuItem key={'Tutorial'} onClick={handleCloseUserMenu}>
                         <Typography onClick={() => {props.startTutorial()}} textAlign="center">{'Start Tour'}</Typography>
                       </MenuItem>
                       <MenuItem key={'Logout'} onClick={handleCloseUserMenu}>
