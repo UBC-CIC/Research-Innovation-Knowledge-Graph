@@ -19,3 +19,4 @@ The **Deploy to Amplify Console** button will take you to your AWS console to de
 <a href="https://console.aws.amazon.com/amplify/home#/deploy?repo=https://github.com/UBC-CIC/Research-Innovation-Knowledge-Graph">
     <img src="https://oneclick.amplifyapp.com/button.svg" alt="Deploy to Amplify Console">
 </a>
+
