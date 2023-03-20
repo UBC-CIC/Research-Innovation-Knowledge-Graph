@@ -16,7 +16,9 @@
 
 <strong>5.</strong> When an autheticated user interacts with the website queries will be sent to AWS appsync to get data to show on the website.
 
-<strong>6.</strong> This connection represents the user interacting with the knowledge graph website hosted on AWS amplify.
+<strong>6.</strong> All queries are first sent to AWS WAF. This helps prevent malicious users from getting data or breaking the website with DDOS attacks.
+
+<strong>7.</strong> This connection represents the user interacting with the knowledge graph website hosted on AWS amplify.
 
 ## Lambda Functions Deep Dive
 
@@ -24,11 +26,13 @@
 
 <strong>getAllFaculties: </strong> The get faculties Lambda function returns a list of all the unique faculties in the database.
 
-<strong>getSharedPublications:</strong> The get shared publications Lambda has two inputs the ids of the two researchers. The Lambda then returns a list of publications that they share.
+<strong>getSharedPublications: </strong> The get shared publications Lambda has two inputs the ids of the two researchers. The Lambda then returns a list of publications that they share.
 
-<strong>fetchResearcherInformation:</strong> The fetch researcher information Lambda has one input the id of the researcher. The Lambda then return the researchers information.
+<strong>fetchResearcherInformation: </strong> The fetch researcher information Lambda has one input the id of the researcher. The Lambda then return the researchers information.
 
-<strong>fetchResearcherNodes:</strong> The fetch researcher nodes Lambda takes two inputs an array of faculties to filter on and the keywords to filter on. The Lambda then returns all the researcher nodes that meet the filters given as an input.
+<strong>fetchResearcherNodes: </strong> The fetch researcher nodes Lambda takes two inputs an array of faculties to filter on and the keywords to filter on. The Lambda then returns all the researcher nodes that meet the filters given as an input.
 
-<strong>fetchEdgesFromPostgres:</strong> The fetch edges from postgres Lambda takes two inputs an array of faculties to filter on and the keywords to filter on. The Lambda then returns all the edges nodes that meet the filters given as an input.
+<strong>fetchEdgesFromPostgres: </strong> The fetch edges from postgres Lambda takes two inputs an array of faculties to filter on and the keywords to filter on. The Lambda then returns all the edges nodes that meet the filters given as an input.
+
+<strong>getSimilarResearchers: </strong>
 
