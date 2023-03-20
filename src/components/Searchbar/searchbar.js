@@ -10,7 +10,6 @@ import {GraphEvents, GetSigma, setNode} from "../ResearcherGraph/helpers/GraphEv
 import "./searchbar.css"
 
 export default function SearchBar(props) {
-  const [searchQuery, setSearchQuery] = useState("");
   const sigma = GetSigma();
 
   const ZoomOnNode = (node) => {
@@ -33,8 +32,8 @@ export default function SearchBar(props) {
   }
   
   const SearchForNode = () => {
-    if(searchQuery) {
-      let node = sigma.getNodeDisplayData(searchQuery.id);
+    if(props.searchQuery) {
+      let node = sigma.getNodeDisplayData(props.searchQuery.id);
       if (node) {
         ZoomOnNode(node);
       }
@@ -46,7 +45,7 @@ export default function SearchBar(props) {
 
   useEffect(() => {
     SearchForNode();
-  }, [searchQuery])
+  }, [props.searchQuery])
 
   return (
     <Box className="search-bar-box" component={Stack} direction="row">
@@ -61,7 +60,7 @@ export default function SearchBar(props) {
         renderInput={(params) => <TextField id="search-bar-text" {...params} label={props.text} />}
         
         onChange={(e,newInputValue) => {
-          setSearchQuery(newInputValue);
+          props.setSearchQuery(newInputValue);
         }}
         onKeyPress={(event) => { 
           if (event.key == "Enter") {SearchForNode()}
@@ -72,7 +71,7 @@ export default function SearchBar(props) {
       {/* <IconButton type="submit" aria-label="search" onClick={SearchForNode}>
         <SearchIcon style={{ fill: "grey" }} />
       </IconButton> */}
-      <Button onClick={() => props.setOpenFacultyFiltersDialog(true)} variant="contained" >Filter the Graph</Button>
+      <Button id="filter-graph-button" onClick={() => props.setOpenFacultyFiltersDialog(true)} variant="contained">Filter the Graph</Button>
   </Box>
   );
 }

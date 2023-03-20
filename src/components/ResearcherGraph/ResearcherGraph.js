@@ -28,7 +28,8 @@ import {FacultyFiltersDialog,COLOR_OBJECT} from "../FacultyFiltersDialog";
 
 import {
   getResearcher,
-  getSharedPublications
+  getSharedPublications,
+  getSimilarResearchers,
 } from "../../graphql/queries";
 
 Amplify.configure(awsmobile);
@@ -36,10 +37,11 @@ Auth.configure(awsmobile);
 
 const ResearcherGraph = (props) => {
   const [graph, setGraph] = useState(null);
-  const [selectedNode, setSelectedNode] = useState(null);
-  const [selectedEdge, setSelectedEdge] = useState(null);
+  // const [selectedNode, setSelectedNode] = useState(null);
+  // const [selectedEdge, setSelectedEdge] = useState(null);
 
   const [selectedResearcher, setSelectedResearcher] = useState(null);
+  const [similarResearchers, setSimilarResearchers] = useState([]);
 
   const [edgeResearcherOne, setEdgeResearcherOne] = useState(null);
   const [edgeResearcherTwo, setEdgeResearcherTwo] = useState(null);
@@ -85,28 +87,28 @@ const ResearcherGraph = (props) => {
   //On change of the selected node get information on the researcher
   useEffect(() => {
     console.log("triggered")
-    if(selectedNode) {
+    if(props.selectedNode) {
       console.log("here")
       getResearcherFunction(selectedResearcher);
       setSelectedDepth(1);
     } else{
       setSelectedResearcher(null);
     }
-  }, [selectedNode])
+  }, [props.selectedNode])
 
   useEffect(() => {
-    if(selectedEdge) {
+    if(props.selectedEdge) {
       getEdgeInformation();
     }else{
       setEdgeResearcherOne(null);
       setEdgeResearcherTwo(null);
       setSharedPublications([]);
     }
-  }, [selectedEdge])
+  }, [props.selectedEdge])
 
   useEffect(() => {
     if(selectedDepth) {
-      const [nodeIDs,firstEdgeIDs,secondEdgeIDs,thirdEdgeIDs] = getNeighborhood(selectedNode,selectedDepth);
+      const [nodeIDs,firstEdgeIDs,secondEdgeIDs,thirdEdgeIDs] = getNeighborhood(props.selectedNode,selectedDepth);
       const sigma = GetSigma();
       sigma.setSetting("nodeReducer", (node, data) => {
         return nodeIDs.has(node)
@@ -158,16 +160,24 @@ const ResearcherGraph = (props) => {
   }
 
   const getResearcherFunction = async () => {
-    const result = await API.graphql({
+    let result = await API.graphql({
       query: getResearcher,
-      variables: {"id": selectedNode}
+      variables: {"id": props.selectedNode}
     });
     let researcher = result.data.getResearcher;
     setSelectedResearcher(researcher);
+
+    result = await API.graphql({
+      query: getSimilarResearchers,
+      variables: {"researcher_id": researcher.id}
+    });
+    let similarResearchers = result.data.getSimilarResearchers;
+    console.log(similarResearchers);
+    setSimilarResearchers(similarResearchers);
   }
 
   const getEdgeInformation = async () => {
-    let researchersIds = selectedEdge.split("&&");
+    let researchersIds = props.selectedEdge.split("&&");
     let researcherOneId = researchersIds[0];
     let researcherTwoId = researchersIds[1];
 
@@ -244,7 +254,7 @@ const ResearcherGraph = (props) => {
   return (
     <div className="Researcher-Graph">
       <Grid container spacing={0} direction="row">
-        <Grid item xs={4} className="side-panel">
+        <Grid item xs={4} className="side-panel" id="sidePanel">
           <Accordion disableGutters id="accordion">
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography variant="body1">Graph Legend</Typography>
@@ -269,7 +279,7 @@ const ResearcherGraph = (props) => {
             <AccordionDetails id="accordion-details">
               <Card id="researcher-info-card">
                 <CardContent>
-                  {selectedNode && !selectedEdge && (
+                  {props.selectedNode && !props.selectedEdge && (
                     selectedResearcher ? (
                     <>
                       <Typography gutterBottom variant="h5" color="#002145" margin="0px" component="div">
@@ -323,7 +333,7 @@ const ResearcherGraph = (props) => {
                     </>
                     ) : (<center><CircularProgress color="inherit" /></center>)
                   )}
-                  {selectedEdge && (
+                  {props.selectedEdge && (
                     edgeResearcherOne && edgeResearcherTwo && sharedPublications.length!=0 ? (
                     <>
                     <Typography gutterBottom variant="h5" color="#002145" margin="0px" component="div">
@@ -342,7 +352,7 @@ const ResearcherGraph = (props) => {
                     </>
                     ) : (<center><CircularProgress color="inherit" /></center>)
                   )}
-                  {!selectedNode && (
+                  {!props.selectedNode && (
                     <Typography variant="body2" color="text.secondary">
                       Click on a node to view more information about the researcher
                     </Typography>
@@ -362,7 +372,7 @@ const ResearcherGraph = (props) => {
             </AccordionDetails>
           </Accordion>
         </Grid>
-          <Grid item xs={8}>
+        <Grid item xs={8} id='graph'>
           <Container maxWidth={false}>
             {/* sets the width of the graph -scales to the size of the page */}
             { graphState === "finished" ? (
@@ -376,10 +386,10 @@ const ResearcherGraph = (props) => {
                 }}
               >
                 <GraphEvents
-                  firstClickedNode={selectedNode}
-                  setFirstClickedNode={setSelectedNode}
-                  selectedEdge={selectedEdge}
-                  setSelectedEdge={setSelectedEdge}
+                  firstClickedNode={props.selectedNode}
+                  setFirstClickedNode={props.setSelectedNode}
+                  selectedEdge={props.selectedEdge}
+                  setSelectedEdge={props.setSelectedEdge}
                 />
                 <ControlsContainer position={"bottom-right"}>
                   <ZoomControl />
