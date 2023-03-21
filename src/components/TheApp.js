@@ -35,6 +35,7 @@ export default function TheApp(props) {
   const [selectedNode, setSelectedNode] = useState(null);
   const [selectedEdge, setSelectedEdge] = useState(null);
   const [run, setRun] = useState(false);
+  const [graphProgress, setGraphProgress ] = useState(10)
 
   //On page load get the faculties
   useEffect(() => {
@@ -60,6 +61,7 @@ export default function TheApp(props) {
 
     console.log(edgesResult)
     setGraphEdges(edgesResult.data.getEdges)
+    setGraphProgress(20)
     setAutoCompleteOptions(Object.values(researchers.data.getResearchers).map(formatOptions));
   }
 
@@ -79,6 +81,7 @@ export default function TheApp(props) {
   const changeGraph = () => {
     setGraphEdges(null);
     setResearcherNodes(null);
+    setGraphProgress(10)
     getGraph();
   }
 
@@ -109,6 +112,7 @@ export default function TheApp(props) {
         currentlyAppliedKeywordFilter={currentlyAppliedKeywordFilter} setCurrentlyAppliedKeywordFilter={setCurrentlyAppliedKeywordFilter}
         selectedNode={selectedNode} setSelectedNode={setSelectedNode}
         selectedEdge={selectedEdge} setSelectedEdge={setSelectedEdge}
+        graphProgress={graphProgress} setGraphProgress={setGraphProgress}
         />
       </Grid>
     </Grid>
