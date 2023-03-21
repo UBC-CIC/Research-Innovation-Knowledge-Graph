@@ -36,18 +36,18 @@ export default function Tutorial(props) {
             {
                 locale: { skip: <strong aria-label="skip">S-K-I-P</strong> },
                 target: '#sidePanel',
-                content: "After clicking on a node the researchers information is filled in on the side pannel.",
+                content: "After clicking on a node the researchers information is filled in on the side panel.",
                 placement: "right-start",
             },
             {
                 locale: { skip: <strong aria-label="skip">S-K-I-P</strong> },
                 target: '#graph',
-                content: "You can also learn about how researchers are connected. Click on two connected researcher nodes to continue."
+                content: "You can also learn about how researchers are connected. Click on a second researcher node to continue."
             },
             {
                 locale: { skip: <strong aria-label="skip">S-K-I-P</strong> },
                 target: '#sidePanel',
-                content: "After clicking on a second researcher node the edge information is filled in on the side pannel.",
+                content: "After clicking on a second researcher node the edge information is filled in on the side panel.",
                 placement: "right-start",
             },
             {
@@ -58,7 +58,7 @@ export default function Tutorial(props) {
             {
                 locale: { skip: <strong aria-label="skip">S-K-I-P</strong> },
                 target: '#filter-graph-button',
-                content: "Finally you can filter the graph by faculty and researcher keywords. You can filter by a single keyword or by multiple keywords. To filter by multiple keywords enter in a comma seperated list of keywords.",
+                content: "Finally you can filter the graph by faculty and researcher keywords. You can filter by a single keyword or by multiple keywords. To filter by multiple keywords enter in a comma separated list of keywords.",
             },
         ],
         })

@@ -6,7 +6,7 @@ import {
   ZoomControl,
   FullScreenControl,
 } from "@react-sigma/core";
-import { Container, Card, Grid, IconButton, Accordion,AccordionSummary,AccordionDetails, CardContent,ToggleButton,ToggleButtonGroup, Typography} from "@mui/material";
+import { Container,Box, Card, Grid, IconButton, Accordion,AccordionSummary,AccordionDetails, CardContent,ToggleButton,ToggleButtonGroup, Typography} from "@mui/material";
 import "./ResearcherGraph.css";
 import GraphDefinition from "./helpers/GraphDefinition";
 import {GraphEvents} from "./helpers/GraphEvents";
@@ -51,7 +51,8 @@ const ResearcherGraph = (props) => {
 
   const [detailsExpanded, setDetailsExpanded]= useState(true)
   const [graphState, setGraphState ] = useState("loading")
-
+  const [tempGraph, setTempGraph ] = useState(null)
+  
   useEffect(() => {
     if(props.researcherNodes ===null || props.graphEdges === null){
       setGraphState("loading");
@@ -61,28 +62,58 @@ const ResearcherGraph = (props) => {
       setGraphState("empty");
     } 
     else{
-      const jsonGraph = {
-        attributes:{},
-        nodes: props.researcherNodes,
-        edges: props.graphEdges,
-      }
-
-      const graph = Graph.from(jsonGraph)
-      graph.forEachNode((key,attributes)=>{
-        const numOfNeighbors = graph.neighbors(key).length
-        const size = 3-20/(numOfNeighbors+9)
-
-        if(size>0){
-          graph.setNodeAttribute(key,'size',size)
-        }
-      })
-
-      random.assign(graph); //assigns each node a random x,y value between [0,1]
-      forceAtlas2.assign(graph, {iterations: 100}); //assigns nodes x,y values with force directed
-      setGraph(graph)
-      setGraphState("finished");
+      switch(props.graphProgress){
+        case 20:
+          const jsonGraph = {
+            attributes:{},
+            nodes: props.researcherNodes,
+            edges: props.graphEdges,
+          }
+    
+          const graph = Graph.from(jsonGraph)
+          graph.forEachNode((key,attributes)=>{
+            const numOfNeighbors = graph.neighbors(key).length
+            const size = 3-20/(numOfNeighbors+9)
+    
+            if(size>0){
+              graph.setNodeAttribute(key,'size',size)
+            }
+          })
+          
+          setTempGraph(graph)
+          props.setGraphProgress(30)
+        break;
+        case(30):
+          random.assign(tempGraph); //assigns each node a random x,y value between [0,1]
+          props.setGraphProgress(40)
+        break;
+        case(40):
+        forceAtlas2.assign(tempGraph, {iterations: 20});
+        props.setGraphProgress(50)
+        break;
+        case(50):
+        forceAtlas2.assign(tempGraph, {iterations: 20});
+        props.setGraphProgress(60)
+        break;
+        case(60):
+        forceAtlas2.assign(tempGraph, {iterations: 20});
+        props.setGraphProgress(70)
+        break;
+        case(70):
+        forceAtlas2.assign(tempGraph, {iterations: 20});
+        props.setGraphProgress(80)
+        break;
+        case(80):
+        forceAtlas2.assign(tempGraph, {iterations: 20});
+        props.setGraphProgress(90)
+        break;
+        case(90):
+        setGraph(tempGraph)
+        setGraphState("finished");
+        break;
+      }   
     }
-  }, [props.researcherNodes, props.graphEdges])
+  }, [props.researcherNodes, props.graphEdges, props.graphProgress])
 
   //On change of the selected node get information on the researcher
   useEffect(() => {
@@ -251,6 +282,30 @@ const ResearcherGraph = (props) => {
     }
   }
 
+  function CircularProgressWithLabel(props) { //from mui material-ui 
+    return (
+      <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+        <CircularProgress variant="determinate" {...props} />
+        <Box
+          sx={{
+            top: 0,
+            left: 0,
+            bottom: 0,
+            right: 0,
+            position: 'absolute',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Typography variant="caption" component="div" color="text.secondary">
+            {`${Math.round(props.value)}%`}
+          </Typography>
+        </Box>
+      </Box>
+    );
+  }
+
   return (
     <div className="Researcher-Graph">
       <Grid container spacing={0} direction="row">
@@ -398,7 +453,7 @@ const ResearcherGraph = (props) => {
               </SigmaContainer>
             </Card>
             ) : (graphState==="loading"? ( <center>
-                  <CircularProgress color="inherit" />
+                  <CircularProgressWithLabel value={props.graphProgress} />
                   <Typography gutterBottom variant="h5" color="#002145" margin="0px" component="div">
                         <b>Graph loading in progress...</b> 
                       </Typography>
