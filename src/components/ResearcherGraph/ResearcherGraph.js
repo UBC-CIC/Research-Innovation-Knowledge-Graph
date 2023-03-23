@@ -41,7 +41,7 @@ const ResearcherGraph = (props) => {
   // const [selectedEdge, setSelectedEdge] = useState(null);
 
   const [selectedResearcher, setSelectedResearcher] = useState(null);
-  const [similarResearchers, setSimilarResearchers] = useState([]);
+  const [similarResearchers, setSimilarResearchers] = useState(null);
 
   const [edgeResearcherOne, setEdgeResearcherOne] = useState(null);
   const [edgeResearcherTwo, setEdgeResearcherTwo] = useState(null);
@@ -124,6 +124,7 @@ const ResearcherGraph = (props) => {
       setSelectedDepth(1);
     } else{
       setSelectedResearcher(null);
+      setSimilarResearchers(null);
     }
   }, [props.selectedNode])
 
@@ -282,6 +283,59 @@ const ResearcherGraph = (props) => {
     }
   }
 
+  const PotentialConnections = ()=>{
+    const MAX_POTENTIAL_CONNECTIONS = 5;
+
+    const ResearchersList = ()=>{
+     
+      const researchersCards = [];
+      for(let i=0; i<Math.min(similarResearchers.length, MAX_POTENTIAL_CONNECTIONS); i++){
+        const researcher = similarResearchers[i]
+        researchersCards.push(
+          <Card key={i}  id="researchers-list-card">
+              <CardContent id="researchers-list-card-content">
+                <Typography variant="body1" color="#002145">
+                  <b>{researcher.firstName + " " + researcher.lastName}</b>
+                </Typography>
+                <Typography variant="body2" color="#404040">
+                {researcher.faculty}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                 <b>Keywords shared ({researcher.sharedKeywords.length}):</b> {researcher.sharedKeywords.join(", ")}
+                </Typography>
+              </CardContent>
+            </Card>
+        )
+      }
+        return researchersCards;
+    }
+    return (
+      <Accordion disableGutters id="accordion">
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <Typography variant="body1">Potential Connections</Typography>
+        </AccordionSummary>
+        <AccordionDetails id="accordion-details">
+          {similarResearchers ?
+          <Card id="accordion-details-card">
+            <CardContent id="potential-connections-card-content">
+            {similarResearchers.length==0 ?
+              <Typography variant="body2" color="text.secondary">No potential connections found.</Typography>
+            :<>
+              <Typography variant="caption" color="text.secondary">
+                These researchers have not collaborated with {selectedResearcher.firstName + " " + selectedResearcher.lastName} but share similar research topics.
+              </Typography>
+              <ResearchersList/>
+            </>
+            }
+            </CardContent>
+          </Card>
+          :(<center><CircularProgress color="inherit" /></center>)}
+        </AccordionDetails>
+      </Accordion>
+     
+    );
+  }
+
   function CircularProgressWithLabel(props) { //from mui material-ui 
     return (
       <Box sx={{ position: 'relative', display: 'inline-flex' }}>
@@ -326,13 +380,16 @@ const ResearcherGraph = (props) => {
               </Card>
             </AccordionDetails>
           </Accordion>
+          {props.selectedNode && !props.selectedEdge && (
+              <PotentialConnections/>
+          )}
           {/** Shows information on selected node and edge*/}
           <Accordion disableGutters expanded={detailsExpanded} onChange={()=>setDetailsExpanded(!detailsExpanded)} id="accordion">
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography variant="body1">Graph Details</Typography>
             </AccordionSummary>
             <AccordionDetails id="accordion-details">
-              <Card id="researcher-info-card">
+              <Card id="accordion-details-card">
                 <CardContent>
                   {props.selectedNode && !props.selectedEdge && (
                     selectedResearcher ? (
