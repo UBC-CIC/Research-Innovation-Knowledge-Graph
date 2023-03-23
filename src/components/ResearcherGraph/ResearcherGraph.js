@@ -312,7 +312,7 @@ const ResearcherGraph = (props) => {
     return (
       <Accordion disableGutters id="accordion">
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography variant="body1">Potential Connections</Typography>
+          <Typography variant="body1">Similar Researchers</Typography>
         </AccordionSummary>
         <AccordionDetails id="accordion-details">
           {similarResearchers ?

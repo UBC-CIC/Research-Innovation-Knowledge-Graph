@@ -47,7 +47,7 @@ export default function Nav_Bar(props) {
                 xs="none"
                 md="flex"
                 >
-                INST LOGO
+                Innovation Connections
                 </Typography>
                 <Box sx={{ flexGrow: 0 }}>
                     <Tooltip title="Open settings">
