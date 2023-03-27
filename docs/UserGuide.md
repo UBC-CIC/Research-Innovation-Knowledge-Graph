@@ -9,9 +9,9 @@
 | [Home](#Home)                                              | Home Page                                             |
 | [Main Graph](#Main-Graph)                                  | Main graph (Displays all Researchers)                 |
 | [Researchers Search](#Researchers-Search)                  | Researcher search bar (By name)                       |
+| [Researcher Node Selection](#Researcher-Node-Selection)    | Researcher profile and information page               |
 | [Side Panel](#Side-Panel)                                  | Additional information about the graph                |
 | [Filters](#Filters)                                        | Filters for the graph                                 |
-| [Researcher Node Selection](#Researcher-Node-Selection)    | Researcher profile and information page               |
 | [Updating Researchers](#Updating-Researchers)              | Process for Updating Researcher Data                  |
 
 **Note:** The screenshots contained in this User Guide show some information as redacted to obscure data that is not fully up to date.
@@ -24,11 +24,13 @@ The Home page displays the main view of the website and all components. This inc
 ![alt text](images/userGuide/home01.png)
 ![alt text](images/userGuide/home02.png)
 
-#### NOTE: "Innovation Connections" logo in this document may be replaced by the institution logo that will deploy this solution. 
+#### NOTE: "Innovation Connections" logo in this document may be replaced with the logo of the institution that will deploy this solution. 
 
 ## Main Graph
 
 The main graph displays all the researchers in the graph, where each researcher is represented as a node and an edge is the connection between two researchers. The color of each node represents which faculty they are in. Opening the [Graph Legend](#Graph-Legend) on the [Side Panel](#Side-Panel) will display which color represents which faculty. The thickness of the edge represents how well connected two researchers are, and this metric is determined by the number of papers the researchers share. 
+
+At the bottom right of the main graph are 3 view options. The `+` and `-` allows the user to zoom in and out of the graph respectively. This can also be controlled by using the scroll wheel to zoom in and out. The last option returns the graph to the default zoom level. 
 
 ## Researchers Search
 
@@ -40,37 +42,57 @@ Clicking on the `Show All` button will open a window displaying all the possible
 
 ![alt text](images/userGuide/researchers02.png)
 
+## Researcher Node Selection
+
+When a node is clicked on the graph it zooms into the selected researcher and defaults to showing their direct connections (higher level depth connections can be controlled by the [Levels of Connections](#levels-of-connections) toggle). Information is filled about the researcher under the [Graph Detail](#graph-details) and [Similar Researchers](#similar-researchers) sections of the [Side Panel](#side-panel). 
+
+To exit this mode and display the full graph again, the user must click anywhere outside the graph. 
+
+
 ## Side Panel
 
-The side panel is broken into two parts, the [Graph Legend](#graph-legend) and the [Graph Details](#graph-details). 
+The side panel is broken into two parts, the [Graph Legend](#graph-legend) and the [Graph Details](#graph-details). When a researcher is selected, the side panel will display a new option called [Similar Researchers](#similar-researchers)
 
 ### Graph Legend 
 
-The graph legend displays which faculty is represented by its respective color as a list. As well, by selecting specific faculty filters from the [Filters](#filters), the graph legend will display which faculties are currently being filtered on. 
+The graph legend displays which faculty is represented by its respective color in a list. By selecting specific faculty filters from the [Filters](#filters), the graph legend will display which faculty filters are currently applied. 
 
 ![alt text]()
 
 ### Graph Details 
 
+The graph details section is filled once a researcher node is selected. This shows specific details of the currently selected researcher as well as the option to show different levels of connections. 
 
+#### Levels of Connections
+
+This part of the graph details allows the user to control the level of connections of the currently selected researcher. This means the user can see mutual researchers that are 2 or 3 edges away and the graph will be updated as such.  
+
+### Similar Researchers
+
+The similar researchers section appears once a researcher node is selected. This shows researchers that share similar keywords/research topics with the currently selected researcher, ordered from most to least shared keywords/topics, and is limited to the top 5 most similar researchers. The information of each similar researcher consists of their name, faculty and list of shared keywords/topics. 
 
 ## Filters
 
-The filters allow the user to select which faculties they want to filter to graph by. There is also the option to filter the graph by specific keywords. They keywords must be comma separated and the filtering is case **insensitive**. The keyword filtering works by selecting researchers that match all the keywords that are entered. (Eg. by entering `genetics, covid` the filter will select researchers that have the keywords `genetics` **AND** `covid`)
+The filters allow the user to select which faculties and keywords to filter the graph by. By clicking the button `Filter the Graph` at the top right, a modal will pop up with all the filter options. Faculty filters are selected by clicking the box next to the filter. Keyword filters are entered in the text field and must be comma separated. The keyword filtering is case **insensitive**. The keyword filtering works by finding researchers that match all the keywords that are entered (Eg. by entering `genetics, covid` the graph will be filtered by researchers that have the keywords `genetics` **AND** `covid`). To apply the filters, click the `Apply Filters` button at the bottom of modal. 
 
 ![alt text](images/userGuide/publications01.png)
 
-To select the journal options you would like to filter by, click the journal name and the selected journal will appear above the dropdown menu.
-![alt text](images/userGuide/publications02.png)
-
-## Researcher Node Selection
-
-The advanced search page offers a more detailed method of finding information on the website, and increases search accuracy by allowing users to specify additional requirements for a search.
-
-The advanced search page can be accessed by clicking the `Advanced Search` button underneath the search bar in either the Home tab (will return results for both researchers and publications), Researchers tab (will only return results for researchers) or Publications tab (will only return results for publications).
 
 ![alt text](images/userGuide/advancedSearch01.png)
 
+## Website Tour 
+
+The website tour first appears when the user logs into the website or can be started again by pressing the [Start Tour](#start-tour--update-this-when-actually-updated-on-frontend) button. This gives the user a step-by-step rundown of the functionalities of the website. The user may also skip this by clicking on `Skip` at any point of the tour. 
+
+## Options 
+
+### Start Tour (?) update this when actually updated on frontend
+
+Allows the user to restart the website tour
+
+### Logout 
+
+Logs the user out of the app 
 There are 4 possible advanced search fields.
 
 1. Include All These Words
