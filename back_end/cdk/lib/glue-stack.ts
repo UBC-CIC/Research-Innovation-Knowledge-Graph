@@ -142,11 +142,9 @@ export class GlueStack extends Stack {
 
     // Grant S3 read/write role to Glue
     this.glueS3Bucket.grantReadWrite(glueRole);
-    grantDataS3Bucket.grantReadWrite(glueRole);
 
     // Destroy Glue related resources when GrantDataStack is deleted
     storeDataJob.applyRemovalPolicy(RemovalPolicy.DESTROY);
-    glueTrigger.applyRemovalPolicy(RemovalPolicy.DESTROY);
     this.glueConnection.applyRemovalPolicy(RemovalPolicy.DESTROY);
     glueRole.applyRemovalPolicy(RemovalPolicy.DESTROY);
   }
