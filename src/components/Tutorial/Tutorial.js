@@ -8,7 +8,7 @@ export default function Tutorial(props) {
         ]
     });
     const [spotlightClicks, setSpotlightClicks] = useState(true);
-    const [styles, setStyles] = useState({})
+    const [styles, setStyles] = useState({options:{primaryColor: '#1976d2'}})
     const [stepIndex, setStepIndex] = useState(0);
     const [spotlightPadding, setSpotlightPadding] = useState(0);
 
@@ -18,45 +18,45 @@ export default function Tutorial(props) {
         steps: [
             {
                 content: <h2>Welcome to the Knowledge Graph Tour</h2>,
-                locale: { skip: <strong aria-label="skip">S-K-I-P</strong> },
+                locale: { skip: <strong aria-label="skip">SKIP</strong> },
                 placement: 'center',
                 target: 'body',
             },
             {
-                locale: { skip: <strong aria-label="skip">S-K-I-P</strong> },
+                // locale: { skip: <strong aria-label="skip">SKIP</strong> },
                 target: '#sidePanel',
                 content: 'This section shows information on the graph. Click on the Graph Legend to learn about what the colors on the graph mean.',
                 placement: "right-start",
             },
             {
-                locale: { skip: <strong aria-label="skip">S-K-I-P</strong> },
+                // locale: { skip: <strong aria-label="skip">SKIP</strong> },
                 target: '#graph',
                 content: "This is the Knowledge Graph Component. Click on a node in the graph to continue.",
             },
             {
-                locale: { skip: <strong aria-label="skip">S-K-I-P</strong> },
+                // locale: { skip: <strong aria-label="skip">SKIP</strong> },
                 target: '#sidePanel',
                 content: "After clicking on a node the researchers information is filled in on the side panel.",
                 placement: "right-start",
             },
             {
-                locale: { skip: <strong aria-label="skip">S-K-I-P</strong> },
+                // locale: { skip: <strong aria-label="skip">SKIP</strong> },
                 target: '#graph',
                 content: "You can also learn about how researchers are connected. Click on a second researcher node to continue."
             },
             {
-                locale: { skip: <strong aria-label="skip">S-K-I-P</strong> },
+                // locale: { skip: <strong aria-label="skip">SKIP</strong> },
                 target: '#sidePanel',
                 content: "After clicking on a second researcher node the edge information is filled in on the side panel.",
                 placement: "right-start",
             },
             {
-                locale: { skip: <strong aria-label="skip">S-K-I-P</strong> },
+                // locale: { skip: <strong aria-label="skip">SKIP</strong> },
                 target: '#search-bar',
                 content: "You can also select nodes by searching for researchers by name in the search bar.",
             },
             {
-                locale: { skip: <strong aria-label="skip">S-K-I-P</strong> },
+                // locale: { skip: <strong aria-label="skip">SKIP</strong> },
                 target: '#filter-graph-button',
                 content: "Finally you can filter the graph by faculty and researcher keywords. You can filter by a single keyword or by multiple keywords. To filter by multiple keywords enter in a comma separated list of keywords.",
             },
@@ -108,11 +108,14 @@ export default function Tutorial(props) {
             setStyles({
                 buttonNext: {
                     display: 'none',
+                },
+                options:{
+                    primaryColor: '#1976d2',
                 }
             })
         }
         else {
-            setStyles({})
+            setStyles({options:{primaryColor: '#1976d2'}})
         }
 
         if(index == 6) {
