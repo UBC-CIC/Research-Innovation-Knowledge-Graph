@@ -8,7 +8,7 @@
 | :--------------------------------------------------------- | :---------------------------------------------------- |
 | [Home](#Home)                                              | Home Page                                             |
 | [Main Graph](#Main-Graph)                                  | Main graph (Displays all Researchers)                 |
-| [Researchers Search](#Researchers-Search)                  | Researcher search bar (By name)                       |
+| [Researchers Search](#Researcher-Search)                   | Researcher search bar (By name)                       |
 | [Researcher Node Selection](#Researcher-Node-Selection)    | Researcher profile and information page               |
 | [Side Panel](#Side-Panel)                                  | Additional information about the graph                |
 | [Filters](#Filters)                                        | Filters for the graph                                 |
@@ -19,7 +19,7 @@
 
 ## Home
 
-The Home page displays the main view of the website and all components. This includes the [Main Graph Component](#main-graph), [Searchbar Component](#researchers-search), [Filters](#Filters), and the [Side Panel](#Side-Panel).
+The Home page displays the main view of the website and all components. This includes the [Main Graph Component](#main-graph), [Searchbar Component](#researcher-search), [Filters](#Filters), and the [Side Panel](#Side-Panel).
 
 ![alt text](images/userGuide/home01.png)
 ![alt text](images/userGuide/home02.png)
@@ -28,19 +28,17 @@ The Home page displays the main view of the website and all components. This inc
 
 ## Main Graph
 
-The main graph displays all the researchers in the graph, where each researcher is represented as a node and an edge is the connection between two researchers. The color of each node represents which faculty they are in. Opening the [Graph Legend](#Graph-Legend) on the [Side Panel](#Side-Panel) will display which color represents which faculty. The thickness of the edge represents how well connected two researchers are, and this metric is determined by the number of papers the researchers share. 
+The main graph displays all the researchers in the graph, where each researcher is represented as a node and an edge is the connection between two researchers. A connection between two researchers means that they have co-authored a research paper together. 
 
-At the bottom right of the main graph are 3 view options. The `+` and `-` allows the user to zoom in and out of the graph respectively. This can also be controlled by using the scroll wheel to zoom in and out. The last option returns the graph to the default zoom level. 
+The color of each node represents which faculty they are in. Opening the [Graph Legend](#Graph-Legend) on the [Side Panel](#Side-Panel) will display which color represents which faculty. The thickness of the edge represents how well connected two researchers are, and this metric is determined by the number of papers the researchers share. 
 
-## Researchers Search
+At the bottom right of the main graph are 3 view options. The `+` and `-` allows the user to zoom in and out of the graph respectively. These can also be controlled by using the scroll wheel to zoom in and out. The last option returns the graph to the default zoom level and centers the graph. 
+
+## Researcher Search
 
 The search bar allows the user to search for a specific researcher by their name. As you type into the search bar, a dropdown list of suggested researchers that match the current string appears. Clicking on a node zooms into the selected researcher ([Researcher Node Selection Mode](#Researcher-Node-Selection)).
 
 ![alt text](images/userGuide/researchers01.png)
-
-Clicking on the `Show All` button will open a window displaying all the possible options for the filter category. To select the options you would like to filter by, click the checkbox beside the option name. Then click `Apply Filters`. Multiple filter options can be selected from both the Department and Faculty category.
-
-![alt text](images/userGuide/researchers02.png)
 
 ## Researcher Node Selection
 
@@ -51,13 +49,13 @@ To exit this mode and display the full graph again, the user must click anywhere
 
 ## Side Panel
 
-The side panel is broken into two parts, the [Graph Legend](#graph-legend) and the [Graph Details](#graph-details). When a researcher is selected, the side panel will display a new option called [Similar Researchers](#similar-researchers)
+The side panel is broken into two parts, the [Graph Legend](#graph-legend) and the [Graph Details](#graph-details). When a researcher is selected, the side panel will display another dropdown called [Similar Researchers](#similar-researchers).
+
+![alt text]()
 
 ### Graph Legend 
 
 The graph legend displays which faculty is represented by its respective color in a list. By selecting specific faculty filters from the [Filters](#filters), the graph legend will display which faculty filters are currently applied. 
-
-![alt text]()
 
 ### Graph Details 
 
@@ -65,7 +63,7 @@ The graph details section is filled once a researcher node is selected. This sho
 
 #### Levels of Connections
 
-This part of the graph details allows the user to control the level of connections of the currently selected researcher. This means the user can see mutual researchers that are 2 or 3 edges away and the graph will be updated as such.  
+This part of the graph details allows the user to control the level of connections of the currently selected researcher. This means the user can see mutual researcher connections that are 2 or 3 edges away and the graph will be updated as such.  
 
 ### Similar Researchers
 
@@ -73,7 +71,7 @@ The similar researchers section appears once a researcher node is selected. This
 
 ## Filters
 
-The filters allow the user to select which faculties and keywords to filter the graph by. By clicking the button `Filter the Graph` at the top right, a modal will pop up with all the filter options. Faculty filters are selected by clicking the box next to the filter. Keyword filters are entered in the text field and must be comma separated. The keyword filtering is case **insensitive**. The keyword filtering works by finding researchers that match all the keywords that are entered (Eg. by entering `genetics, covid` the graph will be filtered by researchers that have the keywords `genetics` **AND** `covid`). To apply the filters, click the `Apply Filters` button at the bottom of modal. 
+The filters allow the user to select which faculties and keywords to filter the graph by. By clicking the button `Filter the Graph` at the top right, a modal will pop up with all the filter options. Faculty filters are selected by clicking the box next to the filter. Keyword filters are entered in the text field and **must** be comma separated. The keyword filtering is case **insensitive**. The keyword filtering works by finding researchers that match all the keywords that are entered (Eg. by entering `genetics, covid` the graph will be filtered by researchers that have the keywords `genetics` **AND** `covid`). To apply the filters, click the `Apply Filters` button at the bottom of modal. 
 
 ![alt text](images/userGuide/publications01.png)
 
@@ -93,122 +91,6 @@ Allows the user to restart the website tour
 ### Logout 
 
 Logs the user out of the app 
-There are 4 possible advanced search fields.
-
-1. Include All These Words
-
-   - Separate each key word with a space character
-   - eg. If you would like the words "Covid-19" and "pandemic" to both be included in your search results, enter `Covid-19 pandemic` into the text field.
-
-2. Include These Exact Phrases
-
-   - Enter the phrase you would like to search for in quotation marks
-   - eg. If you would like a publication to include the phrase "Covid-19 Pandemic Effects", enter `"Covid-19 Pandemic Effects"` into the text field.
-
-3. Include Any Of These Words
-
-   - Separate each key word with a space character
-   - eg. If any of the words "Covid-19", "pandemic", or "effects" can be included in your search results, enter `Covid-19 pandemic effects` into the text field.
-
-4. Do Not Include Any Of These Words
-
-   - Separate each key word that cannot be included with a minus (-) character
-   - eg. If you do not want any of the words "Covid-19", "pandemic", or "effects" to be included in your search results, enter `-Covid-19 -pandemic -effects` into the text field.
-
-![alt text](images/userGuide/advancedSearch02.png)
-
-<br>
-
-Search results can also be refined by filtering researchers by department or by faculty. Publications can be filtered by year and by journal.
-<br>
-![alt text](images/userGuide/advancedSearch03.png)
-
-
-## Researcher Profile
-
-The researcher profile page contains general information about a researcher, their publications, areas of interest and a list of similar researchers.
-
-### General Information
-
-The researcher's general information including name, faculty, department, email, phone number, office Scopus ID, and time last updated are displayed here.
-<br>
-![alt text](images/userGuide/researcherProfile01.png)
-
-### Researcher Highlights
-
-Some of the researcher's highlights are displayed here, including their number of publications, H-index, funding and a graph displaying their number of publications each year for the past five years.
-![alt text](images/userGuide/researcherProfile02.png)
-
-Clicking on the expand arrow icon on the smaller graph will display a graph below that shows the number of publications each year for the past 15 years.
-![alt text](images/userGuide/researcherProfile04.png)
-![alt text](images/userGuide/researcherProfile03.png)
-
-### Areas of Interest and Similar Researchers
-
-This section displays a list of the researcher's areas of interest. The researcher's top five areas of interest are shown by default. To view all, click the `View All Areas of Interest` button.
-<br>
-![alt text](images/userGuide/researcherProfile05.png)
-Clicking the `10 Similar Researchers` button will display a list of researchers that are in the same faculty, department, or have similar areas of interest.
-![alt text](images/userGuide/researcherProfile06.png)
-
-### Publications
-
-This section displays a list of the researcher's publications, along with information about the number of citations and the year published. Clicking on the publication title will open the publication in Scopus.
-<br>
-![alt text](images/userGuide/researcherProfile07.png)
-
-Hovering over the `Title` table column header will display an arrow icon. Clicking on this arrow icon will show the list of publications in alphabetical order.
-![alt text](images/userGuide/researcherProfile08.png)
-![alt text](images/userGuide/researcherProfile09.png)
-
-Hovering over the `Year Published` table column header display an arrow icon. Clicking on this arrow icon will sort the publications by year published starting from the most recent year.
-![alt text](images/userGuide/researcherProfile10.png)
-
-## Impact
-
-The Impact tab displays a table with all researchers sorted by their H index for the past 5 years. Researcher impact can be filtered by department or by faculty by clicking on the `Impact By Department` or `Impact By Faculty` toggle tabs above the impacts table.
-![alt text](images/userGuide/rankings01.png)
-
-## Metrics
-
-The Metrics tab displays a word cloud containing the top 100 keywords in the Institution's research during a user selected date range. The font size of each word in the word cloud corresponds to the frequency that that word has appeared in publication titles during the selected date range. The earliest available year is 1908, and the latest available year is the current year.
-![alt text](images/userGuide/metrics01.png)
-
-The selected date range can be changed by moving either one of the date range slider buttons. A new word cloud will then be formed with the words for the updated date range.
-
-![alt text](images/userGuide/metrics03.png)
-
-To view the exact number of times a certain keyword has appeared, hover over the word and a popup will appear. If you would like to search for that keyword, click the word to open a new tab containing the search results.
-![alt text](images/userGuide/metrics02.png)
-
-## Admin Dashboard
-
-The admin dashboard page is only accessible by admin users. Once the user has logged in, this page is used for viewing logs of when data has been updated on the site, changing Scopus IDs of researchers on the site, and viewing any discrepancies in researcher entries.
-
-The admin dashboard page contains three tabs.
-![alt text](images/userGuide/adminDashboard03.png)
-
-### 1. Logs
-
-The Logs tab contains two tables. The first table displays logs of the time at which publications are updated, as well as the number of publications that are updated.
-![alt text](images/userGuide/adminDashboard04.png)
-The second table displays logs of the time at which researchres are updated, as well as the name of the researcher that are updated.
-![alt text](images/userGuide/adminDashboard05.png)
-
-### 2. Change Scopus IDs
-
-The Change Scopus IDs tab allows admin users to change the Scopus ID of any researcher. To change a Scopus Id, begin by entering the current researcher Scopus ID that you would like to change. Then click `Look Up Scopus ID`.
-![alt text](images/userGuide/adminDashboard01.png)
-This will open a window displaying the information of the researcher associated with that Scopus ID. Enter the new Scopus ID in the text field beside `Input New Scopus ID:`. Then click the `Change Scopus ID` button on the lower right hand side of the window.
-![alt text](images/userGuide/adminDashboard02.png)
-
-### 3. Flagged IDs
-
-The flagged IDs tab displays researchers that have had their Scopus ID flagged. At the top of the page, there will be a message showing how many researchers there currently are with flagged IDs.
-![alt text](images/userGuide/adminDashboard06.png)
-
-Below that, flagged researcher entries are grouped into tables with the columns containing Researcher Name, Scopus ID, Employee ID, Department, Faculty and Reason Flagged information.
-![alt text](images/userGuide/adminDashboard07.png)
 
 ## Updating Researchers
 
