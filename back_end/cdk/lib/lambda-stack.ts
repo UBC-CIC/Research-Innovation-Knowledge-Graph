@@ -22,7 +22,7 @@ export class LambdaStack extends cdk.Stack {
     */
     // The layer containing the psycopg2 library
     this.psycopg2 = new lambda.LayerVersion(this, 'psycopg2', {
-        code: lambda.Code.fromAsset('layers/psycopg2.zip'),
+        code: lambda.Code.fromAsset('layers/psycopg2/psycopg2.zip'),
         compatibleRuntimes: [lambda.Runtime.PYTHON_3_9],
         description: 'Contains the psycopg2 library',
       });
