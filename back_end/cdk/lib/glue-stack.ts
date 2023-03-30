@@ -135,18 +135,16 @@ export class GlueStack extends Stack {
 
     // Deploy glue job to glue S3 bucket
     new s3deploy.BucketDeployment(this, "DeployGlueJobFiles", {
-      sources: [s3deploy.Source.asset("./glue/scripts/")],
+      sources: [s3deploy.Source.asset("../glue/scripts/")],
       destinationBucket: this.glueS3Bucket,
       destinationKeyPrefix: "scripts/",
     });
 
     // Grant S3 read/write role to Glue
     this.glueS3Bucket.grantReadWrite(glueRole);
-    grantDataS3Bucket.grantReadWrite(glueRole);
 
     // Destroy Glue related resources when GrantDataStack is deleted
     storeDataJob.applyRemovalPolicy(RemovalPolicy.DESTROY);
-    glueTrigger.applyRemovalPolicy(RemovalPolicy.DESTROY);
     this.glueConnection.applyRemovalPolicy(RemovalPolicy.DESTROY);
     glueRole.applyRemovalPolicy(RemovalPolicy.DESTROY);
   }
