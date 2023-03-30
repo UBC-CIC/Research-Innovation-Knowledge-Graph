@@ -18,8 +18,8 @@ export class AppsyncStack extends Stack {
 
     // Get the API ID from paramter Store
     // During Amplify Deployment the APIID is stored in parameter store
-    const APIID = ssm.StringParameter.fromStringParameterAttributes(this, 'KnowledgeGraphQLAPIIdOutput', {
-      parameterName: 'KnowledgeGraphQLAPIIdOutput',
+    const APIID = ssm.StringParameter.fromStringParameterAttributes(this, 'KnowledgeGraphGraphQLAPIIdOutput', {
+      parameterName: 'KnowledgeGraphGraphQLAPIIdOutput',
     }).stringValue;
 
     //Get default secuirty group
