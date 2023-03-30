@@ -14,5 +14,5 @@ const databaseStack = new DatabaseStack(app, 'KnowledgeGraphDatabaseStack', vpcS
     {env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION }});
 const appsyncStack = new AppsyncStack(app, 'KnowledgeGraphAppsyncStack', vpcStack, databaseStack,
     {env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION }});
-//const glueStack = new GlueStack(app, 'KnowledgeGraphGlueStack', vpcStack, databaseStack,
- //   {env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION }});
+const glueStack = new GlueStack(app, 'KnowledgeGraphGlueStack', vpcStack, databaseStack,
+    {env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION }});
