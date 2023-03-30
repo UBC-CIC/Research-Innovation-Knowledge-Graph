@@ -3,11 +3,11 @@
     "researchinnovationkn": {
       "dependsOn": [
         {
-          "category": "auth",
-          "resourceName": "researchinnovationkn32bce4bb",
           "attributes": [
             "UserPoolId"
-          ]
+          ],
+          "category": "auth",
+          "resourceName": "researchinnovationkn32bce4bb"
         }
       ],
       "output": {
