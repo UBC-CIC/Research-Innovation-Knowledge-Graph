@@ -97,7 +97,7 @@ export class AppsyncStack extends Stack {
   const getAllFaculties = new lambda.Function(this, 'knowledgeGraph-getAllFaculties', {
     functionName: 'knowledgeGraph-getAllFaculties',
     runtime: lambda.Runtime.PYTHON_3_9,
-    handler: 'getAllFaculties.lambda_handler',
+    handler: 'lambda_function.lambda_handler',
     layers: [psycopg2],
     code: lambda.Code.fromAsset('lambda/getAllFaculties'),
     timeout: cdk.Duration.minutes(15),
@@ -113,7 +113,7 @@ export class AppsyncStack extends Stack {
   const getSharedPublications = new lambda.Function(this, 'knowledgeGraph-getSharedPublications', {
       functionName: 'knowledgeGraph-getSharedPublications',
       runtime: lambda.Runtime.PYTHON_3_9,
-      handler: 'getSharedPublications.lambda_handler',
+      handler: 'lambda_function.lambda_handler',
       layers: [psycopg2],
       code: lambda.Code.fromAsset('lambda/getSharedPublications'),
       timeout: cdk.Duration.minutes(15),
@@ -129,7 +129,7 @@ export class AppsyncStack extends Stack {
     const fetchResearcherInformation = new lambda.Function(this, 'knowledgeGraph-fetchResearcherInformation', {
       functionName: 'knowledgeGraph-fetchResearcherInformation',
       runtime: lambda.Runtime.PYTHON_3_9,
-      handler: 'fetchResearcherInformation.lambda_handler',
+      handler: 'lambda_function.lambda_handler',
       layers: [psycopg2],
       code: lambda.Code.fromAsset('lambda/fetchResearcherInformation'),
       timeout: cdk.Duration.minutes(15),
@@ -145,7 +145,7 @@ export class AppsyncStack extends Stack {
     const fetchResearcherNodes = new lambda.Function(this, 'knowledgeGraph-fetchResearcherNodes', {
       functionName: 'knowledgeGraph-fetchResearcherNodes',
       runtime: lambda.Runtime.PYTHON_3_9,
-      handler: 'fetchResearcherNodes.lambda_handler',
+      handler: 'lambda_function.lambda_handler',
       layers: [psycopg2],
       code: lambda.Code.fromAsset('lambda/fetchResearcherNodes'),
       timeout: cdk.Duration.minutes(15),
@@ -161,7 +161,7 @@ export class AppsyncStack extends Stack {
     const fetchEdgesFromPostgres = new lambda.Function(this, 'knowledgeGraph-fetchEdgesFromPostgres', {
       functionName: 'knowledgeGraph-fetchEdgesFromPostgres',
       runtime: lambda.Runtime.PYTHON_3_9,
-      handler: 'fetchEdgesFromPostgres.lambda_handler',
+      handler: 'lambda_function.lambda_handler',
       layers: [psycopg2],
       code: lambda.Code.fromAsset('lambda/fetchEdgesFromPostgres'),
       timeout: cdk.Duration.minutes(15),
@@ -177,7 +177,7 @@ export class AppsyncStack extends Stack {
     const getSimilarResearchers = new lambda.Function(this, 'knowledgeGraph-getSimilarResearchers', {
       functionName: 'knowledgeGraph-getSimilarResearchers',
       runtime: lambda.Runtime.PYTHON_3_9,
-      handler: 'getSimilarResearchers.lambda_handler',
+      handler: 'lambda_function.lambda_handler',
       layers: [psycopg2],
       code: lambda.Code.fromAsset('lambda/getSimilarResearchers'),
       timeout: cdk.Duration.minutes(15),
