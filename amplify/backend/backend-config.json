@@ -52,22 +52,5 @@
       "providerPlugin": "awscloudformation",
       "service": "Cognito"
     }
-  },
-  "custom": {
-    "parameterstoreGraphQL": {
-      "dependsOn": [
-        {
-          "category": "api",
-          "resourceName": "researchinnovationkn",
-          "attributes": [
-            "GraphQLAPIKeyOutput",
-            "GraphQLAPIIdOutput",
-            "GraphQLAPIEndpointOutput"
-          ]
-        }
-      ],
-      "providerPlugin": "awscloudformation",
-      "service": "customCDK"
-    }
   }
 }
