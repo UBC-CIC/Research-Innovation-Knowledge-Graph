@@ -14,12 +14,10 @@ export class DatabaseStack extends Stack {
     constructor(scope: Construct, id: string, vpcStack: VpcStack, props?: StackProps) {
       super(scope, id, props);
 
-    this.secretPath = 'knowledgeGraph/credentials/dbCredentials';
+    this.secretPath = 'knowledgeGraph/credentials/databaseCredentials';
 
     // Database secret with customized username retrieve at deployment time
     const dbUsername = sm.Secret.fromSecretNameV2(this, 'knowledgeGraph-dbUsername', 'knowledgeGraph-dbUsername')
-    console.log(dbUsername)
-    console.log(dbUsername.secretValueFromJson("username").unsafeUnwrap())
 
     // Define the postgres database
     this.dbInstance = new rds.DatabaseInstance(this, 'knowledgeGraph', {
