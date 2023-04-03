@@ -18,6 +18,8 @@ export class DatabaseStack extends Stack {
 
     // Database secret with customized username retrieve at deployment time
     const dbUsername = sm.Secret.fromSecretNameV2(this, 'knowledgeGraph-dbUsername', 'knowledgeGraph-dbUsername')
+    console.log(dbUsername)
+    console.log(dbUsername.secretValueFromJson("username").unsafeUnwrap())
 
     // Define the postgres database
     this.dbInstance = new rds.DatabaseInstance(this, 'knowledgeGraph', {
@@ -37,7 +39,7 @@ export class DatabaseStack extends Stack {
       }),
       multiAz: true,
       allocatedStorage: 100,
-      maxAllocatedStorage: 200,
+      maxAllocatedStorage: 115,
       allowMajorVersionUpgrade: false,
       autoMinorVersionUpgrade: true,
       backupRetention: cdk.Duration.days(7),
