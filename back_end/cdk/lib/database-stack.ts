@@ -19,6 +19,16 @@ export class DatabaseStack extends Stack {
     // Database secret with customized username retrieve at deployment time
     const dbUsername = sm.Secret.fromSecretNameV2(this, 'knowledgeGraph-dbUsername', 'knowledgeGraph-dbUsername')
 
+    const parameterGroup = new rds.ParameterGroup(this, "rdsParameterGroup", {
+      engine: rds.DatabaseInstanceEngine.postgres({
+        version: rds.PostgresEngineVersion.VER_13_4,
+      }),
+      description: "Custom Parameter Group To Allow DMS Replication",
+      parameters: {
+        "rds.logical_replication": "1",
+      }
+    })
+
     // Define the postgres database
     this.dbInstance = new rds.DatabaseInstance(this, 'knowledgeGraph', {
       vpc: vpcStack.vpc,
@@ -45,6 +55,7 @@ export class DatabaseStack extends Stack {
       deletionProtection: true,
       databaseName: 'knowledgeGraph',
       publiclyAccessible: false,
+      parameterGroup: parameterGroup,
       cloudwatchLogsRetention: logs.RetentionDays.INFINITE,
       storageEncrypted: true, // storage encryption at rest
     });
