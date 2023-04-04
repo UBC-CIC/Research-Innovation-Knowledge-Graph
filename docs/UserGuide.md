@@ -56,7 +56,7 @@ When a node is clicked on the graph it zooms into the selected researcher and de
 ![alt text](images/userguide/researcher-node-selection.png)
 
 
-Clicking on another researcher in this mode hides the other direct connections and updates the [Graph Details](#graph-details) to display which papers the two researchers share together.
+Clicking on another researcher in this mode hides the other direct connections and updates the [Graph Details](#graph-details) to display a list of papers the two researchers share together. This list contains links to Scopus of the research papers they have wrote.
 
 ![alt text](images/userguide/connected-researchers-graph-details.png)
 
