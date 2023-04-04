@@ -30,6 +30,12 @@ The Home page displays the main view of the website and all components. This inc
 
 The main graph displays all the researchers in the graph, where each researcher is represented as a node and an edge is the connection between two researchers. A connection between two researchers means that they have co-authored a research paper together. 
 
+The size of a node represents how well-connected a researcher is, the more connections the larger the node. 
+
+The thickness of an edge represents how strong the connection is between researchers, which is determined by how many papers the they have co-authored.
+
+Hovering over a node in the graph displays the researchers name and greys out the rest of the graph *except* for their direct connections
+
 The color of each node represents which faculty they are in. Opening the [Graph Legend](#Graph-Legend) on the [Side Panel](#Side-Panel) will display which color represents which faculty. The thickness of the edge represents how well connected two researchers are, and this metric is determined by the number of papers the researchers share. 
 
 At the bottom right of the main graph are 3 view options. The `+` and `-` allows the user to zoom in and out of the graph respectively. These can also be controlled by using the scroll wheel to zoom in and out. The last option returns the graph to the default zoom level and centers the graph. 
@@ -44,14 +50,15 @@ The search bar allows the user to search for a specific researcher by their name
 
 When a node is clicked on the graph it zooms into the selected researcher and defaults to showing their direct connections (higher level depth connections can be controlled by the [Levels of Connections](#levels-of-connections) toggle). Information is filled about the researcher under the [Graph Detail](#graph-details) and [Similar Researchers](#similar-researchers) sections of the [Side Panel](#side-panel). 
 
-To exit this mode and display the full graph again, the user must click anywhere outside the graph. 
+Clicking on another researcher in this mode hides the other direct connections and updates the [Graph Details](#graph-details) to display which papers the two researchers share together. 
 
+To exit this mode and display the full graph again, the user must click anywhere outside the graph. 
 
 ## Side Panel
 
 The side panel is broken into two parts, the [Graph Legend](#graph-legend) and the [Graph Details](#graph-details). When a researcher is selected, the side panel will display another dropdown called [Similar Researchers](#similar-researchers).
 
-![alt text]()
+![alt text](images/userguide/sidepanel.png)
 
 ### Graph Legend 
 
@@ -63,7 +70,7 @@ The graph details section is filled once a researcher node is selected. This sho
 
 #### Levels of Connections
 
-This part of the graph details allows the user to control the level of connections of the currently selected researcher. This means the user can see mutual researcher connections that are 2 or 3 edges away and the graph will be updated as such.  
+This part of the graph details allows the user to control the level of connections of the currently selected researcher. This means the user can see mutual researcher connections that are 2 or 3 edges away and the [selected researcher graph](#researcher-node-selection) will be updated as such.  
 
 ### Similar Researchers
 
@@ -75,8 +82,6 @@ The filters allow the user to select which faculties and keywords to filter the 
 
 ![alt text](images/userGuide/publications01.png)
 
-
-![alt text](images/userGuide/advancedSearch01.png)
 
 ## Website Tour 
 
