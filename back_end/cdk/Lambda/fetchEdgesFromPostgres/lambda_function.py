@@ -7,7 +7,6 @@ sm_client = boto3.client('secretsmanager')
 #This function gets the credentials for the databae
 def getCredentials():
     credentials = {}
-
     response = sm_client.get_secret_value(SecretId='knowledgeGraph/credentials/dbCredentials')
     secrets = json.loads(response['SecretString'])
     credentials['username'] = secrets['username']
@@ -20,9 +19,8 @@ def createKeywordsString(keywordList):
     queryString = ""
     keywordsToAdd = []
     for index, keyword in enumerate(keywordList):
-        print(index)
         if index != len(keywordList) - 1:
-            queryString = queryString + " keywords LIKE %s OR "
+            queryString = queryString + " keywords LIKE %s AND "
         else:
             queryString = queryString + " keywords LIKE %s "
         keywordsToAdd.append("%"+keyword+"%")
@@ -33,6 +31,8 @@ def lambda_handler(event, context):
     credentials = getCredentials()
     connection = psycopg2.connect(user=credentials['username'], password=credentials['password'], host=credentials['host'], database=credentials['db'])
     cursor = connection.cursor()
+    
+    result = []
     
     if len(event["arguments"]["facultiesToFilterOn"]) > 0 and len(event["arguments"]["keyword"]) > 0:
         queryData = []
@@ -90,17 +90,15 @@ def lambda_handler(event, context):
         #add keywords
         query = query + keywordQueryString
         
-        query = query + "))"
+        query = query + ")) AND source_id<>target_id"
         
         cursor.execute(query, (queryData))
     else:
         cursor.execute("SELECT * FROM public.edges_full")
-        
+    
     result = cursor.fetchall() #This command gets all the data you can fetch one as well
     
     edgesList = []
-    
-    print(result)
     
     for edge in result:
         # weight = min(3,edge[3])
