@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import '../index.css';
 import Grid from '@mui/material/Grid';
-import ResearcherGraph from './ResearcherGraph/ResearcherGraph';
+import {ResearcherGraph} from './ResearcherGraph/ResearcherGraph';
 import Navbar from "./Navbar/navbar";
 import {SearchBar} from "./Searchbar/searchbar"
 import Tutorial from "./Tutorial/Tutorial";
@@ -81,6 +81,8 @@ export default function TheApp(props) {
   const changeGraph = () => {
     setGraphEdges(null);
     setResearcherNodes(null);
+    setSelectedNode(null);
+    setSelectedEdge(null);
     setGraphProgress(10)
     getGraph();
   }

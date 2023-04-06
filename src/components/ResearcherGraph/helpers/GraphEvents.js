@@ -18,7 +18,6 @@ const GraphEvents = ({firstClickedNode,setFirstClickedNode, selectedEdge, setSel
 
   // use effect used to register the events
   useEffect(() => {
-    console.log("event mounts")
     registerEvents(getGraphEvents());
   }, [registerEvents]);
 
@@ -27,15 +26,12 @@ const GraphEvents = ({firstClickedNode,setFirstClickedNode, selectedEdge, setSel
     if(firstClickedNode){
       setEdgeSelectionMode(true);
       setSecondClickedNode(null);
-      //if(hoveredNode!=firstClickedNode){ 
-        //if the firstClickNode arrives through parameter we need to highlight.
-        //if we clicked it though the canvas it is already highlighted 
-        highlightAdjacentNodes(firstClickedNode,"click");
-      //}
+      highlightAdjacentNodes(firstClickedNode,"click");
+
     }else{
       setEdgeSelectionMode(null);
       setSecondClickedNode(null);
-      setSelectedEdge(null)
+      setSelectedEdge(null);
       removeHighlight();
     }
     setClickedNode(null)
@@ -46,7 +42,7 @@ const GraphEvents = ({firstClickedNode,setFirstClickedNode, selectedEdge, setSel
   const highlightAdjacentNodes= (coreNode,mode) => {
     let hidden=false;
     if (mode=="click"){ 
-      hidden=true
+      hidden=true;
     }
     //non-neighboring edges change to NODE_FADE_COLOR
     sigma.setSetting("nodeReducer", (node, data) => {
