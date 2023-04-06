@@ -6,6 +6,8 @@ import { VpcStack } from './vpc-stack';
 import { aws_appsync as appsync } from 'aws-cdk-lib';
 import * as cdk from 'aws-cdk-lib'
 import { ArnPrincipal, Effect, PolicyDocument, PolicyStatement, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
+import { aws_iam as iam} from 'aws-cdk-lib';
+import { triggers } from 'aws-cdk-lib';
 import * as ssm from 'aws-cdk-lib/aws-ssm';
 import { DatabaseStack } from './database-stack';
 import * as wafv2 from 'aws-cdk-lib/aws-wafv2';
@@ -33,25 +35,6 @@ export class AppsyncStack extends Stack {
       compatibleRuntimes: [lambda.Runtime.PYTHON_3_9],
       description: 'Contains the psycopg2 library',
     });
-
-  /*
-  // Create the database tables (runs during deployment)
-  const createTables = new triggers.TriggerFunction(this, 'knowledgeGraph-createTables', {
-    functionName: 'knowledgeGraph-createTables',
-    runtime: lambda.Runtime.PYTHON_3_9,
-    handler: 'createTables.lambda_handler',
-    layers: [this.psycopg2],
-    code: lambda.Code.fromAsset('lambda/createTables'),
-    timeout: cdk.Duration.minutes(15),
-    memorySize: 512,
-    vpc: databaseStack.dbInstance.vpc, // add to the same vpc as rds
-  });
-  createTables.role?.addManagedPolicy(
-    iam.ManagedPolicy.fromAwsManagedPolicyName(
-      'SecretsManagerReadWrite',
-    ),
-  );
-  */
 
   /*
       Create the lambda role
@@ -93,6 +76,23 @@ export class AppsyncStack extends Stack {
   /*
     Define Lambdas and add correct permissions
   */
+  // Create the database tables (runs during deployment)
+  const createTables = new triggers.TriggerFunction(this, 'knowledgeGraph-createTables', {
+    functionName: 'knowledgeGraph-createTables',
+    runtime: lambda.Runtime.PYTHON_3_9,
+    handler: 'lambda_function.lambda_handler',
+    layers: [psycopg2],
+    code: lambda.Code.fromAsset('lambda/createTables'),
+    timeout: cdk.Duration.minutes(15),
+    memorySize: 512,
+    vpc: databaseStack.dbInstance.vpc, // add to the same vpc as rds
+  });
+  createTables.role?.addManagedPolicy(
+    iam.ManagedPolicy.fromAwsManagedPolicyName(
+      'SecretsManagerReadWrite',
+    ),
+  );
+
   const getAllFaculties = new lambda.Function(this, 'knowledgeGraph-getAllFaculties', {
     functionName: 'knowledgeGraph-getAllFaculties',
     runtime: lambda.Runtime.PYTHON_3_9,
