@@ -8,7 +8,7 @@ sm_client = boto3.client('secretsmanager')
 def getCredentials():
     credentials = {}
 
-    response = sm_client.get_secret_value(SecretId='knowledgeGraph/credentials/dbCredentials')
+    response = sm_client.get_secret_value(SecretId='knowledgeGraph/credentials/databaseCredentials')
     secrets = json.loads(response['SecretString'])
     credentials['username'] = secrets['username']
     credentials['password'] = secrets['password']
