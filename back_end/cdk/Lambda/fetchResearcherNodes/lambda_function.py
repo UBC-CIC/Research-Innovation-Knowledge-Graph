@@ -58,17 +58,13 @@ def lambda_handler(event, context):
         query = "SELECT * FROM public.researcher_data WHERE prime_faculty=ANY(%s) AND ("
         
         for index, keyword in enumerate(keywordList):
-            print(index)
             if index != len(keywordList) - 1:
-                query = query + " keywords LIKE %s OR "
+                query = query + " keywords LIKE %s AND "
             else:
                 query = query + " keywords LIKE %s "
             queryData.append("%"+keyword+"%")
         
         query = query + ") AND (scopus_id = ANY (SELECT source_id FROM public.edges_full) OR scopus_id = ANY (SELECT target_id FROM public.edges_full))"
-        
-        print(query)
-        print(queryData)
         cursor.execute(query, (queryData))
     elif len(event["arguments"]["facultiesToFilterOn"]) > 0:
         cursor.execute("SELECT * FROM public.researcher_data WHERE prime_faculty=ANY(%s) AND (scopus_id = ANY (SELECT source_id FROM public.edges_full) OR scopus_id = ANY (SELECT target_id FROM public.edges_full))", (event["arguments"]["facultiesToFilterOn"],))
@@ -80,9 +76,8 @@ def lambda_handler(event, context):
         query = "SELECT * FROM public.researcher_data WHERE ("
         
         for index, keyword in enumerate(keywordList):
-            print(index)
             if index != len(keywordList) - 1:
-                query = query + " keywords LIKE %s OR "
+                query = query + " keywords LIKE %s AND "
             else:
                 query = query + " keywords LIKE %s "
             queryData.append("%"+keyword+"%")
@@ -102,6 +97,7 @@ def lambda_handler(event, context):
     keyList = []
     
     for researcher in result:
+        
         if researcher[8] not in keyList:
             researcherObject = {
                 "key": researcher[8],
