@@ -9,7 +9,6 @@ import { ArnPrincipal, Effect, PolicyDocument, PolicyStatement, Role, ServicePri
 import * as ssm from 'aws-cdk-lib/aws-ssm';
 import { DatabaseStack } from './database-stack';
 import * as wafv2 from 'aws-cdk-lib/aws-wafv2';
-import { LambdaStack } from './lambda-stack';
 import { aws_logs as logs } from 'aws-cdk-lib';
 
 export class AppsyncStack extends Stack {
@@ -37,8 +36,8 @@ export class AppsyncStack extends Stack {
 
   /*
   // Create the database tables (runs during deployment)
-  const createTables = new triggers.TriggerFunction(this, 'expertiseDashboard-createTables', {
-    functionName: 'expertiseDashboard-createTables',
+  const createTables = new triggers.TriggerFunction(this, 'knowledgeGraph-createTables', {
+    functionName: 'knowledgeGraph-createTables',
     runtime: lambda.Runtime.PYTHON_3_9,
     handler: 'createTables.lambda_handler',
     layers: [this.psycopg2],
