@@ -114,3 +114,12 @@ To set up user accounts on the app, you will need to do the following steps
    <br>
    ![alt text](images/webapp06.png)
 7. The new user account has been created!
+
+# Step 8: Uploading your data
+
+1. Open the AWS Console and go to the s3 tab.
+2. Look for a bucket starting with knowledgegraphgluestack-...
+3. Open that bucket there should be one folder titled "scripts"
+4. Click create folder and call it data
+5. Upload three files researcherData.csv, publication_data.csv, elsevier_data.csv
+6. Click on these links for example data: [Example Researcher Data File](csvExamples/researcherDataExample.csv), [Example Publication Data File](csvExamples/publicationDataExample.csv), [Example Elsevier Data File](csvExamples/elsevierDataExample.csv)
