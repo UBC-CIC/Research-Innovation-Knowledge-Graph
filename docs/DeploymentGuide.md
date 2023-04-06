@@ -21,9 +21,9 @@ The **Deploy to Amplify Console** button will take you to your AWS console to de
 </a>
 
 1. On the AWS console. select your region on the top right, then connect to GitHub.
-   ![Amplify console main screen](images/amplifyConsole/amplify-console-01.png)
-2. Select the **amplifyconsole-knowledge-graph-backend-role** we made previously for the deployment role, and then press `Save and Deploy`![alt text](images/amplifyConsole/amplify-console-02.png)
-3. The deployment will take a few minutes. Wait until the status shows **Deploy** in green![alt text](images/amplifyConsole/amplify-console-03.png)
+   ![Amplify console main screen](images/amplify-console-01.png)
+2. Select the **amplifyconsole-knowledge-graph-backend-role** we made previously for the deployment role, and then press `Save and Deploy`![alt text](images/amplify-console-02.png)
+3. The deployment will take a few minutes. Wait until the status shows **Deploy** in green![alt text](images/amplify-console-03.png)
 
 # Step 2: Backend Deployment
 
@@ -101,16 +101,16 @@ cdk deploy KnowledgeGraphGlueStack --profile your-profile-name
 To set up user accounts on the app, you will need to do the following steps
 
 1. At the [AWS online console](https://console.aws.amazon.com/console/home), enter `Cognito` in the search bar.
-   ![alt text](images/webApp/webapp01.png)
+   ![alt text](images/webapp01.png)
 2. Click `User Pools` from the left hand sidebar and select the user pool that was created.
-   ![alt text](images/webApp/webapp02.png)
+   ![alt text](images/webapp02.png)
 3. Click the `Users` tab, then click `Create User`.
-   ![alt text](images/webApp/webapp03.png)
+   ![alt text](images/webapp03.png)
 4. For Invitation message, select `Send an email invitation`. Then fill in the user's email address in the Email address text field below. For Temporary password, select `Generate a password`. THen click `Create User`.
-   ![alt text](images/webApp/webapp04.png)
+   ![alt text](images/webapp04.png)
 5. The user will receive an email to the email address that was previously entered containing their temporary password.
-   ![alt text](images/webApp/webapp05.png)
+   ![alt text](images/webapp05.png)
 6. When the user enters their email and temporary password on the sign in page of the app, they will then be prompted to replace their temporary password by setting a new password.
    <br>
-   ![alt text](images/webApp/webapp06.png)
+   ![alt text](images/webapp06.png)
 7. The new user account has been created!
