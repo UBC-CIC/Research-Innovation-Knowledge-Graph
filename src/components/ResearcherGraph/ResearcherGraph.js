@@ -6,9 +6,8 @@ import {
   ZoomControl,
   FullScreenControl,
 } from "@react-sigma/core";
-import { Container,Box, Card, Grid, IconButton, Accordion,AccordionSummary,AccordionDetails, CardContent,ToggleButton,ToggleButtonGroup, Typography} from "@mui/material";
+import { Container,Box, Card, Grid, IconButton, Accordion,AccordionSummary,AccordionDetails, CardContent, Typography} from "@mui/material";
 import "./ResearcherGraph.css";
-import GraphDefinition from "./helpers/GraphDefinition";
 import {GraphEvents} from "./helpers/GraphEvents";
 import Graph from "graphology";
 import {random } from 'graphology-layout';
@@ -18,13 +17,13 @@ import Amplify from "@aws-amplify/core";
 import { Auth } from "@aws-amplify/auth";
 import awsmobile from "../../aws-exports";
 import { API } from "aws-amplify";
-import { GetSigma } from "./helpers/GraphEvents";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import 'katex/dist/katex.min.css'
 import Latex from 'react-latex-next'
 import {FacultyFiltersDialog,COLOR_OBJECT} from "../FacultyFiltersDialog";
+import  DepthSelection from "./helpers/DepthSelection";
 
 import {
   getResearcher,
@@ -37,8 +36,6 @@ Auth.configure(awsmobile);
 
 const ResearcherGraph = (props) => {
   const [graph, setGraph] = useState(null);
-  // const [selectedNode, setSelectedNode] = useState(null);
-  // const [selectedEdge, setSelectedEdge] = useState(null);
 
   const [selectedResearcher, setSelectedResearcher] = useState(null);
   const [similarResearchers, setSimilarResearchers] = useState(null);
@@ -47,9 +44,7 @@ const ResearcherGraph = (props) => {
   const [edgeResearcherTwo, setEdgeResearcherTwo] = useState(null);
   const [sharedPublications, setSharedPublications] = useState([]);
 
-  const [selectedDepth, setSelectedDepth] = useState(null);
 
-  const [detailsExpanded, setDetailsExpanded]= useState(true)
   const [graphState, setGraphState ] = useState("loading")
   const [tempGraph, setTempGraph ] = useState(null)
   
@@ -117,11 +112,8 @@ const ResearcherGraph = (props) => {
 
   //On change of the selected node get information on the researcher
   useEffect(() => {
-    console.log("triggered")
     if(props.selectedNode) {
-      console.log("here")
       getResearcherFunction(selectedResearcher);
-      setSelectedDepth(1);
     } else{
       setSelectedResearcher(null);
       setSimilarResearchers(null);
@@ -138,59 +130,6 @@ const ResearcherGraph = (props) => {
     }
   }, [props.selectedEdge])
 
-  useEffect(() => {
-    if(selectedDepth) {
-      const [nodeIDs,firstEdgeIDs,secondEdgeIDs,thirdEdgeIDs] = getNeighborhood(props.selectedNode,selectedDepth);
-      const sigma = GetSigma();
-      sigma.setSetting("nodeReducer", (node, data) => {
-        return nodeIDs.has(node)
-          ? { ...data,zIndex:1 }
-          : { ...data, label: "",zIndex: 0, hidden:true };
-      });
-      sigma.setSetting("edgeReducer", (edge, data) => {
-        if(firstEdgeIDs.has(edge)){
-          return { ...data, size: data.size, color: "#585858"}
-        }
-        else if(secondEdgeIDs.has(edge)){
-          return { ...data, size: data.size, color: "#8A8A8A"}
-        }
-        else if(thirdEdgeIDs.has(edge)){
-          return { ...data, size: data.size, color: "#BCBCBC"}
-        }
-        else{
-          return { ...data, hidden: true };
-        }
-      });
-    }
-  }, [selectedDepth])
-
-  const getNeighborhood = (centerNode, depth) => {
-    let neighborhoodNodes = new Set([centerNode])
-    let firstEdges = new Set([])
-    let secondEdges = new Set([])
-    let thirdEdges = new Set([])
-    graph.forEachNeighbor(centerNode,(firstNeighbor,attributes)=>{
-      neighborhoodNodes.add(firstNeighbor)
-      firstEdges.add(graph.edge(centerNode,firstNeighbor))
-      if(depth==1){
-        return [neighborhoodNodes,firstEdges,secondEdges,thirdEdges];
-      }
-      graph.forEachNeighbor(firstNeighbor,(secondNeighbor,attributes)=>{
-        neighborhoodNodes.add(secondNeighbor)
-        secondEdges.add(graph.edge(firstNeighbor,secondNeighbor))
-        if(depth==2){
-          return [neighborhoodNodes,firstEdges,secondEdges,thirdEdges];
-        }
-        graph.forEachNeighbor(secondNeighbor,(thirdNeighbor,attributes)=>{
-          neighborhoodNodes.add(thirdNeighbor)
-          thirdEdges.add(graph.edge(secondNeighbor,thirdNeighbor))
-            return [neighborhoodNodes,firstEdges,secondEdges,thirdEdges];
-        })
-      })
-    })
-    return [neighborhoodNodes,firstEdges,secondEdges,thirdEdges];
-  }
-
   const getResearcherFunction = async () => {
     let result = await API.graphql({
       query: getResearcher,
@@ -204,7 +143,6 @@ const ResearcherGraph = (props) => {
       variables: {"researcher_id": researcher.id}
     });
     let similarResearchers = result.data.getSimilarResearchers;
-    console.log(similarResearchers);
     setSimilarResearchers(similarResearchers);
   }
 
@@ -212,9 +150,6 @@ const ResearcherGraph = (props) => {
     let researchersIds = props.selectedEdge.split("&&");
     let researcherOneId = researchersIds[0];
     let researcherTwoId = researchersIds[1];
-
-    console.log(researcherOneId)
-    console.log(researcherTwoId)
 
     //Get the researcher information
 
@@ -237,21 +172,8 @@ const ResearcherGraph = (props) => {
       variables: {"id1": researcherOneId, "id2": researcherTwoId}
     });
     let publications = result.data.getSharedPublications;
-    console.log(publications);
     setSharedPublications(publications);
   }
-
-  /*	title, journal, yearPublished, authors, link are the fields of a publication you can show */
-  const publications = sharedPublications.map((publicationData) =>
-    <div key={publicationData.toString()} className="paper-link">
-      <div>
-        <a href={publicationData.link} target="_blank" rel="noopener noreferrer">   
-          <Latex>{publicationData.title}</Latex> 
-          <OpenInNewIcon fontSize="inherit" />
-        </a>
-      </div>
-    </div>
-  );
 
   const handleCheckFaculty = (e, faculty) => {
     if (e.target.checked) {
@@ -277,17 +199,139 @@ const ResearcherGraph = (props) => {
     props.setKeywordFilter(props.currentlyAppliedKeywordFilter);
   };
 
-  const handleSelectedDepth = (event, newValue) =>{
-    if (newValue !== null) {
-      setSelectedDepth(newValue);
-    }
+  return (
+    <div className="Researcher-Graph">
+      <Grid container spacing={0} direction="row">
+        <SidePanel
+          selectedNode={props.selectedNode} selectedEdge={props.selectedEdge}
+          facultyOptions={props.facultyOptions} currentlyAppliedFaculties={props.currentlyAppliedFaculties}
+          selectedResearcher={selectedResearcher} similarResearchers={similarResearchers} 
+          edgeResearcherOne={edgeResearcherOne} edgeResearcherTwo={edgeResearcherTwo} sharedPublications={sharedPublications}
+        />
+        <FacultyFiltersDialog
+                open={props.openFacultyFiltersDialog}
+                handleClose={handleClose}
+                allFaculties={props.facultyOptions}
+                selectedFaculties={props.selectedFaculties}
+                handleCheckFaculty={handleCheckFaculty}
+                applyFilters={applyFilters}
+                keywordFilter={props.keywordFilter}
+                setKeywordFilter={props.setKeywordFilter}
+              />
+        <Grid item xs={8} id='graph'>
+          <Container maxWidth={false}>
+            { graphState === "finished" ? (
+            <Card id="researcher-graph-card">
+              <SigmaContainer
+                graph={graph}
+                style={{ height: "75vh" }}
+                settings={{
+                  zIndex: true,
+                  labelRenderedSizeThreshold: 7, //the size at which the the nodes label show up
+                }}
+              >
+                <GraphEvents
+                  firstClickedNode={props.selectedNode}
+                  setFirstClickedNode={props.setSelectedNode}
+                  selectedEdge={props.selectedEdge}
+                  setSelectedEdge={props.setSelectedEdge}
+                />
+                <ControlsContainer position={"bottom-right"}>
+                  <ZoomControl />
+                  <FullScreenControl />
+                </ControlsContainer>
+              </SigmaContainer>
+            </Card>
+            ) : <GraphStatusMessage state={graphState} progress={props.graphProgress}/>}
+          </Container>
+        </Grid>
+      </Grid>
+    </div>
+  );
+};
+
+const GraphStatusMessage = ({state, progress}) =>{
+  const CircularProgressWithLabel = ({progress}) => { //from mui material-ui 
+    return (
+      <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+        <CircularProgress variant="determinate" value={progress} />
+        <Box
+          sx={{
+            top: 0,
+            left: 0,
+            bottom: 0,
+            right: 0,
+            position: 'absolute',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Typography variant="caption" component="div" color="text.secondary">
+            {`${Math.round(progress)}%`}
+          </Typography>
+        </Box>
+      </Box>
+    );
+  }
+  return (
+    state==="loading"? ( <center>
+      <CircularProgressWithLabel progress={progress}/>
+      <Typography gutterBottom variant="h5" color="#002145" margin="0px" component="div">
+            <b>Graph loading in progress...</b> 
+          </Typography>
+          <Typography gutterBottom variant="h6" color="#002145" margin="0px" component="div">
+            This might take a moment
+          </Typography>
+    </center>
+  ):
+  <center> {/** else the graph state=="empty" */}
+      <Typography gutterBottom variant="h5" color="#002145" margin="0px" component="div">
+            <b>No results found</b> 
+          </Typography>
+      <Typography gutterBottom variant="h6" color="#002145" margin="0px" component="div">
+        Change the graph's filters to view more data.
+      </Typography>
+    </center>
+  );
+}
+
+const SidePanel = ({selectedNode, selectedEdge, facultyOptions, currentlyAppliedFaculties, selectedResearcher, similarResearchers, edgeResearcherOne, edgeResearcherTwo, sharedPublications}) =>{
+  
+  const GraphLegend = ({allFaculties, filteredFaculties}) => {
+
+    const FacultyLabel = ({faculty}) => (
+      <Typography variant="body2">
+        <IconButton disabled><FiberManualRecordIcon style={{ color: COLOR_OBJECT[faculty] }} /></IconButton>
+        {faculty}
+      </Typography>
+    )
+
+    return(
+      <Accordion disableGutters id="accordion">
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <Typography variant="body1">Graph Legend</Typography>
+        </AccordionSummary>
+        <AccordionDetails id="accordion-details">
+          <Card id="graph-legend">
+            {filteredFaculties.length==0 ? //When no faculty filters selected
+            allFaculties.map((faculty,index) => ( //display all faculties' labels
+                <FacultyLabel key={index} faculty={faculty}/>
+            )): 
+            filteredFaculties.map((faculty,index) => ( //show only the applied filtered faculties' labels
+                <FacultyLabel key={index} faculty={faculty}/>
+            ))}
+          </Card>
+        </AccordionDetails>
+      </Accordion>
+    );
   }
 
-  const PotentialConnections = ()=>{
+  const PotentialConnections = ({selectedResearcher,similarResearchers}) => {
     const MAX_POTENTIAL_CONNECTIONS = 5;
+    const [accordionExpanded, setAccordionExpanded] = useState(false); 
 
     const ResearchersList = ()=>{
-     
       const researchersCards = [];
       for(let i=0; i<Math.min(similarResearchers.length, MAX_POTENTIAL_CONNECTIONS); i++){
         const researcher = similarResearchers[i]
@@ -307,18 +351,19 @@ const ResearcherGraph = (props) => {
             </Card>
         )
       }
-        return researchersCards;
+      return researchersCards;
     }
+
     return (
-      <Accordion disableGutters id="accordion">
+      <Accordion disableGutters expanded={accordionExpanded} onChange={()=>setAccordionExpanded(!accordionExpanded)} id="accordion">
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography variant="body1">Similar Researchers</Typography>
         </AccordionSummary>
         <AccordionDetails id="accordion-details">
-          {similarResearchers ?
           <Card id="accordion-details-card">
             <CardContent id="potential-connections-card-content">
-            {similarResearchers.length==0 ?
+          {similarResearchers && selectedResearcher?
+            similarResearchers.length==0 ?
               <Typography variant="body2" color="text.secondary">No potential connections found.</Typography>
             :<>
               <Typography variant="caption" color="text.secondary">
@@ -326,213 +371,123 @@ const ResearcherGraph = (props) => {
               </Typography>
               <ResearchersList/>
             </>
-            }
-            </CardContent>
+            
+          :(<center><CircularProgress color="inherit" data-testid="progressSpinner" /></center>)}
+          </CardContent>
           </Card>
-          :(<center><CircularProgress color="inherit" /></center>)}
         </AccordionDetails>
       </Accordion>
      
     );
   }
 
-  function CircularProgressWithLabel(props) { //from mui material-ui 
+  const ResearcherInfo = ({researcher}) => {
+
     return (
-      <Box sx={{ position: 'relative', display: 'inline-flex' }}>
-        <CircularProgress variant="determinate" {...props} />
-        <Box
-          sx={{
-            top: 0,
-            left: 0,
-            bottom: 0,
-            right: 0,
-            position: 'absolute',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Typography variant="caption" component="div" color="text.secondary">
-            {`${Math.round(props.value)}%`}
+      researcher ? (
+        <>
+          <Typography gutterBottom variant="h5" color="#002145" margin="0px" component="div">
+            <b>{researcher.firstName + " " + researcher.lastName}</b>
           </Typography>
-        </Box>
-      </Box>
+          <Typography variant="subtitle1" color="#002145">
+            <b>{researcher.rank}</b>
+          </Typography>
+          <Typography variant="body2" color="#404040">
+            {researcher.faculty}
+          </Typography>
+          <br/>
+          <Typography variant="body2" color="#404040">
+          <b>Department: </b>
+            {researcher.department}
+          </Typography>
+          <Typography variant="body2" color="#404040">
+          <b>Email: </b>
+            {researcher.email}
+          </Typography>
+          <Typography variant="body2" color="#404040">
+            <b>{"Scopus Id: "}</b>
+            {researcher.id}
+          </Typography>
+          <br/>
+          <Typography variant="subtitle2" color="#002145">
+            <b>Change Levels of Connection</b>
+          </Typography>
+          <DepthSelection nodeId={researcher.id}/>
+          <br/>
+          <br/>
+          <Typography variant="caption" color="text.secondary">
+            Click on connected node to see information about how they
+            are connected
+          </Typography>
+        </>
+        ) : (<center><CircularProgress color="inherit" /></center>)
     );
   }
 
-  return (
-    <div className="Researcher-Graph">
-      <Grid container spacing={0} direction="row">
-        <Grid item xs={4} className="side-panel" id="sidePanel">
-          <Accordion disableGutters id="accordion">
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography variant="body1">Graph Legend</Typography>
-            </AccordionSummary>
-            <AccordionDetails id="accordion-details">
-              <Card id="graph-legend">
-                {props.selectedFaculties.length==0 ?
-                  props.facultyOptions.map((faculty,index) => (
-                    <Typography key={index} variant="body2"><IconButton disabled><FiberManualRecordIcon style={{ color: COLOR_OBJECT[faculty] }} /></IconButton>{faculty}</Typography>
-                )): 
-                  props.currentlyAppliedFaculties.map((faculty,index) => (
-                    <Typography key={index} variant="body2"><IconButton disabled><FiberManualRecordIcon style={{ color: COLOR_OBJECT[faculty] }} /></IconButton>{faculty}</Typography>
-                ))}
-              </Card>
-            </AccordionDetails>
-          </Accordion>
-          {props.selectedNode && !props.selectedEdge && (
-              <PotentialConnections/>
-          )}
-          {/** Shows information on selected node and edge*/}
-          <Accordion disableGutters expanded={detailsExpanded} onChange={()=>setDetailsExpanded(!detailsExpanded)} id="accordion">
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography variant="body1">Graph Details</Typography>
-            </AccordionSummary>
-            <AccordionDetails id="accordion-details">
-              <Card id="accordion-details-card">
-                <CardContent>
-                  {props.selectedNode && !props.selectedEdge && (
-                    selectedResearcher ? (
-                    <>
-                      <Typography gutterBottom variant="h5" color="#002145" margin="0px" component="div">
-                        <b>{selectedResearcher.firstName + " " + selectedResearcher.lastName}</b>
-                      </Typography>
-                      <Typography variant="subtitle1" color="#002145">
-                        <b>{selectedResearcher.rank}</b>
-                      </Typography>
-                      <Typography variant="body2" color="#404040">
-                        {selectedResearcher.faculty}
-                      </Typography>
-                      <br/>
-                      <Typography variant="body2" color="#404040">
-                      <b>Department: </b>
-                        {selectedResearcher.department}
-                      </Typography>
-                      <Typography variant="body2" color="#404040">
-                      <b>Email: </b>
-                        {selectedResearcher.email}
-                      </Typography>
-                      <Typography variant="body2" color="#404040">
-                        <b>{"Scopus Id: "}</b>
-                        {selectedResearcher.id}
-                      </Typography>
-                      <br/>
-                      <Typography variant="subtitle2" color="#002145">
-                        <b>Change Levels of Connection</b>
-                      </Typography>
-                      <ToggleButtonGroup 
-                          value={selectedDepth}
-                          exclusive
-                          onChange={handleSelectedDepth}
-                          size="small"
-                      >
-                        <ToggleButton value={1}>
-                          1<sup>st</sup>
-                        </ToggleButton>
-                        <ToggleButton value={2}>
-                          2<sup>nd</sup>
-                        </ToggleButton>
-                        <ToggleButton value={3}>
-                          3<sup>rd</sup>
-                        </ToggleButton>
-                      </ToggleButtonGroup>
-                      <br/>
-                      <br/>
-                      <Typography variant="caption" color="text.secondary">
-                        Click on connected node to see information about how they
-                        are connected
-                      </Typography>
-                    </>
-                    ) : (<center><CircularProgress color="inherit" /></center>)
-                  )}
-                  {props.selectedEdge && (
-                    edgeResearcherOne && edgeResearcherTwo && sharedPublications.length!=0 ? (
-                    <>
-                    <Typography gutterBottom variant="h5" color="#002145" margin="0px" component="div">
-                        <b>{edgeResearcherOne.firstName + " " + edgeResearcherOne.lastName + " &" }</b> 
-                      </Typography>
-                      <Typography gutterBottom variant="h5" color="#002145" margin="0px" component="div">
-                        <b> {edgeResearcherTwo.firstName + " " + edgeResearcherTwo.lastName}</b>
-                      </Typography>
-                      <br/>
-                      <Typography variant="subtitle1" margin="0px" color="#002145">
-                        <b>Shared Publications ({sharedPublications.length})</b> 
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {publications}
-                      </Typography>
-                    </>
-                    ) : (<center><CircularProgress color="inherit" /></center>)
-                  )}
-                  {!props.selectedNode && (
-                    <Typography variant="body2" color="text.secondary">
-                      Click on a node to view more information about the researcher
-                    </Typography>
-                  )}
-                </CardContent>
-              </Card>
-              <FacultyFiltersDialog
-                open={props.openFacultyFiltersDialog}
-                handleClose={handleClose}
-                allFaculties={props.facultyOptions}
-                selectedFaculties={props.selectedFaculties}
-                handleCheckFaculty={handleCheckFaculty}
-                applyFilters={applyFilters}
-                keywordFilter={props.keywordFilter}
-                setKeywordFilter={props.setKeywordFilter}
-              />
-            </AccordionDetails>
-          </Accordion>
-        </Grid>
-        <Grid item xs={8} id='graph'>
-          <Container maxWidth={false}>
-            {/* sets the width of the graph -scales to the size of the page */}
-            { graphState === "finished" ? (
-            <Card id="researcher-graph-card">
-              <SigmaContainer
-                graph={graph}
-                style={{ height: "75vh" }}
-                settings={{
-                  zIndex: true,
-                  labelRenderedSizeThreshold: 15, //the size at which the the nodes label show up
-                }}
-              >
-                <GraphEvents
-                  firstClickedNode={props.selectedNode}
-                  setFirstClickedNode={props.setSelectedNode}
-                  selectedEdge={props.selectedEdge}
-                  setSelectedEdge={props.setSelectedEdge}
-                />
-                <ControlsContainer position={"bottom-right"}>
-                  <ZoomControl />
-                  <FullScreenControl />
-                </ControlsContainer>
-              </SigmaContainer>
-            </Card>
-            ) : (graphState==="loading"? ( <center>
-                  <CircularProgressWithLabel value={props.graphProgress} />
-                  <Typography gutterBottom variant="h5" color="#002145" margin="0px" component="div">
-                        <b>Graph loading in progress...</b> 
-                      </Typography>
-                      <Typography gutterBottom variant="h6" color="#002145" margin="0px" component="div">
-                        This might take a moment
-                      </Typography>
-                </center>
-              ):
-              <center>
-                  <Typography gutterBottom variant="h5" color="#002145" margin="0px" component="div">
-                        <b>No results found</b> 
-                      </Typography>
-                  <Typography gutterBottom variant="h6" color="#002145" margin="0px" component="div">
-                    Change the graph's filters to view more data.
-                  </Typography>
-                </center>
-               )}
-          </Container>
-        </Grid>
-      </Grid>
-    </div>
-  );
-};
+  const EdgeInfo = ({edgeResearcherOne, edgeResearcherTwo, sharedPublications }) =>{
 
-export default ResearcherGraph;
+      const publications = sharedPublications.map((publicationData, index) =>
+      <div key={index} className="paper-link">
+          <a href={publicationData.link} target="_blank" rel="noopener noreferrer">   
+            <Latex>{publicationData.title}</Latex> 
+            <OpenInNewIcon fontSize="inherit" />
+          </a>
+      </div>
+    );
+
+    return (
+      edgeResearcherOne && edgeResearcherTwo && sharedPublications.length!=0 ? (
+        <>
+        <Typography gutterBottom variant="h5" color="#002145" margin="0px" component="div">
+            <b>{edgeResearcherOne.firstName + " " + edgeResearcherOne.lastName + " &" }</b> 
+          </Typography>
+          <Typography gutterBottom variant="h5" color="#002145" margin="0px" component="div">
+            <b> {edgeResearcherTwo.firstName + " " + edgeResearcherTwo.lastName}</b>
+          </Typography>
+          <br/>
+          <Typography variant="subtitle1" margin="0px" color="#002145">
+            <b>Shared Publications ({sharedPublications.length})</b> 
+          </Typography>
+          <Typography component={'div'} variant="body2" color="text.secondary">
+            {publications}
+          </Typography>
+        </>
+        ) : (<center><CircularProgress color="inherit" /></center>)
+    );
+  }
+
+  const [detailsExpanded, setDetailsExpanded] = useState(true);  
+
+  return(
+    <Grid item xs={4} className="side-panel" id="sidePanel">
+    <GraphLegend allFaculties={facultyOptions} filteredFaculties={currentlyAppliedFaculties}/>
+    {selectedNode && !selectedEdge && ( /**when in nodeSelectionMode */
+      <PotentialConnections {...{selectedResearcher, similarResearchers}}/>
+    )}
+    <Accordion disableGutters expanded={detailsExpanded} onChange={()=>setDetailsExpanded(!detailsExpanded)} id="accordion">
+      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <Typography variant="body1">Graph Details</Typography>
+      </AccordionSummary>
+      <AccordionDetails id="accordion-details">
+        <Card id="accordion-details-card">
+          <CardContent>
+            {selectedNode && !selectedEdge &&  /**when in nodeSelectionMode */
+              <ResearcherInfo researcher={selectedResearcher}/>
+            }
+            {selectedEdge && /**when in edgeSelectionMode */
+             <EdgeInfo {...{edgeResearcherOne, edgeResearcherTwo, sharedPublications}}/>
+            }
+            {!selectedNode && /**when no node selected */
+              <Typography variant="body2" color="text.secondary">
+                Click on a node to view more information about the researcher
+              </Typography>
+            }
+          </CardContent>
+        </Card> 
+      </AccordionDetails>
+    </Accordion>
+  </Grid>
+  );
+}
+
+export {ResearcherGraph, GraphStatusMessage, SidePanel};
