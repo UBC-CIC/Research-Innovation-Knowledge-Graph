@@ -29,7 +29,7 @@ The **Deploy to Amplify Console** button will take you to your AWS console to de
 
 It's time to set up everything that goes on behind the scenes! For more information on how the backend works, feel free to refer to the Architecture Deep Dive, but an understanding of the backend is not necessary for deployment.
 
-## Step 1: Install Dependencies
+## Step 2.1: Install Dependencies
 
 The first step is to get into the backend folder. This can be done with the following commands:
 
@@ -44,7 +44,7 @@ Now that you are in the backend directory, install the core dependencies with th
 npm install
 ```
 
-## Step 2: Database Username
+## Step 2.2: Database Username
 
 You  have to supply a custom database username when deploying the solution to increase security. Run the following command and ensure you replace `DB-USERNAME` with the custom name of your choice.
 
@@ -64,7 +64,7 @@ aws secretsmanager create-secret \
     --secret-string "{\"username\":\"knowledgeGraph\"}"
 ```
 
-## Step 3: CDK Deployment
+## Step 2.3: CDK Deployment
 
 Initialize the CDK stacks (required only if you have not deployed this stack before). Note the CDK deployment assumes you are deploying in ca-central-1
 
@@ -96,7 +96,7 @@ cdk deploy KnowledgeGraphGlueStack --profile your-profile-name
 ```
 
 
-# Step 7: Creating a User
+# Step 3: Creating a User
 
 To set up user accounts on the app, you will need to do the following steps
 
@@ -115,7 +115,7 @@ To set up user accounts on the app, you will need to do the following steps
    ![alt text](images/webapp06.png)
 7. The new user account has been created!
 
-# Step 8: Uploading your data
+# Step 4: Uploading your data
 
 1. Open the AWS Console and go to the s3 tab.
 2. Look for a bucket starting with knowledgegraphgluestack-...
