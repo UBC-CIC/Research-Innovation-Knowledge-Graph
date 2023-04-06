@@ -109,7 +109,7 @@ export class GlueStack extends Stack {
     );
 
     // Glue Jobs: store data into table in database
-    const storeDataJobName1 = "knowledgeGraph-storeData1";
+    const storeDataJobName1 = "knowledgeGraph-storeData";
     const storeDataJob1 = new glue.CfnJob(this, storeDataJobName1, {
       name: storeDataJobName1,
       role: glueRole.roleArn,
@@ -140,9 +140,9 @@ export class GlueStack extends Stack {
       destinationKeyPrefix: "scripts/",
     });
 
-    const storeDataJobName2 = "knowledgeGraph-storeData2";
-    const storeDataJob2 = new glue.CfnJob(this, storeDataJobName2, {
-      name: storeDataJobName2,
+    const createEdges = "knowledgeGraph-createEdges";
+    const storeDataJob2 = new glue.CfnJob(this, createEdges, {
+      name: createEdges,
       role: glueRole.roleArn,
       command: {
         name: "pythonshell",
@@ -150,7 +150,7 @@ export class GlueStack extends Stack {
         scriptLocation:
           "s3://" +
           this.glueS3Bucket.bucketName +
-          "/scripts/storeData" +
+          "/scripts/createEdges" +
           ".py",
       },
       executionProperty: {
@@ -171,9 +171,9 @@ export class GlueStack extends Stack {
       destinationKeyPrefix: "scripts/",
     });
 
-    const storeDataJobName3 = "knowledgeGraph-storeData3";
-    const storeDataJob3 = new glue.CfnJob(this, storeDataJobName3, {
-      name: storeDataJobName3,
+    const CreateSimilarResearchers = "knowledgeGraph-CreateSimilarResearchers";
+    const storeDataJob3 = new glue.CfnJob(this, CreateSimilarResearchers, {
+      name: CreateSimilarResearchers,
       role: glueRole.roleArn,
       command: {
         name: "pythonshell",
@@ -181,7 +181,7 @@ export class GlueStack extends Stack {
         scriptLocation:
           "s3://" +
           this.glueS3Bucket.bucketName +
-          "/scripts/storeData" +
+          "/scripts/CreateSimilarResearchers" +
           ".py",
       },
       executionProperty: {
