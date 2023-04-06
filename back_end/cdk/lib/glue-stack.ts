@@ -108,10 +108,10 @@ export class GlueStack extends Stack {
       }
     );
 
-    // Glue Job: store data into table in database
-    const storeDataJobName = "knowledgeGraph-storeData";
-    const storeDataJob = new glue.CfnJob(this, storeDataJobName, {
-      name: storeDataJobName,
+    // Glue Jobs: store data into table in database
+    const storeDataJobName1 = "knowledgeGraph-storeData1";
+    const storeDataJob1 = new glue.CfnJob(this, storeDataJobName1, {
+      name: storeDataJobName1,
       role: glueRole.roleArn,
       command: {
         name: "pythonshell",
@@ -134,7 +134,69 @@ export class GlueStack extends Stack {
     });
 
     // Deploy glue job to glue S3 bucket
-    new s3deploy.BucketDeployment(this, "DeployGlueJobFiles", {
+    new s3deploy.BucketDeployment(this, "DeployGlueJobFiles1", {
+      sources: [s3deploy.Source.asset("./glue/scripts/")],
+      destinationBucket: this.glueS3Bucket,
+      destinationKeyPrefix: "scripts/",
+    });
+
+    const storeDataJobName2 = "knowledgeGraph-storeData2";
+    const storeDataJob2 = new glue.CfnJob(this, storeDataJobName2, {
+      name: storeDataJobName2,
+      role: glueRole.roleArn,
+      command: {
+        name: "pythonshell",
+        pythonVersion: '3.9',
+        scriptLocation:
+          "s3://" +
+          this.glueS3Bucket.bucketName +
+          "/scripts/storeData" +
+          ".py",
+      },
+      executionProperty: {
+        maxConcurrentRuns: 1,
+      },
+      connections: {
+        connections: [this.glueConnectionName],
+      },
+      maxRetries: 0,
+      timeout: 2880, // 120 min timeout duration
+      glueVersion: '3.0',
+    });
+
+    // Deploy glue job to glue S3 bucket
+    new s3deploy.BucketDeployment(this, "DeployGlueJobFiles2", {
+      sources: [s3deploy.Source.asset("./glue/scripts/")],
+      destinationBucket: this.glueS3Bucket,
+      destinationKeyPrefix: "scripts/",
+    });
+
+    const storeDataJobName3 = "knowledgeGraph-storeData3";
+    const storeDataJob3 = new glue.CfnJob(this, storeDataJobName3, {
+      name: storeDataJobName3,
+      role: glueRole.roleArn,
+      command: {
+        name: "pythonshell",
+        pythonVersion: '3.9',
+        scriptLocation:
+          "s3://" +
+          this.glueS3Bucket.bucketName +
+          "/scripts/storeData" +
+          ".py",
+      },
+      executionProperty: {
+        maxConcurrentRuns: 1,
+      },
+      connections: {
+        connections: [this.glueConnectionName],
+      },
+      maxRetries: 0,
+      timeout: 2880, // 120 min timeout duration
+      glueVersion: '3.0',
+    });
+
+    // Deploy glue job to glue S3 bucket
+    new s3deploy.BucketDeployment(this, "DeployGlueJobFiles3", {
       sources: [s3deploy.Source.asset("./glue/scripts/")],
       destinationBucket: this.glueS3Bucket,
       destinationKeyPrefix: "scripts/",
@@ -144,7 +206,9 @@ export class GlueStack extends Stack {
     this.glueS3Bucket.grantReadWrite(glueRole);
 
     // Destroy Glue related resources when GrantDataStack is deleted
-    storeDataJob.applyRemovalPolicy(RemovalPolicy.DESTROY);
+    storeDataJob1.applyRemovalPolicy(RemovalPolicy.DESTROY);
+    storeDataJob2.applyRemovalPolicy(RemovalPolicy.DESTROY);
+    storeDataJob3.applyRemovalPolicy(RemovalPolicy.DESTROY);
     this.glueConnection.applyRemovalPolicy(RemovalPolicy.DESTROY);
     glueRole.applyRemovalPolicy(RemovalPolicy.DESTROY);
   }
