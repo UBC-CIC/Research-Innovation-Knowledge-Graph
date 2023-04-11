@@ -6,7 +6,7 @@ import * as AmplifyHelpers from '@aws-amplify/cli-extensibility-helper';
 import { AmplifyDependentResourcesAttributes } from '../../types/amplify-dependent-resources-ref';
 
 export class cdkStack extends Stack {
-  constructor(scope: Construct, id: string, props?: cdk.StackProps, amplifyResourceProps?: AmplifyHelpers.AmplifyResourceProps) {
+  constructor(scope: Construct, id: string, props?: StackProps, amplifyResourceProps?: AmplifyHelpers.AmplifyResourceProps) {
     super(scope, id, props);
     /* Do not remove - Amplify CLI automatically injects the current deployment environment in this input parameter */
     new cdk.CfnParameter(this, 'env', {
