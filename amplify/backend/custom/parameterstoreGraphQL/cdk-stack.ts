@@ -1,10 +1,11 @@
-import * as cdk from '@aws-cdk/core';
+import * as cdk from 'aws-cdk-lib'
+import { Construct } from 'constructs';
+import {aws_ssm as ssm} from 'aws-cdk-lib'
 import * as AmplifyHelpers from '@aws-amplify/cli-extensibility-helper';
-import * as ssm from '@aws-cdk/aws-ssm';
 import { AmplifyDependentResourcesAttributes } from '../../types/amplify-dependent-resources-ref';
 
 export class cdkStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps, amplifyResourceProps?: AmplifyHelpers.AmplifyResourceProps) {
+  constructor(scope: Construct, id: string, props?: cdk.StackProps, amplifyResourceProps?: AmplifyHelpers.AmplifyResourceProps) {
     super(scope, id, props);
     /* Do not remove - Amplify CLI automatically injects the current deployment environment in this input parameter */
     new cdk.CfnParameter(this, 'env', {
