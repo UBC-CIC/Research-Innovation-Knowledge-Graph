@@ -108,6 +108,10 @@ export class GlueStack extends Stack {
       }
     );
 
+    const defaultArguments = {
+      "--BUCKET_NAME": this.glueS3Bucket.bucketName,
+    }
+
     // Glue Jobs: store data into table in database
     const storeDataJobName1 = "knowledgeGraph-storeData";
     const storeDataJob1 = new glue.CfnJob(this, storeDataJobName1, {
@@ -129,8 +133,9 @@ export class GlueStack extends Stack {
         connections: [this.glueConnectionName],
       },
       maxRetries: 0,
-      timeout: 2880, // 120 min timeout duration
+      timeout: 2880,
       glueVersion: '3.0',
+      defaultArguments: defaultArguments,
     });
 
     // Deploy glue job to glue S3 bucket
@@ -160,8 +165,9 @@ export class GlueStack extends Stack {
         connections: [this.glueConnectionName],
       },
       maxRetries: 0,
-      timeout: 2880, // 120 min timeout duration
+      timeout: 2880,
       glueVersion: '3.0',
+      defaultArguments: defaultArguments,
     });
 
     // Deploy glue job to glue S3 bucket
@@ -191,8 +197,9 @@ export class GlueStack extends Stack {
         connections: [this.glueConnectionName],
       },
       maxRetries: 0,
-      timeout: 2880, // 120 min timeout duration
+      timeout: 2880,
       glueVersion: '3.0',
+      defaultArguments: defaultArguments,
     });
 
     // Deploy glue job to glue S3 bucket

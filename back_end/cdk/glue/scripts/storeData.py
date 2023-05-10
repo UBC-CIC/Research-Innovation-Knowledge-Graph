@@ -5,6 +5,7 @@ import json
 import time
 import io
 import pandas as pd
+from awsglue.utils import getResolvedOptions
 from botocore.client import Config
 
 sm_client = boto3.client('secretsmanager')
@@ -13,10 +14,14 @@ s3 = boto3.client('s3', config=config)
 config = Config(connect_timeout=5, retries={'max_attempts': 0})
 s3 = boto3.resource('s3', config=config)
 
+# get environment variable for this Glue job
+args = getResolvedOptions(sys.argv, ["BUCKET_NAME"])
+BUCKET_NAME = args["BUCKET_NAME"]
+
 def getCredentials():
     credentials = {}
 
-    response = sm_client.get_secret_value(SecretId='vpri/credentials/dbCredentials')
+    response = sm_client.get_secret_value(SecretId='knowledgeGraph/credentials/databaseCredentials')
     secrets = json.loads(response['SecretString'])
     credentials['username'] = secrets['username']
     credentials['password'] = secrets['password']
@@ -47,7 +52,7 @@ def insertIntoPublicationTable(id, title, keywords, author_ids, author_names, jo
     
 def handleElsevierData(cursor):
     #Insert into elsiver
-    raw_data = fetchFromS3("rds-reforming-bucket", "elsevier_data.csv")
+    raw_data = fetchFromS3(BUCKET_NAME, "data/elsevier_data.csv")
     print('hi')
     # read raw data into a pandas DataFrame
     df = pd.read_csv(raw_data)
@@ -60,7 +65,7 @@ def handleElsevierData(cursor):
     
 def handlePublicationData(cursor):
     #Insert into elsiver
-    raw_data = fetchFromS3("rds-reforming-bucket", "publication_data.csv")
+    raw_data = fetchFromS3(BUCKET_NAME, "data/publication_data.csv")
     print('hi')
     # read raw data into a pandas DataFrame
     df = pd.read_csv(raw_data)
@@ -87,7 +92,7 @@ def handlePublicationData(cursor):
 
 def handleResearcherData(cursor):
     #Insert into elsiver
-    raw_data = fetchFromS3("rds-reforming-bucket", "researcherData.csv")
+    raw_data = fetchFromS3(BUCKET_NAME, "data/researcherData.csv")
     print('hi')
     # read raw data into a pandas DataFrame
     df = pd.read_csv(raw_data)
@@ -101,7 +106,7 @@ def handleResearcherData(cursor):
         researcher['rank'] = str(row['rank']).replace(" '", " ").replace("',", ",").replace("'", "''")
         researcher['prime_department'] = str(row['prime_department']).replace(" '", " ").replace("',", ",").replace("'", "''")
         researcher['prime_faculty'] = str(row['prime_faculty']).replace(" '", " ").replace("',", ",").replace("'", "''")
-        researcher['keywords'] = str(row['keywords']).replace(" '", " ").replace("',", ",").replace("'", "''")
+        researcher['keywords'] = str(row['keywords']).replace("'", " ").replace("',", ",").replace("'", "''")
         researcher['scopus_id'] = str(row['scopus_id'])
         queryline1 = "INSERT INTO public.researcher_data(researcher_id, first_name, last_name, email, rank, prime_department, prime_faculty, keywords, scopus_id) "
         queryline2 = "VALUES ('" + researcher['id'] + "', '" + researcher['first_name'] + "', '" + researcher['last_name'] + "', '" + researcher['email'] + "', '" + researcher['rank'] + "', '" + researcher['prime_department'] + "', '" + researcher['prime_faculty'] + "', '" + researcher['keywords'] + "', '" + researcher['scopus_id'] + "')"
@@ -134,9 +139,8 @@ def checkPublicationInsert(cursor):
 credentials = getCredentials()
 connection = psycopg2.connect(user=credentials['username'], password=credentials['password'], host=credentials['host'], database=credentials['db'])
 cursor = connection.cursor()
-handleElsevierData(cursor)
-# checkElsevierInsert(cursor)
+# handleElsevierData(cursor)
 handlePublicationData(cursor)
-handleResearcherData(cursor)
+# handleResearcherData(cursor)
 cursor.close()
 connection.commit()

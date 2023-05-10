@@ -123,3 +123,13 @@ To set up user accounts on the app, you will need to do the following steps
 4. Click create folder and call it data
 5. Upload three files researcherData.csv, publication_data.csv, elsevier_data.csv
 6. Click on these links for example data: [Example Researcher Data File](csvExamples/researcherDataExample.csv), [Example Publication Data File](csvExamples/publicationDataExample.csv), [Example Elsevier Data File](csvExamples/elsevierDataExample.csv)
+
+# Step 5: Starting the 3 glue Jobs
+
+1. Open the AWS Console and go to Glue tab
+2. Look for 3 glue jobs titled: "knowledgeGraph-storeData", "knowledgeGraph-createEdges" and, "knowledgeGraph-CreateSimilarResearchers"
+3. Run the first glue job: knowledgeGraph-storeData
+4. After that glue job is successful run the glue job: knowledgeGraph-createEdges
+5. After that glue job is successful run the glue job: knowledgeGraph-CreateSimilarResearchers
+
+Congrats the web app should be deployed and fully functioning
