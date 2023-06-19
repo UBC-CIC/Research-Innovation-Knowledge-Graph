@@ -16,7 +16,7 @@
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^29.2.6",
     "aws-amplify": "^5.0.12",
-    "aws-cdk-lib": "^2.68.0",
+    "aws-cdk-lib": "^2.80.0",
     "graphology": "^0.25.1",
     "graphology-layout": "^0.6.1",
     "graphology-layout-forceatlas2": "^0.10.1",
